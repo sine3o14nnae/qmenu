@@ -1,21 +1,26 @@
-# qmenu
+qmenu
+=====
+
 Collection of tools that utilize
 [dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
 drop down menu for [QubesOS](https://qubes-os.org/) R4.0+,
 from which they can quickly administer their qube
-preferences, firewall rules, applications, devices, etc.
-with only the keyboard.
+preferences, firewall rules, applications, per-qube keyboard layouts, devices,
+etc. with only the keyboard.
 
 The colors that correspond to the qube label can be adjusted by creating a
 text file called `qmenu.conf` in `/home/user/.config/` with
 the following contents:
 
-    [LABEL 1]=#[HEX TRIPLET]
-    [LABEL 2]=#[HEX TRIPLET]
-    ...
-    [LABEL 8]=#[HEX TRIPLET]
+~~~
+[LABEL 1]=#[HEX TRIPLET]
+[LABEL 2]=#[HEX TRIPLET]
+...
+[LABEL 8]=#[HEX TRIPLET]
+~~~
 
-## qmenu-al
+### qmenu-al ###
+
 Launch domU applications.
 
     Usage: qmenu-al [OPTION] (--light-theme)
@@ -23,7 +28,8 @@ Launch domU applications.
      --all
      --focused
 
-## qmenu-dm
+### qmenu-dm ###
+
 List and manage your connected devices.
 
     Usage: qmenu-dm [OPTION] (--light-theme)
@@ -33,10 +39,9 @@ List and manage your connected devices.
      --block
      --usb
 
-## qmenu-vm
-List, manage and configure your qubes.
+### qmenu-vm ###
 
-Selecting the top row, instead of any qube, will refresh the list.
+List, manage and configure your qubes.
 
     Usage: qmenu-vm [OPTION] (--light-theme)
 
@@ -47,11 +52,16 @@ Selecting the top row, instead of any qube, will refresh the list.
      --running
      --tags=[TAG]
 
-# Installation
-0. `[user@dispXXXX ~]$ git clone https://github.com/sine3o14nnae/qmenu/`
+Installation
+------------
 
-1. `[user@dom0 ~]$ qvm-run --pass-io dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX`
+    [user@dispXXXX ~]$ git clone https://github.com/sine3o14nnae/qmenu/
 
-2. `[user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/bin/`
+    [user@dom0 ~]$ qvm-run --pass-io dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX
 
-3. `[user@dom0 ~]$ sudo chmod 755 /usr/bin/qmenu-XX`
+    [user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/bin/
+
+    [user@dom0 ~]$ sudo chmod 755 /usr/bin/qmenu-XX
+
+See [here](https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/qmenu.md)
+for detailed instructions.
