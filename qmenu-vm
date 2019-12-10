@@ -598,12 +598,12 @@ fqvm_devices() (
      device=$(echo "$devices_list" |\
        dmenu -l 16 -p "$target_qube:" $dmenu_fmc)
 
-     device_id=$(echo "$device" | awk '{print $1}')
-
-     device_name=$(echo "$device" |\
-       awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
-
      if [ -n "$device" ]; then
+
+       device_id=$(echo "$device" | awk '{print $1}')
+
+       device_name=$(echo "$device" |\
+         awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
        holds_qube=$(echo "$devices_list" | grep "$device_id" |\
          awk '{print $'$awk_targetqube'}')
@@ -1484,7 +1484,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-vm [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
