@@ -1505,8 +1505,6 @@ while true; do
 
   rearrange_qube_list
 
-  if [ -n "$target_qube" ]; then unset target_qube; fi
-
   # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.
   while [ "$target_qube" != "NAME" ]; do
@@ -1528,4 +1526,6 @@ while true; do
       fi
     fi
   done
+
+  unset target_qube
 done
