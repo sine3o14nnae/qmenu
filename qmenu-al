@@ -22,7 +22,7 @@ case $1 in
     if [ -n "$chosen" ]; then
 
       if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-        grep '^Exec=.*' | cut -c 6-); then exit 2; fi
+        sed 1d | cut -c 6-); then exit 2; fi
 
       exit 0
     fi
@@ -57,7 +57,7 @@ case $1 in
       if [ -n "$chosen" ]; then
 
         if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-          grep '^Exec=.*' | cut -c 6-); then exit 2; fi
+          sed 1d | cut -c 6-); then exit 2; fi
 
         exit 0
       fi
@@ -69,7 +69,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-al [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
