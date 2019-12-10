@@ -62,7 +62,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-dm [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
@@ -110,12 +110,12 @@ while [ -n "$device" ]; do
 
   device=$(echo "$devices_list" | dmenu -l 16 $dmenu_fmc)
 
-  device_id=$(echo "$device" | awk '{print $1}')
-
-  device_name=$(echo "$device" |\
-    awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
-
   if [ -n "$device" ]; then
+
+    device_id=$(echo "$device" | awk '{print $1}')
+
+    device_name=$(echo "$device" |\
+      awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
     target_qube=$(echo "$devices_list" | grep "$device_id" |\
        awk '{print $'$awk_targetqube'}')
