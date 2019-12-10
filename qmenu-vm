@@ -940,7 +940,7 @@ fqvm_pci() (
      device=$(echo "$list_pci" |\
        dmenu -l 30 -p "$target_qube:" $dmenu_fmc)
 
-     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1]; then
+     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
        device_src=$(echo "$device" | awk '{print $1}' | sed 's/:.*//')
        device_bdf=$(echo "$device" | awk '{print $1}' | sed 's/.*://')
@@ -1345,70 +1345,76 @@ fqvm_service() (
 
    if [ -n "$service" ]; then
 
-     # If the service has already been added to the list,
-     # give option to unset it.
-     if qvm-service "$target_qube" --list | grep -w "$service"; then
+     for service in $services; do
 
-        unset="\nUnset"
-     fi
+       # If the service has already been added to the list,
+       # give option to unset it.
+       if qvm-service "$target_qube" --list | grep -w "$service"; then
 
-     value=$(printf "Disable\nEnable$unset" |\
-       dmenu -l 3 -i -p "Select value for '$service'" $dmenu_fmc)
-
-     if [ "$value" = "Disable" ]; then
-
-       if ! qvm-service "$target_qube" "$service" off; then
-
-         echo "Go back..." | dmenu -p "Error: Could not deactivate $service!"\
-           $dmenu_fmc > /dev/null 2>&1
+          unset="\nUnset"
        fi
 
-     elif [ "$value" = "Enable" ]; then
+       value=$(printf "Disable\nEnable$unset" |\
+         dmenu -l 3 -i -p "Select value for '$service'" $dmenu_fmc)
 
-       if ! qvm-service "$target_qube" "$service" on; then
+       if [ "$value" = "Disable" ]; then
 
-         echo "Go back..." | dmenu -p "Error: Could not activate $service!"\
-           $dmenu_fmc > /dev/null 2>&1
+         if ! qvm-service "$target_qube" "$service" off; then
+
+           echo "Go back..." | dmenu -p "Error: Could not deactivate $service!"\
+             $dmenu_fmc > /dev/null 2>&1
+         fi
+
+       elif [ "$value" = "Enable" ]; then
+
+         if ! qvm-service "$target_qube" "$service" on; then
+
+           echo "Go back..." | dmenu -p "Error: Could not activate $service!"\
+             $dmenu_fmc > /dev/null 2>&1
+         fi
+
+       elif [ "$value" = "Unset" ]; then
+
+         if ! qvm-service "$target_qube" "$service" --unset; then
+
+           echo "Go back..." | dmenu -p "Error: Could not unset $service!"\
+             $dmenu_fmc > /dev/null 2>&1
+         fi
        fi
 
-     elif [ "$value" = "Unset" ]; then
-
-       if ! qvm-service "$target_qube" "$service" --unset; then
-
-         echo "Go back..." | dmenu -p "Error: Could not unset $service!"\
-           $dmenu_fmc > /dev/null 2>&1
-       fi
-     fi
-
-     if [ -n "$unset" ]; then unset unset; fi
+       if [ -n "$unset" ]; then unset unset; fi
+     done
    fi
  done
 )
 
 fqvm_tags() (
 
- tag=0
+ tags=0
 
- while [ -n "$tag" ]; do
+ while [ -n "$tags" ]; do
 
-   tag=$(qvm-tags "$target_qube" list |\
+   tags=$(qvm-tags "$target_qube" list |\
      dmenu -l 15 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-   if [ -n "$tag" ]; then
+   if [ -n "$tags" ]; then
 
-     if qvm-tags "$target_qube" list | grep -w "$tag"; then
+     for tag in $tags; do
 
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Remove tag '$tag' from $target_qube?" $dmenu_fmc)
+       if qvm-tags "$target_qube" list | grep -w "$tag"; then
 
-       if [ "$answer" = "Yes" ]; then
+         answer=$(printf "No\nYes" |\
+           dmenu -i -p "Remove tag '$tag' from $target_qube?" $dmenu_fmc)
 
-         qvm-tags "$target_qube" del "$tag"
+         if [ "$answer" = "Yes" ]; then
+
+           qvm-tags "$target_qube" del "$tag"
+         fi
+       else
+
+         qvm-tags "$target_qube" add "$tag"
        fi
-     else
-
-       qvm-tags "$target_qube" add "$tag"
-     fi
+     done
    fi
  done
 )
