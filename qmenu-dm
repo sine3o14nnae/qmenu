@@ -110,7 +110,7 @@ while [ -n "$device" ]; do
 
   device=$(echo "$devices_list" | dmenu -l 16 $dmenu_fmc)
 
-  if [ -n "$device" ]; then
+  if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
     device_id=$(echo "$device" | awk '{print $1}')
 

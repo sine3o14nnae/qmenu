@@ -598,7 +598,7 @@ fqvm_devices() (
      device=$(echo "$devices_list" |\
        dmenu -l 16 -p "$target_qube:" $dmenu_fmc)
 
-     if [ -n "$device" ]; then
+     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
        device_id=$(echo "$device" | awk '{print $1}')
 
@@ -710,7 +710,7 @@ fqvm_firewall() (
    rulenumber_selected=$(qvm-firewall $target_qube list |\
      dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-   if [ -n "$rulenumber_selected" ]; then
+   if [ "$(echo "$rulenumber_selected" | wc -w)" -eq 1 ]; then
 
      # This will equal "NO" if the user selects the top row,
      # instead of any existing rule.
@@ -933,19 +933,19 @@ fqvm_pci() (
      fi
    fi
 
-   device_selected=0
+   device=0
 
-   while [ -n "$device_selected" ]; do
+   while [ -n "$device" ]; do
 
-     device_selected=$(echo "$list_pci" |\
+     device=$(echo "$list_pci" |\
        dmenu -l 30 -p "$target_qube:" $dmenu_fmc)
 
-     if [ -n "$device_selected" ]; then
+     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1]; then
 
-       device_src=$(echo "$device_selected" | awk '{print $1}' | sed 's/:.*//')
-       device_bdf=$(echo "$device_selected" | awk '{print $1}' | sed 's/.*://')
+       device_src=$(echo "$device" | awk '{print $1}' | sed 's/:.*//')
+       device_bdf=$(echo "$device" | awk '{print $1}' | sed 's/.*://')
 
-       if echo "$device_selected" | grep -w "$target_qube"; then
+       if echo "$device" | grep -w "$target_qube"; then
 
          answer=$(printf "No\nYes" |\
            dmenu -i -p "Detach \"$device_bdf\" from $target_qube?" $dmenu_fmc)
