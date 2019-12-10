@@ -62,7 +62,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac

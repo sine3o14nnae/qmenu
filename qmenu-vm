@@ -1336,14 +1336,14 @@ fqvm_run() (
 
 fqvm_service() (
 
- service=0
+ services=0
 
- while [ -n "$service" ]; do
+ while [ -n "$services" ]; do
 
-   service=$(qvm-service "$target_qube" --list |\
+   services=$(qvm-service "$target_qube" --list |\
      dmenu -l 32 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-   if [ -n "$service" ]; then
+   if [ -n "$services" ]; then
 
      for service in $services; do
 
@@ -1490,7 +1490,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.0.0\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
@@ -1507,25 +1507,26 @@ while true; do
 
   # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.
-  while [ "$target_qube" != "NAME" ]; do
+  while [ "$target_qubes" != "NAME" ]; do
 
-    target_qube=$(echo "$qube_list" | dmenu -f -m 0 -l 69 \
+    target_qubes=$(echo "$qube_list" | dmenu -f -m 0 -l 69 \
       -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 |\
       awk '{print $1}')
 
-    if [ -z "$target_qube" ]; then exit 1
+    if [ -z "$target_qubes" ]; then exit 1; fi
 
-    elif [ "$target_qube" != "NAME" ]; then
+    for target_qube in $target_qubes; do
 
       if [ "$target_qube" = "dom0" ]; then
 
         fmenu_fqubes
-      else
+
+      elif [ "$target_qube" != "NAME" ]; then
 
         fmenu_fqvm
       fi
-    fi
+    done
   done
 
-  unset target_qube
+  unset target_qubes
 done
