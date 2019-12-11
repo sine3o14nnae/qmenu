@@ -671,7 +671,7 @@ fqvm_disk() (
 
  if [ -n "$volume" ]; then
 
-   current_storage=$(( $(qvm-volume info "$target_qube:$volume" size) / 1024/1024 ))
+   current_storage=$(( $(qvm-volume info "$target_qube:$volume" size) / 1048576 ))
 
    mebibyte=$(echo "$current_storage" |\
      dmenu -p "Enter the maximum size of $volume storage in MiB to be allocated to $target_qube"\
@@ -681,7 +681,7 @@ fqvm_disk() (
 
      if [ "$mebibyte" -gt "$current_storage" ]; then
 
-       byte=$(( mebibyte * 1024*1024 ))
+       byte=$(( mebibyte * 1048576 ))
 
        answer=$(printf "No\nYes" |\
          dmenu -i -p "Increase the maximum $volume storage size of $target_qube from $current_storage MiB to $mebibyte MiB?"\
