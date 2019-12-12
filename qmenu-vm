@@ -267,7 +267,7 @@ fqubes_preferences() (
        # List templatevms via 'qvm-ls'.
        value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
-         dmenu -l 50 -p "Select default template for");;
+         dmenu -l 50 -p "Select default template");;
 
      management_dispvm)
 
