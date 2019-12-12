@@ -124,7 +124,7 @@ fmenu_fqvm() (
 
        if [ "$answer" = "Yes" ]; then
 
-         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+         if qvm-check -q --running "$target_qube"; then
 
            $(qvm-shutdown --wait "$target_qube" && qvm-start "$target_qube")&
          fi
@@ -198,7 +198,7 @@ fqubes_preferences() (
          grep '|a.......$' | cut -d '|' -f1); do
 
          if qvm-prefs --get "$n" template_for_dispvms |\
-           grep True > /dev/null 2>&1; then
+           grep -q True; then
 
            LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
          fi
@@ -296,7 +296,7 @@ fqubes_preferences() (
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get "$n" template_for_dispvms |\
-             grep True > /dev/null 2>&1; then
+             grep -q True; then
 
              if [ -z "$LIST_OF_DISPTEMP" ]
 
@@ -325,13 +325,12 @@ fqubes_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         if ! qvm-check --running "$value_selected" > /dev/null 2>&1; then
+         if ! qvm-check -q --running "$value_selected"; then
 
            unset value_selected
 
            echo "Go back..." |\
-             dmenu -p "$value_selected needs to be running!"\
-              > /dev/null 2>&1
+             dmenu -p "$value_selected needs to be running!" > /dev/null 2>&1
          fi
        fi;;
 
@@ -376,7 +375,7 @@ fqvm_applications() (
 
          # Check validity of input.
          if qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
-           awk '{print $1}' | grep -w "$applications" > /dev/null 2>&1; then
+           awk '{print $1}' | grep -qw "$applications"; then
 
            printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
 
@@ -419,7 +418,7 @@ fqvm_applications() (
    # has quit the application selection.
    if [ -n "$applications_modified" ]; then
 
-     qvm-appmenus --update "$target_qube" > /dev/null 2>&1
+     qvm-appmenus -q --update "$target_qube"
 
      unset applications_modified
    fi
@@ -560,7 +559,7 @@ fqvm_create() (
 
 fqvm_devices() (
 
- if ! qvm-check --running "$target_qube" > /dev/null 2>&1; then
+ if ! qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be running, in order to attach devices to it"\
@@ -898,7 +897,7 @@ fqvm_logs() (
 
 fqvm_pci() (
 
- if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+ if qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to attach or detach PCI devices"\
@@ -907,7 +906,7 @@ fqvm_pci() (
 
    list_pci=$(qvm-pci)
 
-   if ! qvm-prefs --get "$target_qube" maxmem | grep -w 0 > /dev/null 2>&1; then
+   if ! qvm-prefs --get "$target_qube" maxmem | grep -qw 0; then
 
      answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
        dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $target_qube, some devices might not work!"\
@@ -920,7 +919,7 @@ fqvm_pci() (
    fi
 
    if qvm-prefs --get "$target_qube" virt_mode |\
-     grep -w pvh > /dev/null 2>&1; then
+     grep -qw pvh; then
 
      answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
        dmenu -l 2 -i -p "$target_qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
@@ -1040,7 +1039,7 @@ fqvm_preferences() (
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get "$n" template_for_dispvms |\
-             grep True > /dev/null 2>&1; then
+             grep -q True; then
 
              LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
            fi
@@ -1105,7 +1104,7 @@ fqvm_preferences() (
 
        label)
 
-         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+         if qvm-check -q --running "$target_qube"; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its label"\
@@ -1229,7 +1228,7 @@ fqvm_preferences() (
 
        template)
 
-         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+         if qvm-check -q --running "$target_qube"; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its template"\
@@ -1297,7 +1296,7 @@ fqvm_preferences() (
 
 fqvm_remove() {
 
- if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+ if qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to be removed"\
@@ -1497,7 +1496,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.1.5\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
