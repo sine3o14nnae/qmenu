@@ -9,8 +9,6 @@ dmenu() {
 
 get_qube_label() {
 
- theme_2=$theme_1
-
  qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
 
 # Change label colors according to ~/.config/qmenu.conf if that file exists.

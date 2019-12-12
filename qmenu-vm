@@ -14,7 +14,7 @@ fmenu_fqubes() (
  while [ -n "$chosefrom" ]; do
 
    chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
-     dmenu -l 3 -i -p "dom0:"  | awk '{print $1}')
+     dmenu -l 3 -i -p "dom0:" | awk '{print $1}')
 
    case $chosefrom in
 
@@ -44,7 +44,7 @@ fmenu_fqvm() (
  while [ -n "$chosefrom" ]; do
 
    chosefrom=$(printf "Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nTags\nUnpause\nUSB devices" |\
-     dmenu -l 22 -i -p "$target_qube:"  | awk '{print $1}')
+     dmenu -l 22 -i -p "$target_qube:" | awk '{print $1}')
 
    case $chosefrom in
 
