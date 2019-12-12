@@ -1,6 +1,15 @@
 #!/bin/sh
 
+dmenu() {
+
+ # Note that the '-m 0' option in 'dmenu' is important
+ # for security as it restricts it to monitor 0.
+ command dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
+}
+
 get_qube_label() {
+
+ theme_2=$theme_1
 
  qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
 
@@ -37,16 +46,12 @@ else
   theme_1='#ffffff'
 fi
 
-# Note that the '-m 0' option in 'dmenu' is important
-# for security as it restricts it to monitor 0.
-dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0"
-
 case $1 in
 
   --all)
 
     device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
-      dmenu -i -l 3 $dmenu_fmc | awk '{print $1}');;
+      dmenu -i -l 3 | awk '{print $1}');;
 
   --audio-input)
 
@@ -108,7 +113,7 @@ device=0
 
 while [ -n "$device" ]; do
 
-  device=$(echo "$devices_list" | dmenu -l 16 $dmenu_fmc)
+  device=$(echo "$devices_list" | dmenu -l 16)
 
   if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
@@ -123,22 +128,21 @@ while [ -n "$device" ]; do
     if [ -z "$target_qube" ]; then
 
       target_qube=$(echo "$qube_list" |\
-        sed '1d' | dmenu -p "attach to:" -l 32 $dmenu_fmc | awk '{print $1}')
+        sed '1d' | dmenu -p "attach to:" -l 32 | awk '{print $1}')
 
       if [ -n "$target_qube" ]; then
 
         get_qube_label
 
-        prompt=$(printf "No\nYes" |\
-          dmenu -i -p "Attach '$device_name' to $target_qube?"\
-          -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1)
+        prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
+          -p "Attach '$device_name' to $target_qube?")
 
         if [ "$prompt" = "Yes" ]; then
 
           if qvm-$device_type attach "$target_qube" "$device_id"; then exit 0; fi
 
           echo "Quit..." |\
-            dmenu -p "Failed to attach device!" $dmenu_fmc > /dev/null 2>&1
+            dmenu -p "Failed to attach device!" > /dev/null 2>&1
 
           exit 2
         fi
@@ -147,16 +151,15 @@ while [ -n "$device" ]; do
 
       get_qube_label
 
-      prompt=$(printf "No\nYes" |\
-        dmenu -i -p "Detach '$device_name' from $target_qube?"\
-        -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1)
+      prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
+        -p "Detach '$device_name' from $target_qube?")
 
       if [ "$prompt" = "Yes" ]; then
 
         if qvm-$device_type detach "$target_qube" "$device_id"; then exit 0; fi
 
         echo "Quit..." |\
-          dmenu -p "Failed to detach device!" $dmenu_fmc > /dev/null 2>&1
+          dmenu -p "Failed to detach device!" > /dev/null 2>&1
 
         exit 2
       fi
