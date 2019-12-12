@@ -130,7 +130,7 @@ while [ -n "$device" ]; do
         get_qube_label
 
         prompt=$(printf "No\nYes" |\
-          dmenu -i -p "Attach $device_name to $target_qube?"\
+          dmenu -i -p "Attach '$device_name' to $target_qube?"\
           -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1)
 
         if [ "$prompt" = "Yes" ]; then
@@ -148,7 +148,7 @@ while [ -n "$device" ]; do
       get_qube_label
 
       prompt=$(printf "No\nYes" |\
-        dmenu -i -p "Detach $device_name from $target_qube?"\
+        dmenu -i -p "Detach '$device_name' from $target_qube?"\
         -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1)
 
       if [ "$prompt" = "Yes" ]; then

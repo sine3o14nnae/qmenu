@@ -277,7 +277,7 @@ fqubes_preferences() (
 
      default_template)
 
-       # List templatevm's via 'qvm-ls'.
+       # List templatevms via 'qvm-ls'.
        value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
          dmenu -l 50 -p "Select default template for" $dmenu_fmc);;
@@ -493,7 +493,7 @@ fqvm_create() (
        QUBEARGS="$QUBEARGS -C $class"
      fi
 
-     # List templatevm's via 'qvm-ls'.
+     # List templatevms via 'qvm-ls'.
      template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
        grep '|t.......$' | cut -d '|' -f1)" |\
        dmenu -l 50 -p "Select template for $new_name" $dmenu_fmc)
@@ -611,7 +611,7 @@ fqvm_devices() (
        if [ -z "$holds_qube" ]; then
 
          answer=$(printf "No\nYes" |\
-           dmenu -i -p "Attach $device_name to $target_qube?"\
+           dmenu -i -p "Attach '$device_name' to $target_qube?"\
            $dmenu_fmc)
 
          if [ "$answer" = "Yes" ]; then
@@ -624,7 +624,7 @@ fqvm_devices() (
        elif [ "$holds_qube" = "$target_qube" ]; then
 
          answer=$(printf "No\nYes" |\
-           dmenu -i -p "Detach $device_name from $target_qube?"\
+           dmenu -i -p "Detach '$device_name' from $target_qube?"\
            $dmenu_fmc)
 
          if [ "$answer" = "Yes" ]; then
@@ -636,7 +636,7 @@ fqvm_devices() (
        else
 
          answer=$(printf "No\nYes" |\
-           dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
+           dmenu -i -p "Detach '$device_name' from $holds_qube and attach it to $target_qube?"\
            $dmenu_fmc)
 
          if [ "$answer" = "Yes" ]; then
@@ -838,8 +838,8 @@ fqvm_keyboard() (
 
  # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
  # so it is possible that the selected layout is missing inside the vm.
- # Getting the info from the vm itself however would have security implications
- # so we will not switch to use that method.
+ # Getting the info from the vm itself, however, would have security
+ # implication so we will not switch to use that method.
  LAYOUT=$(ls /usr/share/X11/xkb/symbols |\
    dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
 
@@ -1231,7 +1231,7 @@ fqvm_preferences() (
              $dmenu_fmc > /dev/null 2>&1
          else
 
-           # List templatevm's via 'qvm-ls'.
+           # List templatevms via 'qvm-ls'.
            value_selected=$(printf "(Default)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
              grep '|t.......$' | cut -d '|' -f1)" |\
              dmenu -l 50 -p "Select template for $target_qube" $dmenu_fmc)
