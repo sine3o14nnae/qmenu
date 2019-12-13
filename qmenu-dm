@@ -2,14 +2,14 @@
 
 dmenu() {
 
- # Note that the '-m 0' option in 'dmenu' is important
- # for security as it restricts it to monitor 0.
- command dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
+# Note that the '-m 0' option in 'dmenu' is important
+# for security as it restricts it to monitor 0.
+command dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
 }
 
 get_qube_label() {
 
- qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
+qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
 
 # Change label colors according to ~/.config/qmenu.conf if that file exists.
 if [ -f "$HOME/.config/qmenu.conf" ]; then
