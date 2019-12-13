@@ -210,7 +210,7 @@ while [ -n "$property" ]; do
 
         if [ "$answer_selected" != "Yes" ]; then
 
-          unset $value_selected
+          unset value_selected
         fi
       fi;;
 
