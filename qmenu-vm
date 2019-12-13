@@ -162,7 +162,7 @@ fqubes_preferences() (
  while [ -n "$property" ]; do
 
    property=$(qubes-prefs |\
-     dmenu -l 16 -p "Global preferences:"  | awk '{print $1}')
+     dmenu -l 16 -p "Global preferences:" | awk '{print $1}')
 
    case $property in
 
@@ -176,7 +176,7 @@ fqubes_preferences() (
        # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select new ClockVM");;
+         dmenu -l 50 -p "Select new ClockVM:");;
 
      default_dispvm)
 
@@ -193,7 +193,7 @@ fqubes_preferences() (
        done
 
        value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
-         dmenu -l 50 -p "Select default dispvm")
+         dmenu -l 50 -p "Select default dispvm:")
 
        if [ "$value_selected" = "(None)" ]; then
 
@@ -203,7 +203,7 @@ fqubes_preferences() (
      default_kernel)
 
        value_selected=$(true |\
-         dmenu -p "Enter the kernel that is to be used as default")
+         dmenu -p "Enter default kernel:")
 
        if [ -n "$value_selected" ]; then
 
@@ -221,53 +221,53 @@ fqubes_preferences() (
        # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select default netvm");;
+         dmenu -l 50 -p "Select default netvm:");;
 
      default_pool)
 
        value_selected=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 30 -p "Select default storage pool" | awk '{print $1}');;
+         dmenu -i -l 30 -p "Select default storage pool:" | awk '{print $1}');;
 
      default_pool_kernel)
 
        value_selected=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 30 -p "Select default storage pool for kernel volumes"\
+         dmenu -i -l 30 -p "Select default storage pool for kernel volumes:"\
           | awk '{print $1}');;
 
      default_pool_private)
 
        value_selected=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 30 -p "Select default storage pool for private volumes"\
+         dmenu -i -l 30 -p "Select default storage pool for private volumes:"\
           | awk '{print $1}');;
 
      default_pool_root)
 
        value_selected=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 30 -p "Select default storage pool for root volumes"\
+         dmenu -i -l 30 -p "Select default storage pool for root volumes:"\
           | awk '{print $1}');;
 
      default_pool_volatile)
 
        value_selected=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 30 -p "Select default storage pool for volatile volumes"\
+         dmenu -i -l 30 -p "Select default storage pool for volatile volumes:"\
           | awk '{print $1}');;
 
      default_qrexec_timeout)
 
        value_selected=$(qubes-prefs --get default_qrexec_timeout | dmenu\
-         -p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure");;
+         -p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure:");;
 
      default_shutdown_timeout)
 
        value_selected=$(qubes-prefs --get default_shutdown_timeout | dmenu\
-         -p "Enter the default time in seconds for vm shutdowns to complete");;
+         -p "Enter the default time in seconds for vm shutdowns to complete:");;
 
      default_template)
 
        # List templatevms via 'qvm-ls'.
        value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
-         dmenu -l 50 -p "Select default template");;
+         dmenu -l 50 -p "Select default template:");;
 
      management_dispvm)
 
@@ -289,19 +289,19 @@ fqubes_preferences() (
          done
 
          value_selected=$(printf "$LIST_OF_DISPTEMP" |\
-           dmenu -l 50 -p "Select management dispvm");;
+           dmenu -l 50 -p "Select management dispvm:");;
 
      stats_interval)
 
        value_selected=$(true |\
-         dmenu -p "Enter interval in seconds for VM stats reporting");;
+         dmenu -p "Enter interval in seconds for VM stats reporting:");;
 
      updatevm)
 
        # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select new UpdateVM")
+         dmenu -l 50 -p "Select new UpdateVM:")
 
        if [ -n "$value_selected" ]; then
 
@@ -406,7 +406,7 @@ fqvm_applications() (
 
 fqvm_clone() (
 
- clone_name=$(true | dmenu -p "Enter the name for the clone of $target_qube")
+ clone_name=$(true | dmenu -p "Enter the name for the clone of $target_qube:")
 
  if [ -n "$clone_name" ]; then
 
@@ -429,14 +429,14 @@ fqvm_clone() (
          if [ "$option_adv" = "Class" ]; then
 
            class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-             dmenu -i -l 4 -p "Choose a class for $clone_name")
+             dmenu -i -l 4 -p "Choose a class for $clone_name:")
 
            if [ -n "$pool" ]; then class="-C $class"; fi
 
          elif [ "$option_adv" = "Pool" ]; then
 
            pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
-             -p "Select a pool for $clone_name" | awk '{print $1}')
+             -p "Select a pool for $clone_name:" | awk '{print $1}')
 
            if [ -n "$pool" ]; then pool="-P $pool"; fi
          fi
@@ -459,14 +459,14 @@ fqvm_create() (
  if [ -n "$new_name" ]; then
 
    label=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
-     dmenu -i -l 8 -p "Select label for $new_name"  | awk '{print tolower($0)}')
+     dmenu -i -l 8 -p "Select label for $new_name:"  | awk '{print tolower($0)}')
 
    if [ -n "$label" ]; then
 
      QUBEARGS="-l $label"
 
      class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-       dmenu -i -l 4 -p "Choose a class for $new_name")
+       dmenu -i -l 4 -p "Choose a class for $new_name:")
 
      if [ -n "$class" ]; then
 
@@ -476,7 +476,7 @@ fqvm_create() (
      # List templatevms via 'qvm-ls'.
      template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
        grep '|t.......$' | cut -d '|' -f1)" |\
-       dmenu -l 50 -p "Select template for $new_name")
+       dmenu -l 50 -p "Select template for $new_name:")
 
      if [ "$template" != "(Default)" ] && [ "$template" != "(None)" ]; then
 
@@ -485,7 +485,7 @@ fqvm_create() (
 
      netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
        grep '|...N....$' | cut -d '|' -f1)" |\
-       dmenu -l 50 -p "Select netvm for $new_name")
+       dmenu -l 50 -p "Select netvm for $new_name:")
 
      if [ "$netvm" != "(Default)" ]; then
 
@@ -507,7 +507,7 @@ fqvm_create() (
      while [ -n "$option" ]; do
 
        option=$(printf "Create the new qube\nAdvanced options" |\
-         dmenu -i -l 2 -p "dom0:"  | awk '{print $1}')
+         dmenu -i -l 2 -p "dom0:" | awk '{print $1}')
 
        if [ "$option" = "Advanced" ]; then
 
@@ -516,7 +516,7 @@ fqvm_create() (
          if [ "$option_adv" = "Pool" ]; then
 
            pool=$(qvm-pool --list | sed '1d' |\
-             dmenu -i -l 10 -p "Select a pool for $new_name" | awk '{print $1}')
+             dmenu -i -l 10 -p "Select a pool for $new_name:" | awk '{print $1}')
 
            if [ -n "$pool" ]; then pool="-P $pool"; fi
          fi
@@ -537,7 +537,7 @@ fqvm_devices() (
  if ! qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." | dmenu\
-     -p "$target_qube needs to be running, in order to attach devices to it"\
+     -p "$target_qube needs to be running, in order to attach devices to it."\
      > /dev/null 2>&1
  else
 
@@ -662,7 +662,7 @@ fqvm_disk() (
    current_storage=$(( $(qvm-volume info "$target_qube:$volume" size) / 1048576 ))
 
    mebibyte=$(echo "$current_storage" | dmenu\
-     -p "Enter the maximum size of $volume storage in MiB to be allocated to $target_qube")
+     -p "Enter the maximum size of $volume storage in MiB to be allocated to $target_qube:")
 
    if [ -n "$mebibyte" ]; then
 
@@ -723,7 +723,7 @@ fqvm_firewall() (
        if [ -n "$RULEARGS" ]; then unset RULEARGS; fi
 
        action=$(printf "Accept\nDrop" |\
-         dmenu -i -l 2 -p "Select action for the new firewall rule" |\
+         dmenu -i -l 2 -p "Select action for the new firewall rule:" |\
          awk '{print tolower($0)}')
 
        if [ -n "$action" ]; then
@@ -854,7 +854,7 @@ fqvm_logs() (
 
    if [ -n "$entry" ]; then
 
-     log=$(dmenu -l 20 -p "$target_qube:"  < "$entry")
+     log=$(dmenu -l 20 -p "$target_qube:" < "$entry")
 
      if [ -n "$log" ]; then
 
@@ -871,7 +871,7 @@ fqvm_pci() (
  if qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." | dmenu\
-     -p "$target_qube needs to be powered off, in order to attach or detach PCI devices"\
+     -p "$target_qube needs to be powered off, in order to attach or detach PCI devices."\
      > /dev/null 2>&1
  else
 
@@ -898,7 +898,7 @@ fqvm_pci() (
      if [ "$answer_virtmode" = "Select" ]; then
 
        virtmode_selected=$(printf "HVM\nPV" |\
-         dmenu -l 2 -i -p "Select virtualisation mode for $target_qube")
+         dmenu -l 2 -i -p "Select virtualisation mode for $target_qube:")
 
        if [ -n "$virtmode_selected" ]; then
 
@@ -1012,7 +1012,7 @@ fqvm_preferences() (
          done
 
          value_selected=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
-           dmenu -l 50 -p "Select default dispvm for $target_qube")
+           dmenu -l 50 -p "Select default dispvm for $target_qube:")
 
          if [ "$value_selected" = "(None)" ]; then
 
@@ -1026,7 +1026,7 @@ fqvm_preferences() (
        default_user)
 
          value_selected=$(echo "--default" |\
-           dmenu -p "Enter the name of the default user for $target_qube");;
+           dmenu -p "Enter the name of the default user for $target_qube:");;
 
        include_in_backups)
 
@@ -1036,7 +1036,7 @@ fqvm_preferences() (
        kernel)
 
          value_selected=$(echo "--default" |\
-           dmenu -p "Enter kernel to be used by $target_qube")
+           dmenu -p "Enter the kernel to be used by $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1052,7 +1052,7 @@ fqvm_preferences() (
        kernelopts)
 
          value_selected=$(echo "--default" |\
-           dmenu -p "Enter kernel options for $target_qube")
+           dmenu -p "Enter the kernel options for $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1070,19 +1070,19 @@ fqvm_preferences() (
          if qvm-check -q --running "$target_qube"; then
 
            echo "Go back..." | dmenu\
-             -p "$target_qube needs to be powered off, in order to change its label"\
+             -p "$target_qube needs to be powered off, in order to change its label."\
              > /dev/null 2>&1
          else
 
            value_selected=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
-             dmenu -i -l 8 -p "Select label for $target_qube" |\
+             dmenu -i -l 8 -p "Select label for $target_qube:" |\
              awk '{print tolower($0)}')
          fi;;
 
        mac)
 
          value_selected=$(echo "--default" |\
-           dmenu -p "Enter new MAC address for $target_qube")
+           dmenu -p "Enter the MAC address for $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1114,7 +1114,7 @@ fqvm_preferences() (
        memory)
 
          value_selected=$(echo "--default" | dmenu\
-           -p "Enter the amount of initial memory in MB to be allocated to $target_qube")
+           -p "Enter the amount of initial memory in MB to be allocated to $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1132,7 +1132,7 @@ fqvm_preferences() (
          # List netvms via 'qvm-ls'.
          value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
            grep '|...N....$' | cut -d '|' -f1)" |\
-           dmenu -l 50 -p "Select netvm for $target_qube")
+           dmenu -l 50 -p "Select netvm for $target_qube:")
 
          if [ "$value_selected" = "(None)" ]; then
 
@@ -1146,12 +1146,12 @@ fqvm_preferences() (
        provides_network)
 
          value_selected=$(printf "False\nTrue" | dmenu -i\
-           -p "Should $target_qube provide networking for other qubes?");;
+           -p "Should $target_qube provide networking to other qubes?");;
 
        qrexec_timeout)
 
          value_selected=$(echo "--default" | dmenu\
-           -p "Enter the time in seconds, after which qrexec attempt is deemed a failure for $target_qube")
+           -p "Enter the time in seconds, after which qrexec attempt is deemed a failure for $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1167,7 +1167,7 @@ fqvm_preferences() (
        shutdown_timeout)
 
          value_selected=$(echo "--default" | dmenu\
-           -p "Enter the time in seconds for shutdown, after which $target_qube may be forcefully powered off")
+           -p "Enter the time in seconds for shutdown, after which $target_qube may be forcefully powered off:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1185,14 +1185,14 @@ fqvm_preferences() (
          if qvm-check -q --running "$target_qube"; then
 
            echo "Go back..." | dmenu\
-             -p "$target_qube needs to be powered off, in order to change its template"\
+             -p "$target_qube needs to be powered off, in order to change its template."\
              > /dev/null 2>&1
          else
 
            # List templatevms via 'qvm-ls'.
            value_selected=$(printf "(Default)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
              grep '|t.......$' | cut -d '|' -f1)" |\
-             dmenu -l 50 -p "Select template for $target_qube")
+             dmenu -l 50 -p "Select template for $target_qube:")
 
            if [ "$value_selected" = "(Default)" ]; then
 
@@ -1208,7 +1208,7 @@ fqvm_preferences() (
        vcpus)
 
          value_selected=$(echo "--default" | dmenu\
-           -p "Enter the number of CPU cores that should be made available to $target_qube")
+           -p "Enter the number of CPU cores that should be made available to $target_qube:")
 
          if [ -n "$value_selected" ]; then
 
@@ -1224,7 +1224,7 @@ fqvm_preferences() (
        virt_mode)
 
          value_selected=$(printf "PVH\nHVM\nPV" |\
-           dmenu -i -l 3 -p "Select virtualisation mode for $target_qube");;
+           dmenu -i -l 3 -p "Select virtualisation mode for $target_qube:");;
 
        *)
      esac
@@ -1249,12 +1249,12 @@ fqvm_remove() {
  if qvm-check -q --running "$target_qube"; then
 
    echo "Go back..." |\
-     dmenu -p "$target_qube needs to be powered off, in order to be removed"\
+     dmenu -p "$target_qube needs to be powered off, in order to be removed."\
       > /dev/null 2>&1
  else
 
    confirmation=$(true |\
-     dmenu -p "Enter the name of the qube '$target_qube' in order to remove it")
+     dmenu -p "Enter the name of the qube '$target_qube' in order to remove it:")
 
    if [ "$target_qube" = "$confirmation" ]; then
 
@@ -1291,7 +1291,7 @@ fqvm_service() (
  while [ -n "$services" ]; do
 
    services=$(qvm-service "$target_qube" --list |\
-     dmenu -l 32 -p "$target_qube:"  | awk '{print $1}')
+     dmenu -l 32 -p "$target_qube:" | awk '{print $1}')
 
    if [ -n "$services" ]; then
 
@@ -1305,7 +1305,7 @@ fqvm_service() (
        fi
 
        value=$(printf "Disable\nEnable$unset" |\
-         dmenu -l 3 -i -p "Select value for '$service'")
+         dmenu -l 3 -i -p "Select value for '$service':")
 
        if [ "$value" = "Disable" ]; then
 
@@ -1345,7 +1345,7 @@ fqvm_tags() (
  while [ -n "$tags" ]; do
 
    tags=$(qvm-tags "$target_qube" list |\
-     dmenu -l 15 -p "$target_qube:"  | awk '{print $1}')
+     dmenu -l 15 -p "$target_qube:" | awk '{print $1}')
 
    if [ -n "$tags" ]; then
 
