@@ -1277,9 +1277,14 @@ fi
 
 fqvm_run() (
 
-commandtr=$(true | dmenu -p "Run command in $target_qube:")
+commandtr=0
 
-if [ -n "$commandtr" ]; then qvm-run "$target_qube" "$commandtr"& fi
+while [ -n "$commandtr" ]; do
+
+  commandtr=$(true | dmenu -p "Run command in $target_qube:")
+
+  if [ -n "$commandtr" ]; then qvm-run "$target_qube" "$commandtr"& fi
+done
 )
 
 fqvm_service() (
