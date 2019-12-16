@@ -7,7 +7,7 @@ command dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
 
 get_qube_label() {
 
-qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
+qube_label=$(echo "$qube_list" | grep -w "$qube" | awk '{print $2}')
 
 # Change label colors according to ~/.config/qmenu.conf if that file exists.
 if [ -f "$HOME/.config/qmenu.conf" ]; then
@@ -118,24 +118,24 @@ while [ -n "$device" ]; do
     device_name=$(echo "$device" |\
       awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
-    target_qube=$(echo "$devices_list" | grep "$device_id" |\
+    qube=$(echo "$devices_list" | grep "$device_id" |\
        awk '{print $'$awk_targetqube'}')
 
-    if [ -z "$target_qube" ]; then
+    if [ -z "$qube" ]; then
 
-      target_qube=$(echo "$qube_list" |\
+      qube=$(echo "$qube_list" |\
         sed '1d' | dmenu -p "attach to:" -l 32 | awk '{print $1}')
 
-      if [ -n "$target_qube" ]; then
+      if [ -n "$qube" ]; then
 
         get_qube_label
 
         prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
-          -p "Attach '$device_name' to $target_qube?")
+          -p "Attach '$device_name' to $qube?")
 
         if [ "$prompt" = "Yes" ]; then
 
-          if qvm-$device_type attach -q "$target_qube" "$device_id"; then exit 0; fi
+          if qvm-$device_type attach -q "$qube" "$device_id"; then exit 0; fi
 
           echo "Quit..." |\
             dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
@@ -148,11 +148,11 @@ while [ -n "$device" ]; do
       get_qube_label
 
       prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
-        -p "Detach '$device_name' from $target_qube?")
+        -p "Detach '$device_name' from $qube?")
 
       if [ "$prompt" = "Yes" ]; then
 
-        if qvm-$device_type detach -q "$target_qube" "$device_id"; then exit 0; fi
+        if qvm-$device_type detach -q "$qube" "$device_id"; then exit 0; fi
 
         echo "Quit..." |\
           dmenu -p "Error: Could not detach device!" > /dev/null 2>&1
