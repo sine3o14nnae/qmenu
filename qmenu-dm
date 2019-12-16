@@ -9,10 +9,11 @@ get_qube_label() {
 
 qube_label=$(echo "$qube_list" | grep -w "$qube" | awk '{print $2}')
 
-# Change label colors according to ~/.config/qmenu.conf if that file exists.
-if [ -f "$HOME/.config/qmenu.conf" ]; then
+# Change label colors according to user input.
+if echo "$@" | grep -q "\--$qube_label"; then
 
-  qube_label=$(grep "^$qube_label=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
+  qube_label=$(echo "$@" | tr ' ' '\n' |\
+    grep -o "\--$qube_label.*" | cut -d= -f2)
 fi
 }
 
@@ -63,7 +64,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.2.6\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.0.0\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
@@ -128,7 +129,7 @@ while [ -n "$device" ]; do
 
       if [ -n "$qube" ]; then
 
-        get_qube_label
+        get_qube_label "$@"
 
         prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
           -p "Attach '$device_name' to $qube?")
@@ -145,7 +146,7 @@ while [ -n "$device" ]; do
       fi
     else
 
-      get_qube_label
+      get_qube_label "$@"
 
       prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
         -p "Detach '$device_name' from $qube?")

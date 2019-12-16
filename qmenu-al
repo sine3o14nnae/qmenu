@@ -37,12 +37,11 @@ case $1 in
 
       qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-      # Change label colors according to 
-      # ~/.config/qmenu.conf if that file exists.
-      if [ -f "$HOME/.config/qmenu.conf" ]; then
+      # Change label colors according to user input.
+      if echo "$@" | grep -q "\--$qube_label"; then
 
-        qube_label=$(grep "^$qube_label=" "$HOME"/.config/qmenu.conf |\
-          cut -d= -f2)
+        qube_label=$(echo "$@" | tr ' ' '\n' |\
+          grep -o "\--$qube_label.*" | cut -d= -f2)
       fi
 
       app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
@@ -67,7 +66,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v1.2.6\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v2.0.0\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac

@@ -35,7 +35,7 @@ done
 
 fmenu_fqvm() (
 
-get_qube_label
+get_qube_label "$@"
 
 chosefrom=0
 
@@ -1378,10 +1378,11 @@ theme_2=$theme_1
 
 qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-# Change label colors according to ~/.config/qmenu.conf if that file exists.
-if [ -f "$HOME/.config/qmenu.conf" ]; then
+# Change label colors according to user input.
+if echo "$@" | grep -q "\--$qube_label"; then
 
-  qube_label=$(grep "^$qube_label=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
+  qube_label=$(echo "$@" | tr ' ' '\n' |\
+    grep -o "\--$qube_label.*" | cut -d= -f2)
 fi
 }
 
@@ -1417,13 +1418,6 @@ fi
 
 case $1 in
 
-  --all)
-
-    # As of 20190823, 'qvm-ls --all' will not list dom0 because of a bug.
-    # As a workaround, we will 'shift' $1 and, if needed, $2.
-    shift
-    if [ -n "$1" ]; then shift; fi;;
-
   --focused)
 
     qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME |\
@@ -1436,16 +1430,16 @@ case $1 in
       fmenu_fqubes
     else
 
-      fmenu_fqvm
+      fmenu_fqvm "$@"
     fi
 
     exit 1;;
 
-  --halted|--paused|--running|--tags=*);;
+  --all|--halted|--paused|--running|--tags=*);;
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.2.6\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.0\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
@@ -1476,7 +1470,7 @@ while true; do
 
       elif [ "$qube" != "NAME" ]; then
 
-        fmenu_fqvm
+        fmenu_fqvm "$@"
       fi
     done
   done
