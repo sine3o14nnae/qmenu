@@ -8,22 +8,20 @@ from which they can quickly administer their qube
 preferences, firewall rules, applications, per-qube keyboard layouts, devices,
 etc. with only the keyboard.
 
-The colors that correspond to the qube label can be adjusted by creating a
-text file called `qmenu.conf` in `/home/user/.config/` with
-the following contents:
+The colors that correspond to a qube label can be adjusted by appending
+` --{LABEL}=#{HEX VALUE}`.
+
+Try the following example for visually appealing colors:
 
 ~~~
-[LABEL 1]=#[HEX TRIPLET]
-[LABEL 2]=#[HEX TRIPLET]
-...
-[LABEL 8]=#[HEX TRIPLET]
+ --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
 ~~~
 
 ### qmenu-al ###
 
 Launch domU applications.
 
-    Usage: qmenu-al [OPTION] (--light-theme)
+    Usage: qmenu-al [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...
 
      --all
      --focused
@@ -32,7 +30,7 @@ Launch domU applications.
 
 List and manage your connected devices.
 
-    Usage: qmenu-dm [OPTION] (--light-theme)
+    Usage: qmenu-dm [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...
 
      --all
      --audio-input
@@ -43,7 +41,7 @@ List and manage your connected devices.
 
 List, manage and configure your qubes.
 
-    Usage: qmenu-vm [OPTION] (--light-theme)
+    Usage: qmenu-vm [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...
 
      --all
      --focused
