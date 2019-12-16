@@ -174,7 +174,7 @@ while [ -n "$property" ]; do
       # List netvms via 'qvm-ls'.
       value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
         grep '|...N....$' | cut -d '|' -f1)" |\
-        dmenu -l 50 -p "Select new ClockVM:");;
+        dmenu -l 50 -p "Select ClockVM:");;
 
     default_dispvm)
 
@@ -299,7 +299,7 @@ while [ -n "$property" ]; do
       # List netvms via 'qvm-ls'.
       value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
         grep '|...N....$' | cut -d '|' -f1)" |\
-        dmenu -l 50 -p "Select new UpdateVM:")
+        dmenu -l 50 -p "Select UpdateVM:")
 
       if [ -n "$value_selected" ]; then
 
