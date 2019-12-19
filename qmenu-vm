@@ -408,9 +408,9 @@ while [ -n "$option" ]; do
 
           # Look up linenumber above $application in
           # /whitelisted-appmenus.list and delete whitespace.
-          whitespace=$(grep -B1 -wn "$application" <\
+          whitespace=$(grep -wn1 "$application" <\
             "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list |\
-            cut -c 1 | sed 2d)
+            sed '1q;d' | cut -d- -f1)
 
           sed -i "${whitespace}{/^$/d;}" "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
           sed -i "/$application/d" "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
