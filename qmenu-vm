@@ -260,25 +260,25 @@ while [ -n "$property" ]; do
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for kernel volumes:"\
-         | awk '{print $1}');;
+        | awk '{print $1}');;
 
     default_pool_private)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for private volumes:"\
-         | awk '{print $1}');;
+        | awk '{print $1}');;
 
     default_pool_root)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for root volumes:"\
-         | awk '{print $1}');;
+        | awk '{print $1}');;
 
     default_pool_volatile)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for volatile volumes:"\
-         | awk '{print $1}');;
+        | awk '{print $1}');;
 
     default_qrexec_timeout)
 
@@ -351,7 +351,7 @@ while [ -n "$property" ]; do
 
       echo "Go back..." |\
         dmenu -p "Error: Could not set $property to '$value_selected'!"\
-         > /dev/null 2>&1
+        > /dev/null 2>&1
     fi
 
     unset value_selected
@@ -564,13 +564,12 @@ fqvm_devices() (
 
 if ! qvm-check -q --running "$qube"; then
 
-  echo "Go back..." | dmenu\
-    -p "$qube needs to be running, in order to attach devices to it."\
+  echo "Go back..." |\
+    dmenu -p "$qube needs to be running, in order to attach devices to it."\
     > /dev/null 2>&1
 else
 
-  # Depending on the device type, we have to 
-  # 'awk' different fields later on.
+  # Depending on the device type, we have to 'awk' different fields later on.
   if [ "$chosefrom" = "Audio" ]; then
 
     device_type="device mic"
@@ -626,7 +625,7 @@ else
           if ! qvm-$device_type attach -q "$qube" "$device_id"; then
 
            echo "Go back..." | dmenu -p "Error: Could not attach device!"\
-            > /dev/null 2>&1
+             > /dev/null 2>&1
           fi
         fi
 
@@ -642,7 +641,7 @@ else
           if ! qvm-$device_type detach -q "$holds_qube" "$device_id"; then
 
             echo "Go back..." | dmenu -p "Error: Could not detach device!"\
-             > /dev/null 2>&1
+              > /dev/null 2>&1
           fi
         fi
       else
@@ -679,7 +678,7 @@ if [ "$qube_class" = "t" ] ||\
    [ "$qube_class" = "S" ]; then
 
   volume=$(printf "Root\nPrivate" |\
-    dmenu -l 2 -i -p "$qube:"  | awk '{print tolower($0)}')
+    dmenu -l 2 -i -p "$qube:" | awk '{print tolower($0)}')
 else
 
   volume="private"
@@ -730,7 +729,7 @@ while [ -n "$rulenumber_selected" ]; do
     if [ "$rulenumber_selected" != "NO" ]; then
 
       option=$(printf "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
-        dmenu -i -l 2 -p "$qube:"  | awk '{print $1}')
+        dmenu -i -l 2 -p "$qube:" | awk '{print $1}')
     else
 
       option="Add"
@@ -927,7 +926,7 @@ else
 
             echo "Go back..." | dmenu\
               -p "Error: Failed to detach \"$device_bdf\" from $qube!"\
-               > /dev/null 2>&1
+              > /dev/null 2>&1
           fi
 
           list_pci=$(qvm-pci)
@@ -979,7 +978,7 @@ property=0
 while [ -n "$property" ]; do
 
   property=$(qvm-prefs "$qube" |\
-    dmenu -l 45 -p "$qube:"  | awk '{print $1}')
+    dmenu -l 45 -p "$qube:" | awk '{print $1}')
 
   if [ -n "$property" ]; then
 
@@ -1089,7 +1088,7 @@ while [ -n "$property" ]; do
 
           if [ "$answer_selected" != "Yes" ]; then
 
-            unset value_selected 
+            unset value_selected
           fi
         fi;;
 
@@ -1420,8 +1419,7 @@ case $1 in
 
   --focused)
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME |\
-      cut -d\" -f2)
+    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -d\" -f2)
 
     if [ -z "$qube" ]; then
 
@@ -1439,7 +1437,7 @@ case $1 in
 
   *)
 
-      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.0\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.1\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac

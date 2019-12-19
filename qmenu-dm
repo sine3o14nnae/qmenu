@@ -64,13 +64,12 @@ case $1 in
 
   *)
 
-      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.0.0\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.0.1\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
 
-# Depending on the device type, we have to
-# 'awk' different fields later on.
+# Depending on the device type, we have to 'awk' different fields later on.
 if [ "$device_type" = "Audio" ]; then
 
   device_type="device mic"
@@ -120,7 +119,7 @@ while [ -n "$device" ]; do
       awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
     qube=$(echo "$devices_list" | grep "$device_id" |\
-       awk '{print $'$awk_targetqube'}')
+      awk '{print $'$awk_targetqube'}')
 
     if [ -z "$qube" ]; then
 
