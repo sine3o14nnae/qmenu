@@ -5,7 +5,7 @@ dmenu() {
 command dmenu -f -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_2 "$@"
 }
 
-fmenu_fqubes() (
+fmenu_dom0() (
 
 chosefrom=0
 
@@ -33,7 +33,7 @@ while [ -n "$chosefrom" ]; do
 done
 )
 
-fmenu_fqvm() (
+fmenu_domu() (
 
 get_qube_label "$@"
 
@@ -48,15 +48,15 @@ while [ -n "$chosefrom" ]; do
 
     Applications)
 
-      fqvm_applications;;
+      fqvm_appmenus;;
 
     Audio)
 
-      fqvm_devices;;
+      fqvm_device;;
 
     Block)
 
-      fqvm_devices;;
+      fqvm_device;;
 
     Boot)
 
@@ -76,7 +76,7 @@ while [ -n "$chosefrom" ]; do
 
     Disk)
 
-      fqvm_disk;;
+      fqvm_volume;;
 
     Firewall)
 
@@ -84,7 +84,7 @@ while [ -n "$chosefrom" ]; do
 
     Keyboard)
 
-      fqvm_keyboard;;
+      fq_keyboard;;
 
     Kill)
 
@@ -146,11 +146,36 @@ while [ -n "$chosefrom" ]; do
 
     USB)
 
-      fqvm_devices;;
+      fqvm_device;;
 
     *)
   esac
 done
+)
+
+fq_keyboard() (
+
+# 'qmenu-vm' does not get informed about the available layouts by the vm itself
+# so it is possible that the selected layout is missing inside the vm.
+# Getting the info from the vm itself, however, would have security
+# implication so we will not switch to use that method.
+LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:")
+
+if [ -n "$LAYOUT" ]; then
+
+  if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
+
+    LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/"$LAYOUT" |\
+      dmenu -l 50 -p "$qube:")
+  fi
+
+  if ! qvm-run "$qube" "setxkbmap $LAYOUT"; then
+
+    echo "Go back..." | dmenu\
+      -p "Error: Could not set keyboard layout to '$LAYOUT' in $qube! Please check the available layouts inside the qube itself."\
+      > /dev/null 2>&1
+  fi
+fi
 )
 
 fq_logs() (
@@ -359,7 +384,7 @@ while [ -n "$property" ]; do
 done
 )
 
-fqvm_applications() (
+fqvm_appmenus() (
 
 option=0
 
@@ -560,7 +585,7 @@ if [ -n "$new_name" ]; then
 fi
 )
 
-fqvm_devices() (
+fqvm_device() (
 
 if ! qvm-check -q --running "$qube"; then
 
@@ -665,51 +690,6 @@ else
       fi
     fi
   done
-fi
-)
-
-fqvm_disk() (
-
-qube_class=$(qvm-ls --raw-data -O flags "$qube" | cut -c 1)
-
-# If $qube is template or standalone, give option to extend root storage.
-if [ "$qube_class" = "t" ] ||\
-   [ "$qube_class" = "s" ] ||\
-   [ "$qube_class" = "S" ]; then
-
-  volume=$(printf "Root\nPrivate" |\
-    dmenu -l 2 -i -p "$qube:" | awk '{print tolower($0)}')
-else
-
-  volume="private"
-fi
-
-if [ -n "$volume" ]; then
-
-  current_storage=$(( $(qvm-volume info "$qube:$volume" size) / 1048576 ))
-
-  mebibyte=$(echo "$current_storage" | dmenu\
-    -p "Enter the maximum size of $volume storage in MiB to be allocated to $qube:")
-
-  if [ -n "$mebibyte" ]; then
-
-    if [ "$mebibyte" -gt "$current_storage" ]; then
-
-      byte=$(( mebibyte * 1048576 ))
-
-      answer=$(printf "No\nYes" | dmenu -i\
-        -p "Increase the maximum $volume storage size of $qube from $current_storage MiB to $mebibyte MiB?")
-
-      if [ "$answer" = "Yes" ]; then
-
-        qvm-volume extend "$qube:$volume" "$byte"&
-      fi
-    else
-
-      echo "Go back..." | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
-        > /dev/null 2>&1
-    fi
-  fi
 fi
 )
 
@@ -836,31 +816,6 @@ while [ -n "$rulenumber_selected" ]; do
     fi
   fi
 done
-)
-
-fqvm_keyboard() (
-
-# 'qmenu-vm' does not get informed about the installed layouts by the vm itself
-# so it is possible that the selected layout is missing inside the vm.
-# Getting the info from the vm itself, however, would have security
-# implication so we will not switch to use that method.
-LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:")
-
-if [ -n "$LAYOUT" ]; then
-
-  if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
-
-    LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/"$LAYOUT" |\
-      dmenu -l 50 -p "$qube:")
-  fi
-
-  if ! qvm-run "$qube" "setxkbmap $LAYOUT"; then
-
-    echo "Go back..." | dmenu\
-      -p "Error: Could not set keyboard layout to '$LAYOUT' in $qube! Please check the installed layouts inside the qube itself."\
-      > /dev/null 2>&1
-  fi
-fi
 )
 
 fqvm_pci() (
@@ -1371,6 +1326,51 @@ while [ -n "$tags" ]; do
 done
 )
 
+fqvm_volume() (
+
+qube_class=$(qvm-ls --raw-data -O flags "$qube" | cut -c 1)
+
+# If $qube is template or standalone, give option to extend root storage.
+if [ "$qube_class" = "t" ] ||\
+   [ "$qube_class" = "s" ] ||\
+   [ "$qube_class" = "S" ]; then
+
+  volume=$(printf "Root\nPrivate" |\
+    dmenu -l 2 -i -p "$qube:" | awk '{print tolower($0)}')
+else
+
+  volume="private"
+fi
+
+if [ -n "$volume" ]; then
+
+  current_storage=$(( $(qvm-volume info "$qube:$volume" size) / 1048576 ))
+
+  mebibyte=$(echo "$current_storage" | dmenu\
+    -p "Enter the maximum size of $volume storage in MiB to be allocated to $qube:")
+
+  if [ -n "$mebibyte" ]; then
+
+    if [ "$mebibyte" -gt "$current_storage" ]; then
+
+      byte=$(( mebibyte * 1048576 ))
+
+      answer=$(printf "No\nYes" | dmenu -i\
+        -p "Increase the maximum $volume storage size of $qube from $current_storage MiB to $mebibyte MiB?")
+
+      if [ "$answer" = "Yes" ]; then
+
+        qvm-volume extend "$qube:$volume" "$byte"&
+      fi
+    else
+
+      echo "Go back..." | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
+        > /dev/null 2>&1
+    fi
+  fi
+fi
+)
+
 get_qube_label() {
 
 theme_2=$theme_1
@@ -1425,10 +1425,10 @@ case $1 in
 
       qube=dom0
 
-      fmenu_fqubes
+      fmenu_dom0
     else
 
-      fmenu_fqvm "$@"
+      fmenu_domu "$@"
     fi
 
     exit 1;;
@@ -1464,11 +1464,11 @@ while true; do
 
       if [ "$qube" = "dom0" ]; then
 
-        fmenu_fqubes
+        fmenu_dom0
 
       elif [ "$qube" != "NAME" ]; then
 
-        fmenu_fqvm "$@"
+        fmenu_domu "$@"
       fi
     done
   done
