@@ -484,7 +484,7 @@ if [ -n "$clone_name" ]; then
           class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
             dmenu -i -l 4 -p "Choose a class for $clone_name:")
 
-          if [ -n "$pool" ]; then class="-C $class"; fi
+          if [ -n "$class" ]; then class="-C $class"; fi
 
         elif [ "$option_adv" = "Pool" ]; then
 
