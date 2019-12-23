@@ -22,7 +22,7 @@ while [ -n "$chosefrom" ]; do
 
     Global)
 
-      fqubes_preferences;;
+      fqubes_prefs;;
 
     Logs)
 
@@ -108,7 +108,7 @@ while [ -n "$chosefrom" ]; do
 
     Preferences)
 
-      fqvm_preferences;;
+      fqvm_prefs;;
 
     Reboot)
 
@@ -208,7 +208,7 @@ while [ -n "$entry" ]; do
 done
 )
 
-fqubes_preferences() (
+fqubes_prefs() (
 
 property=0
 
@@ -926,7 +926,7 @@ else
 fi
 )
 
-fqvm_preferences() (
+fqvm_prefs() (
 
 property=0
 
@@ -1075,7 +1075,7 @@ while [ -n "$property" ]; do
 
           if [ "$answer_selected" != "Yes" ]; then
 
-            unset answer_selected
+            unset value_selected
           fi
         fi;;
 
@@ -1437,7 +1437,7 @@ case $1 in
 
   *)
 
-      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.1\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.3\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
