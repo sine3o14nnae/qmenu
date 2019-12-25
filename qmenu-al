@@ -30,7 +30,8 @@ case $1 in
 
   --focused)
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
+    qube=$(xprop -id "$(xdotool getwindowfocus)" |\
+      grep "^_QUBES_VMNAME" | cut -f2 -d\")
 
     if [ -n "$qube" ]; then
 
