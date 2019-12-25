@@ -12,17 +12,16 @@ case $1 in
 
   --all)
 
-    app_list=$(cat "$HOME"/.local/share/applications/*.desktop |\
-      grep '^Name=.*\|^Exec=.*' | grep -vw 'Qube Settings\|qubes-vm-settings')
+    app_list=$(grep '^Name=.*\|^Exec=.*'\
+      "$HOME"/.local/share/applications/*.desktop)
 
-
-    chosen=$(echo "$app_list" | grep '^Name=.*' | cut -c 6- |\
+    chosen=$(echo "$app_list" | grep 'Name=.*' | cut -d= -f2- |\
       dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
 
     if [ -n "$chosen" ]; then
 
-      if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-        sed 1d | cut -c 6-); then exit 2; fi
+      if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep -w "$chosen" |\
+        cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
 
       exit 0
     fi
@@ -44,16 +43,16 @@ case $1 in
           grep -o "\--$qube_label.*" | cut -d= -f2)
       fi
 
-      app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
-        grep '^Name=.*\|^Exec=.*' | grep -vw 'Qube Settings\|qubes-vm-settings')
+      app_list=$(grep '^Name=.*\|^Exec=.*'\
+        "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
-      chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2- -d: |\
+      chosen=$(echo "$app_list" | grep 'Name=.*' | cut -f3- -d: |\
         dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
 
       if [ -n "$chosen" ]; then
 
-        if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-          sed 1d | cut -c 6-); then exit 2; fi
+        if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep -w "$chosen" |\
+        cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
 
         exit 0
       fi
@@ -65,7 +64,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v2.0.3\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+      printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v2.1.3\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
