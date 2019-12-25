@@ -9,7 +9,7 @@ preferences, firewall rules, applications, per-qube keyboard layouts, devices,
 etc. with only the keyboard.
 
 The colors that correspond to a qube label can be adjusted by appending
-` --{LABEL}=#{HEX VALUE}`.
+` --{LABEL}=#{HEX VALUE}` for any label.
 
 Try the following example for visually appealing colors:
 
@@ -19,7 +19,7 @@ Try the following example for visually appealing colors:
 
 ### qmenu-al ###
 
-Launch domU applications.
+Launch domU and dom0 applications.
 
     Usage: qmenu-al [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...
 
@@ -48,6 +48,7 @@ List, manage and configure your qubes.
      --halted
      --paused
      --running
+     --qube=[QUBE]
      --tags=[TAG]
 
 Installation
@@ -57,9 +58,9 @@ Installation
 
     [user@dom0 ~]$ qvm-run --pass-io dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX
 
-    [user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/bin/
+    [user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/local/bin/
 
-    [user@dom0 ~]$ sudo chmod 755 /usr/bin/qmenu-XX
+    [user@dom0 ~]$ sudo chmod 755 /usr/local/bin/qmenu-XX
 
 See [here](https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/qmenu.md)
 for detailed instructions.
