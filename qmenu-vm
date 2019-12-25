@@ -1434,11 +1434,25 @@ case $1 in
 
     exit 1;;
 
+  --qube=*)
+
+    qube=$(echo "$1" | cut -d= -f2)
+
+    if [ "$qube" = "dom0" ]; then
+
+      fmenu_dom0
+    else
+
+      fmenu_domu "$@"
+    fi
+
+    exit 1;;
+
   --all|--halted|--paused|--running|--tags=*);;
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v2.0.3\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.2.4\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
