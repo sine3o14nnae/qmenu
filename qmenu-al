@@ -21,7 +21,7 @@ case $1 in
 
     if [ -n "$chosen" ]; then
 
-      if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep -w "$chosen" |\
+      if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "=$chosen$" |\
         cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
 
       exit 0
@@ -53,7 +53,7 @@ case $1 in
 
       if [ -n "$chosen" ]; then
 
-        if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep -w "$chosen" |\
+        if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "=$chosen$" |\
         cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
 
         exit 0
