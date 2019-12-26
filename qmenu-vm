@@ -1381,7 +1381,7 @@ qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 if echo "$@" | grep -q "\--$qube_label"; then
 
   qube_label=$(echo "$@" | tr ' ' '\n' |\
-    grep -o "\--$qube_label.*" | cut -d= -f2)
+    grep "\--$qube_label.*" | cut -d= -f2)
 fi
 }
 

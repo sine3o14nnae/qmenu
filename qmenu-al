@@ -42,7 +42,7 @@ case $1 in
       if echo "$@" | grep -q "\--$qube_label"; then
 
         qube_label=$(echo "$@" | tr ' ' '\n' |\
-          grep -o "\--$qube_label.*" | cut -d= -f2)
+          grep "\--$qube_label.*" | cut -d= -f2)
       fi
 
       app_list=$(grep '^Name=.*\|^Exec=.*'\

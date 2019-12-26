@@ -13,7 +13,7 @@ qube_label=$(echo "$qube_list" | grep -w "$qube" | awk '{print $2}')
 if echo "$@" | grep -q "\--$qube_label"; then
 
   qube_label=$(echo "$@" | tr ' ' '\n' |\
-    grep -o "\--$qube_label.*" | cut -d= -f2)
+    grep "\--$qube_label.*" | cut -d= -f2)
 fi
 }
 
