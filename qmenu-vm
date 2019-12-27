@@ -838,7 +838,7 @@ else
 
   list_pci=$(qvm-pci)
 
-  if ! qvm-prefs --get "$qube" maxmem | grep -qw 0; then
+  if ! qvm-prefs --get "$qube" maxmem | grep -q ^0; then
 
     answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
       dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
@@ -850,7 +850,7 @@ else
     fi
   fi
 
-  if qvm-prefs --get "$qube" virt_mode | grep -qw pvh; then
+  if qvm-prefs --get "$qube" virt_mode | grep -q ^pvh; then
 
     answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
       dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
@@ -879,7 +879,7 @@ else
       device_src=$(echo "$device" | awk '{print $1}' | sed 's/:.*//')
       device_bdf=$(echo "$device" | awk '{print $1}' | sed 's/.*://')
 
-      if echo "$device" | grep -qw "$qube"; then
+      if echo "$device" | grep -q " $qube "; then
 
         answer=$(printf "No\nYes" |\
           dmenu -i -p "Detach \"$device_bdf\" from $qube?")
