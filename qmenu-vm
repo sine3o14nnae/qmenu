@@ -1385,18 +1385,6 @@ if echo "$@" | grep -q "\--$qube_label"; then
 fi
 }
 
-rearrange_qube_list() {
-
-qube_list=$(echo "$qube_list" |\
-  awk -v ListInOrder="LABEL,purple,blue,gray,green,yellow,orange,red,black" '
-  BEGIN {
-  split(ListInOrder, a, ",")
-  for (i = 1; i <= length(a); ++i) ListToOrdinal[a[i]] = i
-  }
-  {print ListToOrdinal[$3] "-" $0}
-  ' | sort -t- -k1,1n | cut -d- -f2-)
-}
-
 
 
 
@@ -1452,7 +1440,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.2.4\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX VALUE})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.3.6\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
@@ -1461,11 +1449,13 @@ while true; do
 
   # Load 'qvm-ls' into a variable so that it doesnt
   # need to reload again after every user operation.
+  # Sort qubes after qube label via sed and sort.
   qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
 ,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
-,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS)
-
-  rearrange_qube_list
+,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS |\
+  sed 's/ LABEL/ 0\@ /g; s/ purple/ 1\@ /g; s/ blue/ 2\@ /g; s/ gray/ 3\@ /g; s/ green/ 4\@ /g; s/ yellow/ 5\@ /g; s/ orange/ 6\@ /g; s/ red/ 7\@ /g; s/ black/ 8\@ /g' |\
+  sort -k3 |\
+  sed 's/ 0\@ / LABEL/g; s/ 1\@ / purple/g; s/ 2\@ / blue/g; s/ 3\@ / gray/g; s/ 4\@ / green/g; s/ 5\@ / yellow/g; s/ 6\@ / orange/g; s/ 7\@ / red/g; s/ 8\@ / black/g')
 
   # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.
