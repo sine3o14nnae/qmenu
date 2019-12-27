@@ -400,14 +400,14 @@ while [ -n "$option" ]; do
 
       # Only show applications that arent already selected for $qube via 'grep -v'.
       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
-        grep -vw "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
-        dmenu -l 50 -p "$qube:"  | awk '{print $1}')
+        grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
+        dmenu -l 50 -p "$qube:" | awk '{print $1}')
 
       if [ -n "$applications" ]; then
 
         # Check validity of input.
         if qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
-          awk '{print $1}' | grep -qw "$applications"; then
+          awk '{print $1}' | grep -q "^$applications$"; then
 
           printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
 
@@ -424,7 +424,7 @@ while [ -n "$option" ]; do
 
       # Show complete application and .desktop names via 'grep'.
       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
-        grep -w "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
+        grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
         dmenu -l 50 -p "$qube:"  | awk '{print $1}')
 
       if [ -n "$applications" ]; then
@@ -433,7 +433,7 @@ while [ -n "$option" ]; do
 
           # Look up linenumber above $application in
           # /whitelisted-appmenus.list and delete whitespace.
-          whitespace=$(grep -wn1 "$application" <\
+          whitespace=$(grep -n1 "^$application$" <\
             "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list |\
             sed '1q;d' | cut -d- -f1)
 
@@ -1256,7 +1256,7 @@ while [ -n "$services" ]; do
 
       # If the service has already been added to the list,
       # give option to unset it.
-      if qvm-service "$qube" --list | grep -w "$service"; then
+      if qvm-service "$qube" --list | grep -q "^$service "; then
 
          unset="\nUnset"
       fi
@@ -1308,7 +1308,7 @@ while [ -n "$tags" ]; do
 
     for tag in $tags; do
 
-      if qvm-tags "$qube" list | grep -w "$tag"; then
+      if qvm-tags "$qube" list | grep -q "^$tag$"; then
 
         answer=$(printf "No\nYes" |\
           dmenu -i -p "Remove tag '$tag' from $qube?")

@@ -7,7 +7,7 @@ command dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
 
 get_qube_label() {
 
-qube_label=$(echo "$qube_list" | grep -w "$qube" | awk '{print $2}')
+qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
 # Change label colors according to user input.
 if echo "$@" | grep -q "\--$qube_label"; then
