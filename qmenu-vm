@@ -35,7 +35,16 @@ done
 
 fmenu_domu() (
 
-get_qube_label "$@"
+theme_2=$theme_1
+
+qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
+
+# Change label colors according to user input.
+if echo "$@" | grep -q "\--$qube_label"; then
+
+  qube_label=$(echo "$@" | tr ' ' '\n' |\
+    grep "\--$qube_label.*" | cut -d= -f2)
+fi
 
 chosefrom=0
 
@@ -1370,20 +1379,6 @@ if [ -n "$volume" ]; then
   fi
 fi
 )
-
-get_qube_label() {
-
-theme_2=$theme_1
-
-qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
-
-# Change label colors according to user input.
-if echo "$@" | grep -q "\--$qube_label"; then
-
-  qube_label=$(echo "$@" | tr ' ' '\n' |\
-    grep "\--$qube_label.*" | cut -d= -f2)
-fi
-}
 
 
 
