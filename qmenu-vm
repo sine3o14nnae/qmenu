@@ -850,7 +850,7 @@ else
     fi
   fi
 
-  if qvm-prefs --get "$qube" virt_mode | grep -q ^pvh; then
+  if qvm-prefs --get "$qube" virt_mode | grep -q pvh; then
 
     answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
       dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
@@ -1403,7 +1403,7 @@ case $1 in
   --focused)
 
     qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep "^_QUBES_VMNAME" | cut -d\" -f2)
+      grep ^_QUBES_VMNAME | cut -d\" -f2)
 
     if [ -z "$qube" ]; then
 
@@ -1437,7 +1437,7 @@ case $1 in
 
     printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.3.6\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
-    if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
+    if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
 
 while true; do
@@ -1445,12 +1445,10 @@ while true; do
   # Load 'qvm-ls' into a variable so that it doesnt
   # need to reload again after every user operation.
   # Sort qubes after qube label via sed and sort.
-  qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
-,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
-,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS |\
-  sed 's/ LABEL/ 0\@ /g; s/ purple/ 1\@ /g; s/ blue/ 2\@ /g; s/ gray/ 3\@ /g; s/ green/ 4\@ /g; s/ yellow/ 5\@ /g; s/ orange/ 6\@ /g; s/ red/ 7\@ /g; s/ black/ 8\@ /g' |\
-  sort -k3 |\
-  sed 's/ 0\@ / LABEL/g; s/ 1\@ / purple/g; s/ 2\@ / blue/g; s/ 3\@ / gray/g; s/ 4\@ / green/g; s/ 5\@ / yellow/g; s/ 6\@ / orange/g; s/ 7\@ / red/g; s/ 8\@ / black/g')
+  qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS |\
+    sed 's/ LABEL/ 0\@ /g; s/ purple/ 1\@ /g; s/ blue/ 2\@ /g; s/ gray/ 3\@ /g; s/ green/ 4\@ /g; s/ yellow/ 5\@ /g; s/ orange/ 6\@ /g; s/ red/ 7\@ /g; s/ black/ 8\@ /g' |\
+    sort -k3 |\
+    sed 's/ 0\@ / LABEL/g; s/ 1\@ / purple/g; s/ 2\@ / blue/g; s/ 3\@ / gray/g; s/ 4\@ / green/g; s/ 5\@ / yellow/g; s/ 6\@ / orange/g; s/ 7\@ / red/g; s/ 8\@ / black/g')
 
   # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.

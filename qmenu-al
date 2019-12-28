@@ -32,7 +32,7 @@ case $1 in
   --focused)
 
     qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep "^_QUBES_VMNAME" | cut -f2 -d\")
+      grep ^_QUBES_VMNAM | cut -f2 -d\")
 
     if [ -n "$qube" ]; then
 
@@ -68,5 +68,5 @@ case $1 in
 
     printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications.\n\n --all\n --focused\n\n\nqmenu v2.3.6\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
-    if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
+    if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
