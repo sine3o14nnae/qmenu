@@ -1240,14 +1240,28 @@ fi
 
 fqvm_run() (
 
-commandtr=0
+user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:")
 
-while [ -n "$commandtr" ]; do
+if [ -n "$user" ]; then
 
-  commandtr=$(true | dmenu -p "Run command in $qube:")
+  if [ "$user" = "Root" ]; then
 
-  if [ -n "$commandtr" ]; then qvm-run "$qube" "$commandtr"& fi
-done
+    as_root="-u root"
+    user='#'
+  else
+
+    user='$'
+  fi
+
+  commandtr=0
+
+  while [ -n "$commandtr" ]; do
+
+      commandtr=$(true | dmenu -p "($user)Run command in $qube:")
+
+    if [ -n "$commandtr" ]; then qvm-run -q $as_root "$qube" "$commandtr"& fi
+  done
+fi
 )
 
 fqvm_service() (
