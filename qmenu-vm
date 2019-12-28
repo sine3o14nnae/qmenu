@@ -1395,10 +1395,9 @@ case $1 in
 
   --focused)
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep ^_QUBES_VMNAME | cut -d\" -f2)
+    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -d\" -f2)
 
-    if [ -z "$qube" ]; then
+    if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then
 
       qube=dom0
 
@@ -1437,11 +1436,11 @@ while true; do
 
   # Load 'qvm-ls' into a variable so that it doesnt
   # need to reload again after every user operation.
-  # Sort qubes primarily after qube label via sed and sort.
+  # Sort qubes after qube label via sed and sort.
   qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS |\
-    sed 's/ LABEL/ 0\@ /g; s/ purple/ 1\@ /g; s/ blue/ 2\@ /g; s/ gray/ 3\@ /g; s/ green/ 4\@ /g; s/ yellow/ 5\@ /g; s/ orange/ 6\@ /g; s/ red/ 7\@ /g; s/ black/ 8\@ /g' |\
-    sort -k3,3 -k5,6 |\
-    sed 's/ 0\@ / LABEL/g; s/ 1\@ / purple/g; s/ 2\@ / blue/g; s/ 3\@ / gray/g; s/ 4\@ / green/g; s/ 5\@ / yellow/g; s/ 6\@ / orange/g; s/ 7\@ / red/g; s/ 8\@ / black/g')
+    sed 's/ LABEL/ 0\@ /g; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
+    sort -k3,3 |\
+    sed 's/ 0\@ / LABEL/g; s/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
 
   # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.

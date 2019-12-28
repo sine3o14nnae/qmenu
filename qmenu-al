@@ -31,10 +31,9 @@ case $1 in
 
   --focused)
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep ^_QUBES_VMNAM | cut -f2 -d\")
+    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
 
-    if [ -n "$qube" ]; then
+    if [ "$qube" != "_QUBES_VMNAME:  not found." ]; then
 
       qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
