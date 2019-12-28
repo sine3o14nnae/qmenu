@@ -12,11 +12,11 @@ case $1 in
 
   --all)
 
-    app_list=$(grep '^Name=.*\|^Exec=.*'\
+    app_list=$(grep '^Name=\|^Exec='\
       "$HOME"/.local/share/applications/*.desktop\
       /usr/share/applications/*.desktop)
 
-    chosen=$(echo "$app_list" | grep 'Name=.*' | cut -d= -f2- |\
+    chosen=$(echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
       dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
 
     if [ -z "$chosen" ]; then exit 1; fi
@@ -39,10 +39,10 @@ case $1 in
           grep "\--$qube_label.*" | cut -d= -f2)
       fi
 
-      app_list=$(grep '^Name=.*\|^Exec=.*'\
+      app_list=$(grep '^Name=\|^Exec='\
         "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
-      chosen=$(echo "$app_list" | grep 'Name=.*' | cut -f3- -d: |\
+      chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
         dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
 
       if [ -z "$chosen" ]; then exit 1; fi
