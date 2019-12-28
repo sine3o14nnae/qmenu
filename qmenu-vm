@@ -242,17 +242,7 @@ while [ -n "$property" ]; do
 
     default_dispvm)
 
-      if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
-
-      # [mediocre] Look up disposable templates.
-      for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
-        grep '|a.......$' | cut -d '|' -f1); do
-
-        if qvm-prefs --get "$n" template_for_dispvms | grep -q True; then
-
-          LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
-        fi
-      done
+      get_list_of_disptemp
 
       value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
         dmenu -l 50 -p "Select default dispvm:");;
@@ -328,25 +318,10 @@ while [ -n "$property" ]; do
 
     management_dispvm)
 
-      if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
+      get_list_of_disptemp
 
-        # [mediocre] Look up disposable templates.
-        for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
-          grep '|a.......$' | cut -d '|' -f1); do
-
-          if qvm-prefs --get "$n" template_for_dispvms | grep -q True; then
-
-            if [ -z "$LIST_OF_DISPTEMP" ]
-
-              then LIST_OF_DISPTEMP=$n
-
-              else LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
-            fi
-          fi
-        done
-
-        value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
-          dmenu -l 50 -p "Select management dispvm:");;
+      value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
+        dmenu -l 50 -p "Select management dispvm:");;
 
     stats_interval)
 
@@ -364,10 +339,10 @@ while [ -n "$property" ]; do
 
         if ! qvm-check -q --running "$value_selected"; then
 
-          unset value_selected
-
           echo "Go back..." |\
             dmenu -p "$value_selected needs to be running!" > /dev/null 2>&1
+
+          unset value_selected
         fi
       fi;;
 
@@ -533,7 +508,7 @@ if [ -n "$new_name" ]; then
     fi
 
     # List templatevms via 'qvm-ls'.
-    template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+    template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
       grep '|t.......$' | cut -d '|' -f1)" |\
       dmenu -l 50 -p "Select template for $new_name:")
 
@@ -542,7 +517,7 @@ if [ -n "$new_name" ]; then
       QUBEARGS="$QUBEARGS -t $template"
     fi
 
-    netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+    netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
       grep '|...N....$' | cut -d '|' -f1)" |\
       dmenu -l 50 -p "Select netvm for $new_name:")
 
@@ -958,17 +933,7 @@ while [ -n "$property" ]; do
 
       default_dispvm)
 
-        if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
-
-        # [mediocre] Look up disposable templates.
-        for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
-          grep '|a.......$' | cut -d '|' -f1); do
-
-          if qvm-prefs --get "$n" template_for_dispvms | grep -q True; then
-
-            LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
-          fi
-        done
+        get_list_of_disptemp
 
         value_selected=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
           dmenu -l 50 -p "Select default dispvm for $qube:")
@@ -1089,7 +1054,7 @@ while [ -n "$property" ]; do
       netvm)
 
         # List netvms via 'qvm-ls'.
-        value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+        value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
           grep '|...N....$' | cut -d '|' -f1)" |\
           dmenu -l 50 -p "Select netvm for $qube:")
 
@@ -1149,7 +1114,7 @@ while [ -n "$property" ]; do
         else
 
           # List templatevms via 'qvm-ls'.
-          value_selected=$(printf "(Default)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+          value_selected=$(printf "(Default)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
             grep '|t.......$' | cut -d '|' -f1)" |\
             dmenu -l 50 -p "Select template for $qube:")
 
@@ -1392,6 +1357,22 @@ if [ -n "$volume" ]; then
 fi
 )
 
+get_list_of_disptemp() {
+
+if [ -z "$LIST_OF_DISPTEMP" ]; then
+
+  # [mediocre] Look up disposable templates in a very slow way...
+  for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
+    grep '|a.......$' | cut -d '|' -f1); do
+
+    if qvm-prefs --get "$n" template_for_dispvms | grep -q True; then
+
+      LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
+    fi
+  done
+fi
+}
+
 
 
 
@@ -1447,7 +1428,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.3.6\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.4.7\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
