@@ -113,8 +113,7 @@ while [ -n "$device" ]; do
 
     if [ -z "$qube" ]; then
 
-      qube=$(echo "$qube_list" |\
-        sed '1d' | dmenu -p "attach to:" -l 32 | awk '{print $1}')
+      qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | awk '{print $1}')
 
       if [ -n "$qube" ]; then
 
