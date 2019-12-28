@@ -36,19 +36,11 @@ case $1 in
   --all)
 
     device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
-      dmenu -i -l 3 | awk '{print $1}');;
+      dmenu -i -l 3 | cut -f1 -d\ );;
 
-  --audio-input)
+  --audio-input|--block|--usb)
 
-    device_type="Audio";;
-
-  --block)
-
-    device_type="Block";;
-
-  --usb)
-
-    device_type="USB";;
+    device_type=$1;;
 
   *)
 
@@ -57,34 +49,16 @@ case $1 in
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
 
-# Depending on the device type, we have to 'awk' different fields later on.
-if [ "$device_type" = "Audio" ]; then
+case $device_type in
 
-  device_type="device mic"
+  --audio-input|Audio) device_type="device mic";;
 
-  awk_devicename0=2
-  awk_devicename1=10
-  awk_targetqube=3
+  --block|Block) device_type="block";;
 
-elif [ "$device_type" = "Block" ]; then
+  --usb|USB) device_type="usb";;
 
-  device_type="block"
-
-  awk_devicename0=2
-  awk_devicename1=3
-  awk_targetqube=4
-
-elif [ "$device_type" = "USB" ]; then
-
-  device_type="usb"
-
-  awk_devicename0=2
-  awk_devicename1=10
-  awk_targetqube=3
-else
-
-  exit 2
-fi
+  *) exit 2
+esac
 
 # Sort qubes after qube label via sed and sort.
 qube_list=$(qvm-ls --no-spinner --running -O NAME,LABEL |\
@@ -103,17 +77,21 @@ while [ -n "$device" ]; do
 
   if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
-    device_id=$(echo "$device" | awk '{print $1}')
+    device_id=$(echo "$device" | cut -f1 -d\ )
 
-    device_name=$(echo "$device" |\
-      awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
+    if [ "$device_type" = "block" ]; then
 
-    qube=$(echo "$devices_list" | grep "$device_id" |\
-      awk '{print $'$awk_targetqube'}')
+      device_name=$(echo "$device" | awk '{print $2,$3}')
+      qube=$(echo "$device" | awk '{print $4}')
+    else
+
+      device_name=$(echo "$device" | awk '{print $2}')
+      qube=$(echo "$device" | awk '{print $3}')
+    fi
 
     if [ -z "$qube" ]; then
 
-      qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | awk '{print $1}')
+      qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | cut -f1 -d\ )
 
       if [ -n "$qube" ]; then
 

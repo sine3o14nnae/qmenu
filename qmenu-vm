@@ -167,7 +167,7 @@ fq_keyboard() (
 # 'qmenu-vm' does not get informed about the available layouts by the vm itself
 # so it is possible that the selected layout is missing inside the vm.
 # Getting the info from the vm itself, however, would have security
-# implication so we will not switch to use that method.
+# implications so we will not switch to use that method.
 LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:")
 
 if [ -n "$LAYOUT" ]; then
@@ -575,32 +575,14 @@ if ! qvm-check -q --running "$qube"; then
     > /dev/null 2>&1
 else
 
-  # Depending on the device type, we have to 'awk' print
-  # different fields later on.
-  if [ "$chosefrom" = "Audio" ]; then
+  case $chosefrom in
 
-    device_type="device mic"
+    Audio) device_type="device mic";;
 
-    awk_devicename0=2
-    awk_devicename1=10
-    awk_targetqube=3
+    Block) device_type="block";;
 
-  elif [ "$chosefrom" = "Block" ]; then
-
-    device_type="block"
-
-    awk_devicename0=2
-    awk_devicename1=3
-    awk_targetqube=4
-
-  elif [ "$chosefrom" = "USB" ]; then
-
-    device_type="usb"
-
-    awk_devicename0=2
-    awk_devicename1=10
-    awk_targetqube=3
-  fi
+    USB) device_type="usb"
+  esac
 
   devices_list=$(qvm-$device_type)
 
@@ -614,11 +596,15 @@ else
 
       device_id=$(echo "$device" | cut -f1 -d\ )
 
-      device_name=$(echo "$device" |\
-        awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
+      if [ "$device_type" = "block" ]; then
 
-      holds_qube=$(echo "$devices_list" | grep "$device_id" |\
-        awk '{print $'$awk_targetqube'}')
+        device_name=$(echo "$device" | awk '{print $2,$3}')
+        holds_qube=$(echo "$device" | awk '{print $4}')
+      else
+
+        device_name=$(echo "$device" | awk '{print $2}')
+        holds_qube=$(echo "$device" | awk '{print $3}')
+      fi
 
       if [ -z "$holds_qube" ]; then
 
@@ -682,7 +668,7 @@ rulenumber_selected=0
 while [ -n "$rulenumber_selected" ]; do
 
   rulenumber_selected=$(qvm-firewall $qube list |\
-    dmenu -l 50 -p "$qube:"  | cut -f1 -d\ )
+    dmenu -l 50 -p "$qube:" | cut -f1 -d\ )
 
   if [ "$(echo "$rulenumber_selected" | wc -w)" -eq 1 ]; then
 
