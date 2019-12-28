@@ -44,7 +44,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.4.7 for QubesOS R4.0+\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.4.9\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac

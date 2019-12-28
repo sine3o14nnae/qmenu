@@ -838,7 +838,8 @@ else
       device_src=$(echo "$device" | cut -f1 -d\  | sed 's/:.*//')
       device_bdf=$(echo "$device" | cut -f1 -d\  | sed 's/.*://')
 
-      if echo "$device" | grep -q " $qube "; then
+      if echo "$device" |\
+        grep -q " $qube$\\| $qube (no-strict-reset=True)$\\| $qube (permissive=True)$"; then
 
         answer=$(printf "No\nYes" |\
           dmenu -i -p "Detach \"$device_bdf\" from $qube?")
@@ -1413,7 +1414,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.4.7 for QubesOS R4.0+\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n\nqmenu v2.4.9\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
