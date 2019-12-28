@@ -236,7 +236,7 @@ while [ -n "$property" ]; do
     clockvm)
 
       # List netvms via 'qvm-ls'.
-      value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
+      value_selected=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
         grep '|...N....$' | cut -d '|' -f1)" |\
         dmenu -l 50 -p "Select ClockVM:");;
 
@@ -255,12 +255,7 @@ while [ -n "$property" ]; do
       done
 
       value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
-        dmenu -l 50 -p "Select default dispvm:")
-
-      if [ "$value_selected" = "(None)" ]; then
-
-        value_selected="none"
-      fi;;
+        dmenu -l 50 -p "Select default dispvm:");;
 
     default_kernel)
 
@@ -281,7 +276,7 @@ while [ -n "$property" ]; do
     default_netvm)
 
       # List netvms via 'qvm-ls'.
-      value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
+      value_selected=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
         grep '|...N....$' | cut -d '|' -f1)" |\
         dmenu -l 50 -p "Select default netvm:");;
 
@@ -327,8 +322,8 @@ while [ -n "$property" ]; do
     default_template)
 
       # List templatevms via 'qvm-ls'.
-      value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
-        grep '|t.......$' | cut -d '|' -f1 |\
+      value_selected=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
+        grep '|t.......$' | cut -d '|' -f1)" |\
         dmenu -l 50 -p "Select default template:");;
 
     management_dispvm)
@@ -350,7 +345,7 @@ while [ -n "$property" ]; do
           fi
         done
 
-        value_selected=$(printf "$LIST_OF_DISPTEMP" |\
+        value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
           dmenu -l 50 -p "Select management dispvm:");;
 
     stats_interval)
@@ -361,11 +356,11 @@ while [ -n "$property" ]; do
     updatevm)
 
       # List netvms via 'qvm-ls'.
-      value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
+      value_selected=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
         grep '|...N....$' | cut -d '|' -f1)" |\
         dmenu -l 50 -p "Select UpdateVM:")
 
-      if [ -n "$value_selected" ]; then
+      if [ -n "$value_selected" ] && [ "$value_selected" != "(None)" ]; then
 
         if ! qvm-check -q --running "$value_selected"; then
 
@@ -380,6 +375,8 @@ while [ -n "$property" ]; do
   esac
 
   if [ -n "$value_selected" ]; then
+
+    if [ "$value_selected" = "(None)" ]; then value_selected=''; fi
 
     if ! qubes-prefs --set "$property" "$value_selected"; then
 
@@ -477,7 +474,7 @@ if [ -n "$clone_name" ]; then
   while [ -n "$option" ]; do
 
     option=$(printf "Create the clone\nAdvanced options" |\
-      dmenu -i -l 2 -p "$qube:"  | awk '{print $1}')
+      dmenu -i -l 2 -p "$qube:" | awk '{print $1}')
 
     if [ "$option" = "Advanced" ]; then
 
@@ -521,7 +518,7 @@ new_name=$(true | dmenu -p "Enter the name of the qube to create:")
 if [ -n "$new_name" ]; then
 
   label=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
-    dmenu -i -l 8 -p "Select label for $new_name:"  | awk '{print tolower($0)}')
+    dmenu -i -l 8 -p "Select label for $new_name:" | awk '{print tolower($0)}')
 
   if [ -n "$label" ]; then
 
@@ -603,7 +600,8 @@ if ! qvm-check -q --running "$qube"; then
     > /dev/null 2>&1
 else
 
-  # Depending on the device type, we have to 'awk' different fields later on.
+  # Depending on the device type, we have to 'awk' print
+  # different fields later on.
   if [ "$chosefrom" = "Audio" ]; then
 
     device_type="device mic"
@@ -1220,12 +1218,12 @@ else
   if [ "$qube" = "$confirmation" ]; then
 
     confirmation_semifinal=$(printf "No\nYes" |\
-      dmenu -i -p "Are you sure you want to remove $qube permanently?")
+      dmenu -i -p "Are you sure you want to remove '$qube' permanently?")
 
     if [ "$confirmation_semifinal" = "Yes" ]; then
 
       confirmation_final=$(printf "No\nYes" | dmenu -i\
-        -p "Are you really sure you want to remove $qube permanently?")
+        -p "Are you really sure you want to remove '$qube' permanently?")
 
       if [ "$confirmation_final" = "Yes" ]; then
 
@@ -1291,7 +1289,7 @@ while [ -n "$services" ]; do
 
         if ! qvm-service "$qube" "$service" off; then
 
-          echo "Go back..." | dmenu -p "Error: Could not deactivate $service!"\
+          echo "Go back..." | dmenu -p "Error: Could not deactivate '$service'!"\
             > /dev/null 2>&1
         fi
 
@@ -1299,7 +1297,7 @@ while [ -n "$services" ]; do
 
         if ! qvm-service "$qube" "$service" on; then
 
-          echo "Go back..." | dmenu -p "Error: Could not activate $service!"\
+          echo "Go back..." | dmenu -p "Error: Could not activate '$service'!"\
             > /dev/null 2>&1
         fi
 
@@ -1307,7 +1305,7 @@ while [ -n "$services" ]; do
 
         if ! qvm-service "$qube" "$service" --unset; then
 
-          echo "Go back..." | dmenu -p "Error: Could not unset $service!"\
+          echo "Go back..." | dmenu -p "Error: Could not unset '$service'!"\
             > /dev/null 2>&1
         fi
       fi
