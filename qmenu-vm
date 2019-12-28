@@ -12,7 +12,7 @@ chosefrom=0
 while [ -n "$chosefrom" ]; do
 
   chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
-    dmenu -l 3 -i -p "dom0:" | awk '{print $1}')
+    dmenu -l 3 -i -p "dom0:" | cut -f1 -d\ )
 
   case $chosefrom in
 
@@ -51,7 +51,7 @@ chosefrom=0
 while [ -n "$chosefrom" ]; do
 
   chosefrom=$(printf "Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nTags\nUnpause\nUSB devices" |\
-    dmenu -l 22 -i -p "$qube:" | awk '{print $1}')
+    dmenu -l 22 -i -p "$qube:" | cut -f1 -d\ )
 
   case $chosefrom in
 
@@ -224,7 +224,7 @@ property=0
 while [ -n "$property" ]; do
 
   property=$(qubes-prefs |\
-    dmenu -l 16 -p "Global preferences:" | awk '{print $1}')
+    dmenu -l 16 -p "Global preferences:" | cut -f1 -d\ )
 
   case $property in
 
@@ -273,31 +273,31 @@ while [ -n "$property" ]; do
     default_pool)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
-        dmenu -i -l 30 -p "Select default storage pool:" | awk '{print $1}');;
+        dmenu -i -l 30 -p "Select default storage pool:" | cut -f1 -d\ );;
 
     default_pool_kernel)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for kernel volumes:"\
-        | awk '{print $1}');;
+        | cut -f1 -d\ );;
 
     default_pool_private)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for private volumes:"\
-        | awk '{print $1}');;
+        | cut -f1 -d\ );;
 
     default_pool_root)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for root volumes:"\
-        | awk '{print $1}');;
+        | cut -f1 -d\ );;
 
     default_pool_volatile)
 
       value_selected=$(qvm-pool --list | sed '1d' |\
         dmenu -i -l 30 -p "Select default storage pool for volatile volumes:"\
-        | awk '{print $1}');;
+        | cut -f1 -d\ );;
 
     default_qrexec_timeout)
 
@@ -382,13 +382,13 @@ while [ -n "$option" ]; do
       # Only show applications that arent already selected for $qube via 'grep -v'.
       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
         grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
-        dmenu -l 50 -p "$qube:" | awk '{print $1}')
+        dmenu -l 50 -p "$qube:" | cut -f1 -d\ )
 
       if [ -n "$applications" ]; then
 
         # Check validity of input.
         if qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
-          awk '{print $1}' | grep -q "^$applications$"; then
+          cut -f1 -d\  | grep -q "^$applications$"; then
 
           printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
 
@@ -406,7 +406,7 @@ while [ -n "$option" ]; do
       # Show complete application and .desktop names via 'grep'.
       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
         grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" |\
-        dmenu -l 50 -p "$qube:"  | awk '{print $1}')
+        dmenu -l 50 -p "$qube:"  | cut -f1 -d\ )
 
       if [ -n "$applications" ]; then
 
@@ -449,7 +449,7 @@ if [ -n "$clone_name" ]; then
   while [ -n "$option" ]; do
 
     option=$(printf "Create the clone\nAdvanced options" |\
-      dmenu -i -l 2 -p "$qube:" | awk '{print $1}')
+      dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
 
     if [ "$option" = "Advanced" ]; then
 
@@ -470,7 +470,7 @@ if [ -n "$clone_name" ]; then
         elif [ "$option_adv" = "Pool" ]; then
 
           pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
-            -p "Select a pool for $clone_name:" | awk '{print $1}')
+            -p "Select a pool for $clone_name:" | cut -f1 -d\ )
 
           if [ -n "$pool" ]; then pool="-P $pool"; fi
         fi
@@ -541,7 +541,7 @@ if [ -n "$new_name" ]; then
     while [ -n "$option" ]; do
 
       option=$(printf "Create the new qube\nAdvanced options" |\
-        dmenu -i -l 2 -p "dom0:" | awk '{print $1}')
+        dmenu -i -l 2 -p "dom0:" | cut -f1 -d\ )
 
       if [ "$option" = "Advanced" ]; then
 
@@ -550,7 +550,7 @@ if [ -n "$new_name" ]; then
         if [ "$option_adv" = "Pool" ]; then
 
           pool=$(qvm-pool --list | sed '1d' |\
-            dmenu -i -l 10 -p "Select a pool for $new_name:" | awk '{print $1}')
+            dmenu -i -l 10 -p "Select a pool for $new_name:" | cut -f1 -d\ )
 
           if [ -n "$pool" ]; then pool="-P $pool"; fi
         fi
@@ -612,7 +612,7 @@ else
 
     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
-      device_id=$(echo "$device" | awk '{print $1}')
+      device_id=$(echo "$device" | cut -f1 -d\ )
 
       device_name=$(echo "$device" |\
         awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
@@ -682,7 +682,7 @@ rulenumber_selected=0
 while [ -n "$rulenumber_selected" ]; do
 
   rulenumber_selected=$(qvm-firewall $qube list |\
-    dmenu -l 50 -p "$qube:"  | awk '{print $1}')
+    dmenu -l 50 -p "$qube:"  | cut -f1 -d\ )
 
   if [ "$(echo "$rulenumber_selected" | wc -w)" -eq 1 ]; then
 
@@ -691,7 +691,7 @@ while [ -n "$rulenumber_selected" ]; do
     if [ "$rulenumber_selected" != "NO" ]; then
 
       option=$(printf "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
-        dmenu -i -l 2 -p "$qube:" | awk '{print $1}')
+        dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
     else
 
       option="Add"
@@ -815,7 +815,7 @@ else
 
     answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
       dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
-      | awk '{print $1}')
+      | cut -f1 -d\ )
 
     if [ "$answer_memorybalancing" = "Disable" ]; then
 
@@ -827,7 +827,7 @@ else
 
     answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
       dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
-      | awk '{print $1}')
+      | cut -f1 -d\ )
 
     if [ "$answer_virtmode" = "Select" ]; then
 
@@ -849,8 +849,8 @@ else
 
     if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
-      device_src=$(echo "$device" | awk '{print $1}' | sed 's/:.*//')
-      device_bdf=$(echo "$device" | awk '{print $1}' | sed 's/.*://')
+      device_src=$(echo "$device" | cut -f1 -d\  | sed 's/:.*//')
+      device_bdf=$(echo "$device" | cut -f1 -d\  | sed 's/.*://')
 
       if echo "$device" | grep -q " $qube "; then
 
@@ -877,7 +877,7 @@ else
 
           # Check if there is more than one function
           # that belongs to the same device.
-          bdf_count=$(echo "$list_pci" | awk '{print $1}' |\
+          bdf_count=$(echo "$list_pci" | cut -f1 -d\  |\
             grep -c $(echo "$device_bdf" | sed 's/\..*//'))
 
           if [ "$bdf_count" -gt 1 ]; then
@@ -915,7 +915,7 @@ property=0
 while [ -n "$property" ]; do
 
   property=$(qvm-prefs "$qube" |\
-    dmenu -l 45 -p "$qube:" | awk '{print $1}')
+    dmenu -l 45 -p "$qube:" | cut -f1 -d\ )
 
   if [ -n "$property" ]; then
 
@@ -1234,7 +1234,7 @@ services=0
 while [ -n "$services" ]; do
 
   services=$(qvm-service "$qube" --list |\
-    dmenu -l 32 -p "$qube:" | awk '{print $1}')
+    dmenu -l 32 -p "$qube:" | cut -f1 -d\ )
 
   if [ -n "$services" ]; then
 
@@ -1288,7 +1288,7 @@ tags=0
 while [ -n "$tags" ]; do
 
   tags=$(qvm-tags "$qube" list |\
-    dmenu -l 15 -p "$qube:" | awk '{print $1}')
+    dmenu -l 15 -p "$qube:" | cut -f1 -d\ )
 
   if [ -n "$tags" ]; then
 
@@ -1446,7 +1446,7 @@ while true; do
   # into $qube_list, whenever the user selects the 'qvm-ls' top row.
   while [ "$qubes" != "NAME" ]; do
 
-    qubes=$(echo "$qube_list" | dmenu -l 69 | awk '{print $1}')
+    qubes=$(echo "$qube_list" | dmenu -l 69 | cut -f1 -d\ )
 
     if [ -z "$qubes" ]; then exit 1; fi
 
