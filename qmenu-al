@@ -16,10 +16,8 @@ case $1 in
       "$HOME"/.local/share/applications/*.desktop\
       /usr/share/applications/*.desktop)
 
-    chosen=$(echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
-      dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
-
-    if [ -z "$chosen" ]; then exit 1; fi
+    if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
+      dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0); then exit 1; fi
 
     if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "=$chosen$" |\
       cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi;;
@@ -42,10 +40,8 @@ case $1 in
     app_list=$(grep '^Name=\|^Exec='\
       "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
-    chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
-      dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
-
-    if [ -z "$chosen" ]; then exit 1; fi
+    if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
+      dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1); then exit 1; fi
 
     if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "$chosen$" |\
       cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi;;
