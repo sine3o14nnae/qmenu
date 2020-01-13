@@ -287,12 +287,12 @@ while [ -n "$property" ]; do
 
 		default_qrexec_timeout)
 
-			value_selected=$(qubes-prefs --get default_qrexec_timeout | dmenu\
+			value_selected=$(qubes-prefs default_qrexec_timeout | dmenu\
 				-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure:");;
 
 		default_shutdown_timeout)
 
-			value_selected=$(qubes-prefs --get default_shutdown_timeout | dmenu\
+			value_selected=$(qubes-prefs default_shutdown_timeout | dmenu\
 				-p "Enter the default time in seconds for vm shutdowns to complete:");;
 
 		default_template)
@@ -339,7 +339,7 @@ while [ -n "$property" ]; do
 
 		if [ "$value_selected" = "(None)" ]; then value_selected=''; fi
 
-		if ! qubes-prefs --set "$property" "$value_selected"; then
+		if ! qubes-prefs "$property" "$value_selected"; then
 
 			echo "Go back..." |\
 				dmenu -p "Error: Could not set $property to '$value_selected'!"\
@@ -599,8 +599,8 @@ else
 
 					if ! qvm-$device_type attach -q "$qube" "$device_id"; then
 
-					 echo "Go back..." | dmenu -p "Error: Could not attach device!"\
-						 > /dev/null 2>&1
+						echo "Go back..." | dmenu -p "Error: Could not attach device!"\
+							> /dev/null 2>&1
 					fi
 				fi
 
@@ -687,9 +687,9 @@ while [ -n "$rulenumber_selected" ]; do
 
 				RULEARGS="$action"
 
-				if specialtarget=$(true | dmenu -p "ACTION=$RULEARGS <specialtarget>")
+				if specialtarget=$(true | dmenu -p "ACTION=$RULEARGS <specialtarget>"); then
 
-				then RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
+					RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
 				fi
 
 				if dsthost=$(true | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
@@ -765,7 +765,7 @@ else
 
 	list_pci=$(qvm-pci)
 
-	if ! qvm-prefs --get "$qube" maxmem | grep -q ^0; then
+	if ! qvm-prefs "$qube" maxmem | grep -q ^0; then
 
 		answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
 			dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
@@ -773,11 +773,11 @@ else
 
 		if [ "$answer_memorybalancing" = "Disable" ]; then
 
-			qvm-prefs --set "$qube" maxmem 0
+			qvm-prefs "$qube" maxmem 0
 		fi
 	fi
 
-	if qvm-prefs --get "$qube" virt_mode | grep -q pvh; then
+	if qvm-prefs "$qube" virt_mode | grep -q pvh; then
 
 		answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
 			dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
@@ -788,7 +788,7 @@ else
 			if virtmode_selected=$(printf "HVM\nPV" |\
 				dmenu -l 2 -i -p "Select virtualisation mode for $qube:"); then
 
-				qvm-prefs --set "$qube" virt_mode "$virtmode_selected"
+				qvm-prefs "$qube" virt_mode "$virtmode_selected"
 			fi
 		fi
 	fi
@@ -1092,7 +1092,7 @@ while [ -n "$property" ]; do
 
 		if [ -n "$value_selected" ]; then
 
-			if ! qvm-prefs --set "$qube" "$property" "$value_selected"; then
+			if ! qvm-prefs "$qube" "$property" "$value_selected"; then
 
 				echo "Go back..." |\
 					dmenu -p "Error: Could not set $property to '$value_selected'!"\
@@ -1298,7 +1298,7 @@ if [ -z "$LIST_OF_DISPTEMP" ]; then
 	for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
 		grep '|a.......$' | cut -d '|' -f1); do
 
-		if qvm-prefs --get "$n" template_for_dispvms | grep -q True; then
+		if qvm-prefs "$n" template_for_dispvms | grep -q True; then
 
 			LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
 		fi
