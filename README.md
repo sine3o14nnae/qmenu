@@ -8,6 +8,9 @@ from which they can quickly administer their qube
 preferences, firewall rules, applications, per-qube keyboard layouts, devices,
 etc. with only the keyboard.
 
+All qmenu tools are written in POSIX-compliant shell script and only
+depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
+
 The colors that correspond to a qube label can be adjusted by appending
 ` --{LABEL}=#{HEX TRIPLET}` for any label.
 
@@ -16,9 +19,6 @@ Try the following example for visually appealing colors:
 ~~~
  --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
 ~~~
-
-All qmenu tools are written in POSIX-compliant shell script and only
-depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 
 ### qmenu-al ###
 
@@ -61,9 +61,9 @@ Installation
 
     [user@dom0 ~]$ qvm-run --pass-io dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX
 
-    [user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/local/bin/
+    [user@dom0 ~]# cp /tmp/qmenu-XX /usr/local/bin/
 
-    [user@dom0 ~]$ sudo chmod 755 /usr/local/bin/qmenu-XX
+    [user@dom0 ~]# chmod 755 /usr/local/bin/qmenu-XX
 
 See [here](https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/qmenu.md)
 for detailed instructions.
