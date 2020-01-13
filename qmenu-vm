@@ -487,7 +487,7 @@ new_name=$(true | dmenu -p "Enter the name of the qube to create:")
 
 if [ -n "$new_name" ]; then
 
-  label=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
+  label=$(printf "Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack" |\
     dmenu -i -l 8 -p "Select label for $new_name:" | awk '{print tolower($0)}')
 
   if [ -n "$label" ]; then
