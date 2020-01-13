@@ -2,7 +2,7 @@
 
 dmenu() {
 
-command dmenu -f -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_2 "$@"
+command dmenu -f -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_0 "$@"
 }
 
 fmenu_dom0() (
@@ -35,16 +35,11 @@ done
 
 fmenu_domu() (
 
-theme_2=$theme_1
-
-qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
-
 # Change label colors according to user input.
-if echo "$@" | grep -q "\--$qube_label"; then
+qube_label=$(echo "$@" | tr ' ' '\n' |\
+  grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
 
-  qube_label=$(echo "$@" | tr ' ' '\n' |\
-    grep "\--$qube_label.*" | cut -d= -f2)
-fi
+if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 
 chosefrom=0
 
@@ -1368,15 +1363,13 @@ if [ "$2" = "--light-theme" ]; then
 
   theme_0='#ffffff'
   theme_1='#000000'
-  theme_2='#ffffff'
-  qube_label='#000000'
 else
 
   theme_0='#000000'
   theme_1='#ffffff'
-  theme_2='#000000'
-  qube_label='#ffffff'
 fi
+
+qube_label=$theme_1
 
 case $1 in
 

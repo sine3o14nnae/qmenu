@@ -28,20 +28,17 @@ case $1 in
 
     if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then exit 2; fi
 
-    qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
-
     # Change label colors according to user input.
-    if echo "$@" | grep -q "\--$qube_label"; then
+    qube_label=$(echo "$@" | tr ' ' '\n' |\
+      grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
 
-      qube_label=$(echo "$@" | tr ' ' '\n' |\
-        grep "\--$qube_label.*" | cut -d= -f2)
-    fi
+    if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 
     app_list=$(grep '^Name=\|^Exec='\
       "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
     if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
-      dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1); then exit 1; fi
+      dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_0); then exit 1; fi
 
     if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "$chosen$" |\
       cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi;;

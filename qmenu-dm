@@ -7,14 +7,11 @@ command dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
 
 get_qube_label() {
 
-qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
-
 # Change label colors according to user input.
-if echo "$@" | grep -q "\--$qube_label"; then
+qube_label=$(echo "$@" | tr ' ' '\n' |\
+  grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
 
-  qube_label=$(echo "$@" | tr ' ' '\n' |\
-    grep "\--$qube_label.*" | cut -d= -f2)
-fi
+if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 }
 
 
@@ -97,7 +94,7 @@ while [ -n "$device" ]; do
 
         get_qube_label "$@"
 
-        prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
+        prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
           -p "Attach '$device_name' to $qube?")
 
         if [ "$prompt" = "Yes" ]; then
@@ -114,7 +111,7 @@ while [ -n "$device" ]; do
 
       get_qube_label "$@"
 
-      prompt=$(printf "No\nYes" | dmenu -sb $qube_label -sf $theme_1 -i\
+      prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
         -p "Detach '$device_name' from $qube?")
 
       if [ "$prompt" = "Yes" ]; then
