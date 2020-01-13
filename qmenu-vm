@@ -238,7 +238,7 @@ while [ -n "$property" ]; do
 
 		default_kernel)
 
-			if value_selected=$(true | dmenu -p "Enter default kernel:"); then
+			if value_selected=$(: | dmenu -p "Enter default kernel:"); then
 
 				answer_selected=$(printf "No\nYes" |\
 					dmenu -i -p "Set default kernel to $value_selected?")
@@ -311,7 +311,7 @@ while [ -n "$property" ]; do
 
 		stats_interval)
 
-			value_selected=$(true |\
+			value_selected=$(: |\
 				dmenu -p "Enter interval in seconds for VM stats reporting:");;
 
 		updatevm)
@@ -426,7 +426,7 @@ done
 
 fqvm_clone() (
 
-if clone_name=$(true | dmenu -p "Enter the name for the clone of $qube:"); then
+if clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:"); then
 
 	option=0
 
@@ -474,7 +474,7 @@ fi
 
 fqvm_create() (
 
-if name=$(true | dmenu -p "Enter the name of the qube to create:"); then
+if name=$(: | dmenu -p "Enter the name of the qube to create:"); then
 
 	label=$(printf "Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack" |\
 		dmenu -i -l 8 -p "Select label for $name:" | awk '{print tolower($0)}')
@@ -687,42 +687,42 @@ while [ -n "$rulenumber_selected" ]; do
 
 				RULEARGS="$action"
 
-				if specialtarget=$(true | dmenu -p "ACTION=$RULEARGS <specialtarget>"); then
+				if specialtarget=$(: | dmenu -p "ACTION=$RULEARGS <specialtarget>"); then
 
 					RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
 				fi
 
-				if dsthost=$(true | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
+				if dsthost=$(: | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
 
 					RULEARGS="$RULEARGS DSTHOST=$dsthost"
 				fi
 
-				if proto=$(true | dmenu -p "ACTION=$RULEARGS <proto>"); then
+				if proto=$(: | dmenu -p "ACTION=$RULEARGS <proto>"); then
 
 					RULEARGS="$RULEARGS PROTO=$proto"
 				fi
 
 				if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
 
-					if dstports=$(true | dmenu -p "ACTION=$RULEARGS <dstports>"); then
+					if dstports=$(: | dmenu -p "ACTION=$RULEARGS <dstports>"); then
 
 						RULEARGS="$RULEARGS DSTPORTS=$dstports"
 					fi
 
 				elif [ "$proto" = "icmp" ]; then
 
-					if icmptype=$(true | dmenu -p "ACTION=$RULEARGS <icmptype>"); then
+					if icmptype=$(: | dmenu -p "ACTION=$RULEARGS <icmptype>"); then
 
 						RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
 					fi
 				fi
 
-				if expire=$(true | dmenu -p "ACTION=$RULEARGS <expire>"); then
+				if expire=$(: | dmenu -p "ACTION=$RULEARGS <expire>"); then
 
 					RULEARGS="EXPIRE=$expire"
 				fi
 
-				if comment=$(true | dmenu -p "ACTION=$RULEARGS <comment>"); then
+				if comment=$(: | dmenu -p "ACTION=$RULEARGS <comment>"); then
 
 					RULEARGS="$RULEARGS COMMENT=$comment"
 				fi
@@ -1114,7 +1114,7 @@ if qvm-check -q --running "$qube"; then
 		> /dev/null 2>&1
 else
 
-	confirmation=$(true |\
+	confirmation=$(: |\
 		dmenu -p "Enter the name of the qube '$qube' in order to remove it:")
 
 	if [ "$qube" = "$confirmation" ]; then
@@ -1155,7 +1155,7 @@ if user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:"); th
 
 	while [ -n "$commandtr" ]; do
 
-		if commandtr=$(true | dmenu -p "($user)Run command in $qube:"); then
+		if commandtr=$(: | dmenu -p "($user)Run command in $qube:"); then
 
 			qvm-run -q $as_root "$qube" "$commandtr"& fi
 	done
@@ -1363,7 +1363,7 @@ case $1 in
 		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
 
-while true; do
+while :; do
 
 	# Load 'qvm-ls' into a variable so that it doesnt
 	# need to reload again after every user operation.
