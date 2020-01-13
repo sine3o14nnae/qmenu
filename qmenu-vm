@@ -163,9 +163,7 @@ fq_keyboard() (
 # so it is possible that the selected layout is missing inside the vm.
 # Getting the info from the vm itself, however, would have security
 # implications so we will not switch to use that method.
-LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:")
-
-if [ -n "$LAYOUT" ]; then
+if LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:"); then
 
   if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
 
@@ -196,13 +194,9 @@ entry=0
 
 while [ -n "$entry" ]; do
 
-  entry=$(printf "$logs" | dmenu -i -l 3 -p "$qube:")
+  if entry=$(printf "$logs" | dmenu -i -l 3 -p "$qube:"); then
 
-  if [ -n "$entry" ]; then
-
-    log=$(dmenu -l 20 -p "$qube:" < "$entry")
-
-    if [ -n "$log" ]; then
+    if log=$(dmenu -l 20 -p "$qube:" < "$entry"); then
 
       echo "$log" > /var/run/qubes/qubes-clipboard.bin
 
@@ -244,10 +238,7 @@ while [ -n "$property" ]; do
 
     default_kernel)
 
-      value_selected=$(true |\
-        dmenu -p "Enter default kernel:")
-
-      if [ -n "$value_selected" ]; then
+      if value_selected=$(true | dmenu -p "Enter default kernel:"); then
 
         answer_selected=$(printf "No\nYes" |\
           dmenu -i -p "Set default kernel to $value_selected?")
@@ -435,9 +426,7 @@ done
 
 fqvm_clone() (
 
-clone_name=$(true | dmenu -p "Enter the name for the clone of $qube:")
-
-if [ -n "$clone_name" ]; then
+if clone_name=$(true | dmenu -p "Enter the name for the clone of $qube:"); then
 
   option=0
 
@@ -457,17 +446,19 @@ if [ -n "$clone_name" ]; then
 
         if [ "$option_adv" = "Class" ]; then
 
-          class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-            dmenu -i -l 4 -p "Choose a class for $clone_name:")
+          if class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+            dmenu -i -l 4 -p "Choose a class for $clone_name:"); then
 
-          if [ -n "$class" ]; then class="-C $class"; fi
+          class="-C $class"
+          fi
 
         elif [ "$option_adv" = "Pool" ]; then
 
-          pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
-            -p "Select a pool for $clone_name:" | cut -f1 -d\ )
+          if pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
+            -p "Select a pool for $clone_name:" | cut -f1 -d\ ); then
 
-          if [ -n "$pool" ]; then pool="-P $pool"; fi
+          pool="-P $pool"
+          fi
         fi
       done
 
@@ -483,21 +474,17 @@ fi
 
 fqvm_create() (
 
-new_name=$(true | dmenu -p "Enter the name of the qube to create:")
-
-if [ -n "$new_name" ]; then
+if name=$(true | dmenu -p "Enter the name of the qube to create:"); then
 
   label=$(printf "Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack" |\
-    dmenu -i -l 8 -p "Select label for $new_name:" | awk '{print tolower($0)}')
+    dmenu -i -l 8 -p "Select label for $name:" | awk '{print tolower($0)}')
 
   if [ -n "$label" ]; then
 
     QUBEARGS="-l $label"
 
-    class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-      dmenu -i -l 4 -p "Choose a class for $new_name:")
-
-    if [ -n "$class" ]; then
+    if class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+      dmenu -i -l 4 -p "Choose a class for $name:"); then
 
       QUBEARGS="$QUBEARGS -C $class"
     fi
@@ -505,7 +492,7 @@ if [ -n "$new_name" ]; then
     # List templatevms via 'qvm-ls'.
     template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
       grep '|t.......$' | cut -d '|' -f1)" |\
-      dmenu -l 50 -p "Select template for $new_name:")
+      dmenu -l 50 -p "Select template for $name:")
 
     if [ "$template" != "(Default)" ] && [ "$template" != "(None)" ]; then
 
@@ -514,7 +501,7 @@ if [ -n "$new_name" ]; then
 
     netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
       grep '|...N....$' | cut -d '|' -f1)" |\
-      dmenu -l 50 -p "Select netvm for $new_name:")
+      dmenu -l 50 -p "Select netvm for $name:")
 
     if [ "$netvm" != "(Default)" ]; then
 
@@ -524,7 +511,7 @@ if [ -n "$new_name" ]; then
     fi
 
     provides_network=$(printf "No\nYes" |\
-      dmenu -i -p "Should $new_name provide networking for other qubes?")
+      dmenu -i -p "Should $name provide networking for other qubes?")
 
     if [ "$provides_network" = "Yes" ]; then
 
@@ -540,19 +527,19 @@ if [ -n "$new_name" ]; then
 
       if [ "$option" = "Advanced" ]; then
 
-        option_adv=$(printf "Pool" | dmenu -l 1 -p "$new_name:")
+        option_adv=$(printf "Pool" | dmenu -l 1 -p "$name:")
 
         if [ "$option_adv" = "Pool" ]; then
 
           pool=$(qvm-pool --list | sed '1d' |\
-            dmenu -i -l 10 -p "Select a pool for $new_name:" | cut -f1 -d\ )
+            dmenu -i -l 10 -p "Select a pool for $name:" | cut -f1 -d\ )
 
           if [ -n "$pool" ]; then pool="-P $pool"; fi
         fi
 
       elif [ "$option" = "Create" ]; then
 
-        qvm-create $QUBEARGS $pool "$new_name"&
+        qvm-create $QUBEARGS $pool "$name"&
 
         unset option
       fi
@@ -700,56 +687,42 @@ while [ -n "$rulenumber_selected" ]; do
 
         RULEARGS="$action"
 
-        specialtarget=$(true | dmenu -p "ACTION=$RULEARGS <specialtarget>")
+        if specialtarget=$(true | dmenu -p "ACTION=$RULEARGS <specialtarget>")
 
-        if [ -n "$specialtarget" ]; then
-
-          RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
+        then RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
         fi
 
-        dsthost=$(true | dmenu -p "ACTION=$RULEARGS <dsthost>")
-
-        if [ -n "$dsthost" ]; then
+        if dsthost=$(true | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
 
           RULEARGS="$RULEARGS DSTHOST=$dsthost"
         fi
 
-        proto=$(true | dmenu -p "ACTION=$RULEARGS <proto>")
-
-        if [ -n "$proto" ]; then
+        if proto=$(true | dmenu -p "ACTION=$RULEARGS <proto>"); then
 
           RULEARGS="$RULEARGS PROTO=$proto"
         fi
 
         if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
 
-          dstports=$(true | dmenu -p "ACTION=$RULEARGS <dstports>")
-
-          if [ -n "$dstports" ]; then
+          if dstports=$(true | dmenu -p "ACTION=$RULEARGS <dstports>"); then
 
             RULEARGS="$RULEARGS DSTPORTS=$dstports"
           fi
 
         elif [ "$proto" = "icmp" ]; then
 
-          icmptype=$(true | dmenu -p "ACTION=$RULEARGS <icmptype>")
-
-          if [ -n "$icmptype" ]; then
+          if icmptype=$(true | dmenu -p "ACTION=$RULEARGS <icmptype>"); then
 
             RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
           fi
         fi
 
-        expire=$(true | dmenu -p "ACTION=$RULEARGS <expire>")
-
-        if [ -n "$expire" ]; then
+        if expire=$(true | dmenu -p "ACTION=$RULEARGS <expire>"); then
 
           RULEARGS="EXPIRE=$expire"
         fi
 
-        comment=$(true | dmenu -p "ACTION=$RULEARGS <comment>")
-
-        if [ -n "$comment" ]; then
+        if comment=$(true | dmenu -p "ACTION=$RULEARGS <comment>"); then
 
           RULEARGS="$RULEARGS COMMENT=$comment"
         fi
@@ -812,10 +785,8 @@ else
 
     if [ "$answer_virtmode" = "Select" ]; then
 
-      virtmode_selected=$(printf "HVM\nPV" |\
-        dmenu -l 2 -i -p "Select virtualisation mode for $qube:")
-
-      if [ -n "$virtmode_selected" ]; then
+      if virtmode_selected=$(printf "HVM\nPV" |\
+        dmenu -l 2 -i -p "Select virtualisation mode for $qube:"); then
 
         qvm-prefs --set "$qube" virt_mode "$virtmode_selected"
       fi
@@ -941,10 +912,8 @@ while [ -n "$property" ]; do
 
       kernel)
 
-        value_selected=$(echo "--default" |\
-          dmenu -p "Enter the kernel to be used by $qube:")
-
-        if [ -n "$value_selected" ]; then
+        if value_selected=$(echo "--default" |\
+          dmenu -p "Enter the kernel to be used by $qube:"); then
 
           answer_selected=$(printf "No\nYes" |\
             dmenu -i -p "Set kernel of $qube to $value_selected?")
@@ -957,10 +926,8 @@ while [ -n "$property" ]; do
 
       kernelopts)
 
-        value_selected=$(echo "--default" |\
-          dmenu -p "Enter the kernel options for $qube:")
-
-        if [ -n "$value_selected" ]; then
+        if value_selected=$(echo "--default" |\
+          dmenu -p "Enter the kernel options for $qube:"); then
 
           answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set kernel options for $qube to \"$value_selected\"?")
@@ -987,10 +954,8 @@ while [ -n "$property" ]; do
 
       mac)
 
-        value_selected=$(echo "--default" |\
-          dmenu -p "Enter the MAC address for $qube:")
-
-        if [ -n "$value_selected" ]; then
+        if value_selected=$(echo "--default" |\
+          dmenu -p "Enter the MAC address for $qube:"); then
 
           answer_selected=$(printf "No\nYes" |\
             dmenu -i -p "Set MAC address of $qube to $value_selected?")
@@ -1003,12 +968,10 @@ while [ -n "$property" ]; do
 
       maxmem)
 
-        value_selected=$(echo "--default" |\
+        if value_selected=$(echo "--default" |\
           dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.")
 
-        if [ -n "$value_selected" ]; then
-
-          answer_selected=$(printf "No\nYes" | dmenu -i\
+        then answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set maximum memory of $qube to $value_selected MB?")
 
           if [ "$answer_selected" != "Yes" ]; then
@@ -1019,12 +982,10 @@ while [ -n "$property" ]; do
 
       memory)
 
-        value_selected=$(echo "--default" | dmenu\
+        if value_selected=$(echo "--default" | dmenu\
           -p "Enter the amount of initial memory in MB to be allocated to $qube:")
 
-        if [ -n "$value_selected" ]; then
-
-          answer_selected=$(printf "No\nYes" | dmenu -i\
+        then answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set initial memory of $qube to $value_selected MB?")
 
           if [ "$answer_selected" != "Yes" ]; then
@@ -1056,12 +1017,10 @@ while [ -n "$property" ]; do
 
       qrexec_timeout)
 
-        value_selected=$(echo "--default" | dmenu\
+        if value_selected=$(echo "--default" | dmenu\
           -p "Enter the time in seconds, after which qrexec attempt is deemed a failure for $qube:")
 
-        if [ -n "$value_selected" ]; then
-
-          answer_selected=$(printf "No\nYes" | dmenu -i\
+        then answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set qrexec timeout for $qube to $value_selected seconds?")
 
           if [ "$answer_selected" != "Yes" ]; then
@@ -1072,12 +1031,10 @@ while [ -n "$property" ]; do
 
       shutdown_timeout)
 
-        value_selected=$(echo "--default" | dmenu\
+        if value_selected=$(echo "--default" | dmenu\
           -p "Enter the time in seconds for shutdown, after which $qube may be forcefully powered off:")
 
-        if [ -n "$value_selected" ]; then
-
-          answer_selected=$(printf "No\nYes" | dmenu -i\
+        then answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set shutdown timeout for $qube to $value_selected seconds?")
 
           if [ "$answer_selected" != "Yes" ]; then
@@ -1113,12 +1070,10 @@ while [ -n "$property" ]; do
 
       vcpus)
 
-        value_selected=$(echo "--default" | dmenu\
+        if value_selected=$(echo "--default" | dmenu\
           -p "Enter the number of CPU cores that should be made available to $qube:")
 
-        if [ -n "$value_selected" ]; then
-
-          answer_selected=$(printf "No\nYes" | dmenu -i\
+        then answer_selected=$(printf "No\nYes" | dmenu -i\
             -p "Set number of CPU cores available to $qube to $value_selected?")
 
           if [ "$answer_selected" != "Yes" ]; then
@@ -1185,9 +1140,7 @@ fi
 
 fqvm_run() (
 
-user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:")
-
-if [ -n "$user" ]; then
+if user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:"); then
 
   if [ "$user" = "Root" ]; then
 
@@ -1202,9 +1155,9 @@ if [ -n "$user" ]; then
 
   while [ -n "$commandtr" ]; do
 
-      commandtr=$(true | dmenu -p "($user)Run command in $qube:")
+    if commandtr=$(true | dmenu -p "($user)Run command in $qube:"); then
 
-    if [ -n "$commandtr" ]; then qvm-run -q $as_root "$qube" "$commandtr"& fi
+      qvm-run -q $as_root "$qube" "$commandtr"& fi
   done
 fi
 )
@@ -1314,10 +1267,8 @@ if [ -n "$volume" ]; then
 
   current_storage=$(( $(qvm-volume info "$qube:$volume" size) / 1048576 ))
 
-  mebibyte=$(echo "$current_storage" | dmenu\
-    -p "Enter the maximum size of $volume storage in MiB to be allocated to $qube:")
-
-  if [ -n "$mebibyte" ]; then
+  if mebibyte=$(echo "$current_storage" | dmenu\
+    -p "Enter the maximum size of $volume storage in MiB to be allocated to $qube:"); then
 
     if [ "$mebibyte" -gt "$current_storage" ]; then
 
