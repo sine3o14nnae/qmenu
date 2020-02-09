@@ -41,7 +41,7 @@ case $1 in
 
 	*)
 
-		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n\nqmenu v2.4.11\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
 		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
