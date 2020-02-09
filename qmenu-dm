@@ -2,7 +2,7 @@
 
 dmenu() {
 
-command dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 "$@"
+command dmenu -f -nb "$theme_0" -nf "$theme_1" -sb "$theme_1" -sf "$theme_0" "$@"
 }
 
 get_qube_label() {
@@ -94,7 +94,7 @@ while [ -n "$device" ]; do
 
 				get_qube_label "$@"
 
-				prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
+				prompt=$(printf "No\nYes" | dmenu -sb "$qube_label" -i\
 					-p "Attach '$device_name' to $qube?")
 
 				if [ "$prompt" = "Yes" ]; then
@@ -111,7 +111,7 @@ while [ -n "$device" ]; do
 
 			get_qube_label "$@"
 
-			prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
+			prompt=$(printf "No\nYes" | dmenu -sb "$qube_label" -i\
 				-p "Detach '$device_name' from $qube?")
 
 			if [ "$prompt" = "Yes" ]; then

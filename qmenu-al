@@ -19,7 +19,7 @@ case $1 in
 			/usr/share/applications/*.desktop)
 
 		if ! chosen=$(printf = && echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
-			dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0); then exit 1; fi;;
+			dmenu -f -nb "$theme_0" -nf "$theme_1" -sb "$theme_1" -sf "$theme_0"); then exit 1; fi;;
 
 	--focused)
 
@@ -37,7 +37,7 @@ case $1 in
 			"$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
 		if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
-			dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_0); then exit 1; fi;;
+			dmenu -p "$qube:" -f -nb "$theme_0" -nf "$theme_1" -sb "$qube_label" -sf "$theme_0"); then exit 1; fi;;
 
 	*)
 
