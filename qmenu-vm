@@ -2,9 +2,7 @@
 
 dmenu() {
 
-# Note that the '-m 0' option in 'dmenu' is important
-# for security, as it restricts it to monitor 0.
-command dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_2 "$@"
+command dmenu -f -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_2 "$@"
 }
 
 fmenu_fqubes() (
@@ -1442,7 +1440,7 @@ case $1 in
 
   *)
 
-    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.1.5\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "$0 [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.2.6\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
