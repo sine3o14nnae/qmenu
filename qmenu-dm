@@ -9,7 +9,7 @@ get_qube_label() {
 
 # Change label colors according to user input.
 qube_label=$(echo "$@" | tr ' ' '\n' |\
-  grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
+	grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
 
 if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 }
@@ -20,49 +20,49 @@ if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 
 if [ "$2"  = "--light-theme" ]; then
 
-  theme_0='#ffffff'
-  theme_1='#000000'
+	theme_0='#ffffff'
+	theme_1='#000000'
 else
 
-  theme_0='#000000'
-  theme_1='#ffffff'
+	theme_0='#000000'
+	theme_1='#ffffff'
 fi
 
 case $1 in
 
-  --all)
+	--all)
 
-    device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
-      dmenu -i -l 3 | cut -f1 -d\ );;
+		device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
+			dmenu -i -l 3 | cut -f1 -d\ );;
 
-  --audio-input|--block|--usb)
+	--audio-input|--block|--usb)
 
-    device_type=$1;;
+		device_type=$1;;
 
-  *)
+	*)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.4.11\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+		printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v2.4.11\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
-    if [ "$1" = "--help" ]; then exit 0; fi
+		if [ "$1" = "--help" ]; then exit 0; fi
 esac
 
 case $device_type in
 
-  --audio-input|Audio) device_type="device mic";;
+	--audio-input|Audio) device_type="device mic";;
 
-  --block|Block) device_type="block";;
+	--block|Block) device_type="block";;
 
-  --usb|USB) device_type="usb";;
+	--usb|USB) device_type="usb";;
 
-  *) exit 2
+	*) exit 2
 esac
 
 # Sort qubes after qube label via sed and sort.
 qube_list=$(qvm-ls --no-spinner --running -O NAME,LABEL |\
-  grep -v '^dom0 \|^sys-usb' |\
-  sed '1d; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
-  sort -k2,2 |\
-  sed 's/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
+	grep -v '^dom0 \|^sys-usb' |\
+	sed '1d; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
+	sort -k2,2 |\
+	sed 's/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
 
 devices_list=$(qvm-$device_type)
 
@@ -70,61 +70,61 @@ device=0
 
 while [ -n "$device" ]; do
 
-  device=$(echo "$devices_list" | dmenu -l 16)
+	device=$(echo "$devices_list" | dmenu -l 16)
 
-  if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
+	if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
-    device_id=$(echo "$device" | cut -f1 -d\ )
+		device_id=$(echo "$device" | cut -f1 -d\ )
 
-    if [ "$device_type" = "block" ]; then
+		if [ "$device_type" = "block" ]; then
 
-      device_name=$(echo "$device" | awk '{print $2,$3}')
-      qube=$(echo "$device" | awk '{print $4}')
-    else
+			device_name=$(echo "$device" | awk '{print $2,$3}')
+			qube=$(echo "$device" | awk '{print $4}')
+		else
 
-      device_name=$(echo "$device" | awk '{print $2}')
-      qube=$(echo "$device" | awk '{print $3}')
-    fi
+			device_name=$(echo "$device" | awk '{print $2}')
+			qube=$(echo "$device" | awk '{print $3}')
+		fi
 
-    if [ -z "$qube" ]; then
+		if [ -z "$qube" ]; then
 
-      qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | cut -f1 -d\ )
+			qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | cut -f1 -d\ )
 
-      if [ -n "$qube" ]; then
+			if [ -n "$qube" ]; then
 
-        get_qube_label "$@"
+				get_qube_label "$@"
 
-        prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
-          -p "Attach '$device_name' to $qube?")
+				prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
+					-p "Attach '$device_name' to $qube?")
 
-        if [ "$prompt" = "Yes" ]; then
+				if [ "$prompt" = "Yes" ]; then
 
-          if qvm-$device_type attach -q "$qube" "$device_id"; then exit 0; fi
+					if qvm-$device_type attach -q "$qube" "$device_id"; then exit 0; fi
 
-          echo "Quit..." |\
-            dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
+					echo "Quit..." |\
+						dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
 
-          exit 2
-        fi
-      fi
-    else
+					exit 2
+				fi
+			fi
+		else
 
-      get_qube_label "$@"
+			get_qube_label "$@"
 
-      prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
-        -p "Detach '$device_name' from $qube?")
+			prompt=$(printf "No\nYes" | dmenu -sb $qube_label -i\
+				-p "Detach '$device_name' from $qube?")
 
-      if [ "$prompt" = "Yes" ]; then
+			if [ "$prompt" = "Yes" ]; then
 
-        if qvm-$device_type detach -q "$qube" "$device_id"; then exit 0; fi
+				if qvm-$device_type detach -q "$qube" "$device_id"; then exit 0; fi
 
-        echo "Quit..." |\
-          dmenu -p "Error: Could not detach device!" > /dev/null 2>&1
+				echo "Quit..." |\
+					dmenu -p "Error: Could not detach device!" > /dev/null 2>&1
 
-        exit 2
-      fi
-    fi
-  fi
+				exit 2
+			fi
+		fi
+	fi
 done
 
 exit 1

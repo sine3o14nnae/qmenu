@@ -1,48 +1,50 @@
 #!/bin/sh
 
 if [ "$2" = "--light-theme" ]; then
-    theme_0='#ffffff'
-    theme_1='#000000'
+
+	theme_0='#ffffff'
+	theme_1='#000000'
 else
-    theme_0='#000000'
-    theme_1='#ffffff'
+
+	theme_0='#000000'
+	theme_1='#ffffff'
 fi
 
 case $1 in
 
-  --all)
+	--all)
 
-    app_list=$(grep '^Name=\|^Exec='\
-      "$HOME"/.local/share/applications/*.desktop\
-      /usr/share/applications/*.desktop)
+		app_list=$(grep '^Name=\|^Exec='\
+			"$HOME"/.local/share/applications/*.desktop\
+			/usr/share/applications/*.desktop)
 
-    if ! chosen=$(printf = && echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
-      dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0); then exit 1; fi;;
+		if ! chosen=$(printf = && echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
+			dmenu -f -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0); then exit 1; fi;;
 
-  --focused)
+	--focused)
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
+		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
 
-    if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then exit 2; fi
+		if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then exit 2; fi
 
-    # Change label colors according to user input.
-    qube_label=$(echo "$@" | tr ' ' '\n' |\
-      grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
+		# Change label colors according to user input.
+		qube_label=$(echo "$@" | tr ' ' '\n' |\
+			grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
 
-    if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
+		if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 
-    app_list=$(grep '^Name=\|^Exec='\
-      "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
+		app_list=$(grep '^Name=\|^Exec='\
+			"$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
 
-    if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
-      dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_0); then exit 1; fi;;
+		if ! chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: |\
+			dmenu -p "$qube:" -f -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_0); then exit 1; fi;;
 
-  *)
+	*)
 
-    printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n\nqmenu v2.4.11\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
+		printf "$0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n\nqmenu v2.4.11\n<https://github.com/sine3o14nnae/qmenu/issues/new>\n\n"
 
-    if [ "$1" = "--help" ]; then exit 0; fi; exit 2
+		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
 
 if ! $(echo "$app_list" | grep "$(echo "$app_list" | grep "$chosen$" |\
-  cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
+	cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-); then exit 2; fi
