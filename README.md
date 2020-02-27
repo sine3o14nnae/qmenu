@@ -20,11 +20,11 @@ Try the following example for visually appealing colors:
  --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
 ~~~
 
-### qmenu-al ###
+### qmenu-am ###
 
 Launch domU and dom0 applications.
 
-    Usage: qmenu-al [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
+    Usage: qmenu-am [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
 
      --all
      --focused
