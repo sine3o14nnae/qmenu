@@ -227,9 +227,9 @@ if [ -n "$qubes" ]; then
 
 			default_dispvm)
 
-				get_list_of_disptemp
+				get_list disptemp
 
-				value=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
+				value=$(printf "(Default)\n(None)$LIST_DISPTEMP" |\
 					dmenu -l 50 -p "Select default dispvm:")
 
 				if [ "$value" = "(None)" ]; then
@@ -254,8 +254,9 @@ if [ -n "$qubes" ]; then
 
 			template)
 
-				value=$(printf "(Default)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-					grep '|t.......$' | cut -d '|' -f1)" |\
+				get_list template
+
+				value=$(printf "(Default)\n$list" |\
 					dmenu -l 50 -p "Select template:")
 
 				if [ "$value" = "(Default)" ]; then
@@ -265,8 +266,9 @@ if [ -n "$qubes" ]; then
 
 			netvm)
 
-				value=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-					grep '|...N....$' | cut -d '|' -f1)" |\
+				get_list netvm
+
+				value=$(printf "(Default)\n(None)\n$list" |\
 					dmenu -l 50 -p "Select netvm:")
 
 				if [ "$value" = "(None)" ]; then
@@ -330,16 +332,16 @@ while [ -n "$property" ]; do
 
 		clockvm)
 
-			# List netvms via 'qvm-ls'.
-			value=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-				grep '|...N....$' | cut -d '|' -f1)" |\
+				get_list netvm
+
+			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select ClockVM:");;
 
 		default_dispvm)
 
-			get_list_of_disptemp
+			get_list disptemp
 
-			value=$(printf "(None)$LIST_OF_DISPTEMP" |\
+			value=$(printf "(None)$LIST_DISPTEMP" |\
 				dmenu -l 50 -p "Select default dispvm:");;
 
 		default_kernel)
@@ -357,9 +359,9 @@ while [ -n "$property" ]; do
 
 		default_netvm)
 
-			# List netvms via 'qvm-ls'.
-			value=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-				grep '|...N....$' | cut -d '|' -f1)" |\
+				get_list netvm
+
+			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select default netvm:");;
 
 		default_pool)
@@ -403,16 +405,16 @@ while [ -n "$property" ]; do
 
 		default_template)
 
-			# List templatevms via 'qvm-ls'.
-			value=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-				grep '|t.......$' | cut -d '|' -f1)" |\
+			get_list template
+
+			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select default template:");;
 
 		management_dispvm)
 
-			get_list_of_disptemp
+			get_list mgmt_disptemp
 
-			value=$(printf "(None)$LIST_OF_DISPTEMP" |\
+			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select management dispvm:");;
 
 		stats_interval)
@@ -422,9 +424,9 @@ while [ -n "$property" ]; do
 
 		updatevm)
 
-			# List netvms via 'qvm-ls'.
-			value=$(printf "(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-				grep '|...N....$' | cut -d '|' -f1)" |\
+			get_list netvm
+
+			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select UpdateVM:")
 
 			if [ -n "$value" ] && [ "$value" != "(None)" ]; then
@@ -595,9 +597,9 @@ if name=$(: | dmenu -p "Enter the name of the qube to create:"); then
 			QUBEARGS="$QUBEARGS -C $class"
 		fi
 
-		# List templatevms via 'qvm-ls'.
-		template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-			grep '|t.......$' | cut -d '|' -f1)" |\
+		get_list template
+
+		template=$(printf "(Default)\n(None)\n$list" |\
 			dmenu -l 50 -p "Select template for $name:")
 
 		if [ "$template" != "(Default)" ] && [ "$template" != "(None)" ]; then
@@ -605,8 +607,9 @@ if name=$(: | dmenu -p "Enter the name of the qube to create:"); then
 			QUBEARGS="$QUBEARGS -t $template"
 		fi
 
-		netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-			grep '|...N....$' | cut -d '|' -f1)" |\
+		get_list netvm
+
+		netvm=$(printf "(Default)\n(None)\n$list" |\
 			dmenu -l 50 -p "Select netvm for $name:")
 
 		if [ "$netvm" != "(Default)" ]; then
@@ -992,9 +995,9 @@ while [ -n "$property" ]; do
 
 			default_dispvm)
 
-				get_list_of_disptemp
+				get_list disptemp
 
-				value=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
+				value=$(printf "(Default)\n(None)$LIST_DISPTEMP" |\
 					dmenu -l 50 -p "Select default dispvm for $qube:")
 
 				if [ "$value" = "(None)" ]; then
@@ -1102,9 +1105,9 @@ while [ -n "$property" ]; do
 
 			netvm)
 
-				# List netvms via 'qvm-ls'.
-				value=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-					grep '|...N....$' | cut -d '|' -f1)" |\
+				get_list netvm
+
+				value=$(printf "(Default)\n(None)\n$list" |\
 					dmenu -l 50 -p "Select netvm for $qube:")
 
 				if [ "$value" = "(None)" ]; then
@@ -1158,9 +1161,9 @@ while [ -n "$property" ]; do
 						> /dev/null 2>&1
 				else
 
-					# List templatevms via 'qvm-ls'.
-					value=$(printf "(Default)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
-						grep '|t.......$' | cut -d '|' -f1)" |\
+					get_list template
+
+					value=$(printf "(Default)\n$list" |\
 						dmenu -l 50 -p "Select template for $qube:")
 
 					if [ "$value" = "(Default)" ]; then
@@ -1396,19 +1399,35 @@ if [ -n "$volume" ]; then
 fi
 )
 
-get_list_of_disptemp() {
+get_list() {
 
-if [ -z "$LIST_OF_DISPTEMP" ]; then
+if [ "$1" = "disptemp" ]; then
 
-	# [mediocre] Look up disposable templates in a very slow way...
-	for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
-		grep '|a.......$' | cut -d '|' -f1); do
+	if [ -z "$LIST_DISPTEMP" ]; then
 
-		if qvm-prefs "$n" template_for_dispvms | grep -q True; then
+		# [mediocre] Look up disposable templates in a very slow way...
+		for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
+			grep '|a.....-.$' | cut -d '|' -f1); do
 
-			LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
-		fi
-	done
+			if qvm-prefs "$n" template_for_dispvms | grep -q True; then
+
+				LIST_DISPTEMP="$LIST_DISPTEMP\n$n"
+			fi
+		done
+	fi
+else
+
+	case $1 in
+
+		mgmt_disptemp) flags='|a.....D.$';;
+
+		netvm) flags='|...N....$';;
+
+		template) flags='|t.......$'
+
+	esac
+
+	list=$(qvm-ls --raw-data -O NAME,FLAGS | grep "$flags" | cut -d '|' -f1)
 fi
 }
 
@@ -1473,7 +1492,6 @@ while :; do
 
 	# Load 'qvm-ls' into a variable so that it doesnt
 	# need to reload again after every user operation.
-	# Sort qubes after qube label via sed and sort.
 	qube_list=$(qvm-ls --no-spinner "$1" -O NAME,STATE,LABEL,MEMORY,MAXMEM,CLASS,TEMPLATE,NETVM,DEFAULT_DISPVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX,ROOT-CURR,ROOT-USED,KERNEL |\
 		sed 's/ LABEL/ 0\@ /g; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
 		sort -k3,3 |\
