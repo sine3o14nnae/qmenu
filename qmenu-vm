@@ -11,8 +11,8 @@ chosefrom=0
 
 while [ -n "$chosefrom" ]; do
 
-	chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
-		dmenu -l 3 -i -p "dom0:" | cut -f1 -d\ )
+	chosefrom=$(printf "New qube\nGlobal preferences\nLogs\nProperty Manager" |\
+		dmenu -l 4 -i -p "dom0:" | cut -f1 -d\ )
 
 	case $chosefrom in
 
@@ -27,6 +27,10 @@ while [ -n "$chosefrom" ]; do
 		Logs)
 
 			fq_logs;;
+
+		Property)
+
+			fq_pm;;
 
 		*)
 	esac
@@ -204,6 +208,108 @@ while [ -n "$entry" ]; do
 		fi
 	fi
 done
+)
+
+fq_pm() (
+
+qubes=$(qvm-ls --no-spinner --all --exclude=dom0 -O name,label,template,netvm,default_dispvm,kernel |\
+	dmenu -l 50 | cut -f1 -d\ )
+
+if [ -n "$qubes" ]; then
+
+	property=$(printf "Label\nTemplate\nNetVM\nDefault_DispVM\nKernel" |\
+		dmenu -i -l 5 -p "Select the property you wish to change:" |\
+		awk '{print tolower($0)}')
+
+	if [ -n "$property" ]; then
+
+		case $property in
+
+			default_dispvm)
+
+				get_list_of_disptemp
+
+				value_selected=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
+					dmenu -l 50 -p "Select default dispvm:")
+
+				if [ "$value_selected" = "(None)" ]; then
+
+					value_selected="None"
+
+				elif [ "$value_selected" = "(Default)" ]; then
+
+					value_selected="--default"
+				fi;;
+
+			kernel)
+
+				value_selected=$(echo "--default" |\
+					dmenu -p "Enter the kernel:");;
+
+			label)
+
+				value_selected=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
+					dmenu -i -l 8 -p "Select label:" |\
+					awk '{print tolower($0)}');;
+
+			template)
+
+				value_selected=$(printf "(Default)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
+					grep '|t.......$' | cut -d '|' -f1)" |\
+					dmenu -l 50 -p "Select template:")
+
+				if [ "$value_selected" = "(Default)" ]; then
+
+					value_selected="--default"
+				fi;;
+
+			netvm)
+
+				value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data -O NAME,FLAGS |\
+					grep '|...N....$' | cut -d '|' -f1)" |\
+					dmenu -l 50 -p "Select netvm:")
+
+				if [ "$value_selected" = "(None)" ]; then
+
+					value_selected="None"
+
+				elif [ "$value_selected" = "(Default)" ]; then
+
+					value_selected="--default"
+				fi;;
+
+			*)
+		esac
+
+		if [ -n "$value_selected" ]; then
+
+			answer=$(printf "No\nYes" | dmenu -i\
+				-p "Do you want to change the $property of all selected qubes to $value_selected?")
+
+			if [ "$answer" = "Yes" ]; then
+
+				for qube in $qubes; do
+
+					# Label and template should not be changed while a qube is running
+					if [ "$property" = "label" ] || [ "$property" = "template" ]\
+						&& qvm-check -q --running "$qube"; then
+
+						echo "Proceed..." |\
+							dmenu -p "Error: Unable to change $property of $qube because it is not shut down." > /dev/null 2>&1
+					else
+
+						if ! qvm-prefs "$qube" "$property" "$value_selected"; then
+
+							echo "Proceed..." |\
+								dmenu -p "Error: Could not set $property of $qube to '$value_selected'!"\
+								> /dev/null 2>&1
+						fi
+					fi
+				done
+			fi
+		fi
+	fi
+fi
 )
 
 fqubes_prefs() (
