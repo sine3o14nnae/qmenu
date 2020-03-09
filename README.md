@@ -71,7 +71,7 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 * <details>
    <summary>Qubes tools</summary>
 
-  * _qvm-ls_ (For '--focused' option)
+  * _qvm-prefs_ (For '--focused' option)
   * qvm-run
   </details>
 
@@ -94,6 +94,7 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 
   * qvm-device
   * qvm-ls
+  * qvm-prefs
   </details>
 
 </details>
