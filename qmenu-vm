@@ -177,10 +177,8 @@ if LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:"); then
 
 	if ! qvm-run "$qube" "setxkbmap $LAYOUT"; then
 
-		echo "Go back..." | dmenu\
-			-p "Error: Could not set keyboard layout to '$LAYOUT' in $qube! Please check the available layouts inside the qube itself."\
-			> /dev/null 2>&1
-	fi
+		notify-send -u normal "Error: Could not set keyboard layout to '$LAYOUT' in $qube! Please check the available layouts inside the qube itself."
+	fi&
 fi
 )
 
@@ -1238,10 +1236,14 @@ else
 
 			if [ "$confirmation_final" = "Yes" ]; then
 
-				qvm-remove -f "$qube"&
+				if ! qvm-remove -f "$qube"; then
 
-				unset chosefrom
-			fi
+					notify-send -u normal "Error: Unable to remove "$qube"!"
+				fi
+
+			fi&
+
+			unset chosefrom
 		fi
 	fi
 fi
