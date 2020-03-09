@@ -8,9 +8,6 @@ from which they can quickly administer their qube
 preferences, firewall rules, applications, per-qube keyboard layouts, devices,
 etc. with only the keyboard.
 
-All qmenu tools are written in POSIX-compliant shell script and only
-depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
-
 The colors that correspond to a qube label can be adjusted by appending
 ` --{LABEL}=#{HEX TRIPLET}` for any label.
 
@@ -53,6 +50,102 @@ List, manage and configure your qubes.
      --running
      --qube=[QUBE]
      --tags=[TAG]
+
+Dependencies
+------------
+
+All qmenu tools are written in POSIX-compliant shell script and only
+depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
+
+
+<details>
+ <summary>qmenu-am</summary>
+
+* cut
+* echo
+* grep
+* printf
+* _tr_ (For '--focused' option)
+* _xdotool_ (For '--focused' option)
+* _xprop_ (For '--focused' option)
+* <details>
+   <summary>Qubes tools</summary>
+
+  * _qvm-ls_ (For '--focused' option)
+  * qvm-run
+  </details>
+
+</details>
+
+<details>
+ <summary>qmenu-dm</summary>
+
+* awk
+* cut
+* echo
+* grep
+* printf
+* sed
+* sort
+* tr
+* wc
+* <details>
+   <summary>Qubes tools</summary>
+
+  * qvm-device
+  * qvm-ls
+  </details>
+
+</details>
+
+<details>
+ <summary>qmenu-vm</summary>
+
+- dom0
+   * awk
+   * cut
+   * echo
+   * grep
+   * ls
+   * _notify-send_
+   * printf
+   * sed
+   * sort
+   * tr
+   * wc
+   * _xdotool_ (For '--focused' option)
+   * _xprop_ (For '--focused' option)
+   * <details>
+      <summary>Qubes tools</summary>
+
+     * qubes-vm-boot-from-device
+     * qubes-prefs
+     * qvm-appmenus
+     * qvm-block
+     * qvm-check
+     * qvm-clone
+     * qvm-create
+     * qvm-devices
+     * qvm-firewall
+     * qvm-kill
+     * qvm-ls
+     * qvm-pause
+     * qvm-pci
+     * qvm-pool
+     * qvm-prefs
+     * qvm-remove
+     * qvm-run
+     * qvm-service
+     * qvm-shutdown
+     * qvm-start
+     * qvm-tags
+     * qvm-unpause
+     * qvm-volume
+     </details>
+
+- domU
+   * _setxkbmap_ (For switching keyboard layouts)
+</details>
 
 Installation
 ------------
