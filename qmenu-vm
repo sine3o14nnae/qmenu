@@ -169,7 +169,7 @@ fq_keyboard() (
 # implications so we will not switch to use that method.
 if LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:"); then
 
-	if test -d /usr/share/X11/xkb/symbols/"$LAYOUT"; then
+	if [ -d /usr/share/X11/xkb/symbols/"$LAYOUT" ]; then
 
 		LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/"$LAYOUT" |\
 			dmenu -l 50 -p "$qube:")
