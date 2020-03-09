@@ -9,13 +9,10 @@ get_qube_label() {
 
 # Change label colors according to user input.
 qube_label=$(echo "$@" | tr ' ' '\n' |\
-	grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
+	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
 if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 }
-
-
-
 
 
 if [ "$2"  = "--light-theme" ]; then
@@ -57,7 +54,7 @@ case $device_type in
 	*) exit 2
 esac
 
-qube_list=$(qvm-ls --no-spinner --running -O NAME,LABEL |\
+qube_list=$(qvm-ls --no-spinner --running -O name,label |\
 	grep -v '^dom0 \|^sys-usb' |\
 	sed '1d; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
 	sort -k2,2 |\

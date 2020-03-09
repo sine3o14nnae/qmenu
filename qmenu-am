@@ -29,7 +29,7 @@ case $1 in
 
 		# Change label colors according to user input.
 		qube_label=$(echo "$@" | tr ' ' '\n' |\
-			grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
+			grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
 		if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 

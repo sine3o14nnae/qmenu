@@ -41,7 +41,7 @@ fmenu_domu() (
 
 # Change label colors according to user input.
 qube_label=$(echo "$@" | tr ' ' '\n' |\
-	grep "\--$(qvm-ls --raw-data "$qube" -O LABEL)" | cut -d= -f2)
+	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
 if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 
@@ -215,7 +215,7 @@ qubes=$(qvm-ls --no-spinner --all --exclude=dom0 -O name,label,template,netvm,de
 
 if [ -n "$qubes" ]; then
 
-	property=$(printf "Label\nTemplate\nNetVM\nDefault_DispVM\nKernel" |\
+	property=$(printf "Default_DispVM\nKernel\nLabel\nTemplate\nNetVM" |\
 		dmenu -i -l 5 -p "Select the property you wish to change:" |\
 		awk '{print tolower($0)}')
 
@@ -1434,9 +1434,6 @@ fi
 }
 
 
-
-
-
 if [ "$2" = "--light-theme" ]; then
 
 	theme_0='#ffffff'
@@ -1494,7 +1491,7 @@ while :; do
 
 	# Load 'qvm-ls' into a variable so that it doesnt
 	# need to reload again after every user operation.
-	qube_list=$(qvm-ls --no-spinner "$1" -O NAME,STATE,LABEL,MEMORY,MAXMEM,CLASS,TEMPLATE,NETVM,DEFAULT_DISPVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX,ROOT-CURR,ROOT-USED,KERNEL |\
+	qube_list=$(qvm-ls --no-spinner "$1" -O name,state,label,memory,maxmem,class,template,netvm,default_dispvm,ip,priv-max,priv-curr,priv-used,root-max,root-curr,root-used,kernel |\
 		sed 's/ LABEL/ 0\@ /g; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
 		sort -k3,3 |\
 		sed 's/ 0\@ / LABEL/g; s/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
