@@ -33,8 +33,8 @@ List and manage your connected devices.
     Usage: qmenu-dm [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
 
      --all
-     --audio-input
      --block
+     --mic
      --usb
 
 ### qmenu-vm ###
@@ -62,9 +62,7 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
  <summary>qmenu-am</summary>
 
 * cut
-* echo
 * grep
-* printf
 * _tr_ (For '--focused' option)
 * _xdotool_ (For '--focused' option)
 * _xprop_ (For '--focused' option)
@@ -82,9 +80,7 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 
 * awk
 * cut
-* echo
 * grep
-* printf
 * sed
 * sort
 * tr
@@ -105,11 +101,9 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 - dom0
    * awk
    * cut
-   * echo
    * grep
    * ls
    * _notify-send_
-   * printf
    * sed
    * sort
    * tr
