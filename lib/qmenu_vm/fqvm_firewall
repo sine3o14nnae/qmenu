@@ -40,45 +40,38 @@ while [ -n "$rulenumber" ]; do
 
 				RULEARGS="$action"
 
-				if specialtarget=$(: | dmenu -p "ACTION=$RULEARGS <specialtarget>"); then
+				specialtarget=$(: | dmenu -p "ACTION=$RULEARGS <specialtarget>") &&
 
 					RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
-				fi
 
-				if dsthost=$(: | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
+				dsthost=$(: | dmenu -p "ACTION=$RULEARGS <dsthost>") &&
 
 					RULEARGS="$RULEARGS DSTHOST=$dsthost"
-				fi
 
-				if proto=$(: | dmenu -p "ACTION=$RULEARGS <proto>"); then
+				proto=$(: | dmenu -p "ACTION=$RULEARGS <proto>") &&
 
 					RULEARGS="$RULEARGS PROTO=$proto"
-				fi
 
 				if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
 
-					if dstports=$(: | dmenu -p "ACTION=$RULEARGS <dstports>"); then
+					dstports=$(: | dmenu -p "ACTION=$RULEARGS <dstports>") &&
 
 						RULEARGS="$RULEARGS DSTPORTS=$dstports"
-					fi
 
 				elif [ "$proto" = "icmp" ]; then
 
-					if icmptype=$(: | dmenu -p "ACTION=$RULEARGS <icmptype>"); then
+					icmptype=$(: | dmenu -p "ACTION=$RULEARGS <icmptype>") &&
 
 						RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
-					fi
 				fi
 
-				if expire=$(: | dmenu -p "ACTION=$RULEARGS <expire>"); then
+				expire=$(: | dmenu -p "ACTION=$RULEARGS <expire>") &&
 
 					RULEARGS="EXPIRE=$expire"
-				fi
 
-				if comment=$(: | dmenu -p "ACTION=$RULEARGS <comment>"); then
+				comment=$(: | dmenu -p "ACTION=$RULEARGS <comment>") &&
 
 					RULEARGS="$RULEARGS COMMENT=$comment"
-				fi
 
 				answer=$(printf "No\nYes" | dmenu -i\
 					-p "Add the following rule to $qube? {{ ACTION=$RULEARGS }}")
@@ -94,12 +87,11 @@ while [ -n "$rulenumber" ]; do
 
 					RULEARGS=$(echo "$RULEARGS" | awk '{print tolower($0)}')
 
-					if ! qvm-firewall "$qube" add $beforerule $RULEARGS; then
+					qvm-firewall "$qube" add $beforerule $RULEARGS ||
 
 						echo "Go back..." | dmenu\
 							-p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
 							> /dev/null 2>&1
-					fi
 				fi
 			fi
 		fi

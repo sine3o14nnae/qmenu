@@ -89,7 +89,7 @@ while [ -n "$device" ]; do
 
 				if [ "$prompt" = "Yes" ]; then
 
-					if qvm-device "$device_type" attach -q "$qube" "$device_id"; then exit 0; fi
+					qvm-device "$device_type" attach -q "$qube" "$device_id" && exit 0
 
 					echo "Quit..." |\
 						dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
@@ -106,7 +106,7 @@ while [ -n "$device" ]; do
 
 			if [ "$prompt" = "Yes" ]; then
 
-				if qvm-device "$device_type" detach -q "$qube" "$device_id"; then exit 0; fi
+				qvm-device "$device_type" detach -q "$qube" "$device_id" && exit 0
 
 				echo "Quit..." |\
 					dmenu -p "Error: Could not detach device!" > /dev/null 2>&1

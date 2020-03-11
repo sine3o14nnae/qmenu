@@ -20,10 +20,9 @@ while [ -n "$property" ]; do
 				for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
 					grep '|a.....-.$' | cut -d '|' -f1); do
 
-					if qvm-prefs "$n" template_for_dispvms | grep -q True; then
+					qvm-prefs "$n" template_for_dispvms | grep -q True &&
 
 						LIST_DISPTEMP="$LIST_DISPTEMP\n$n"
-					fi
 				done
 			fi
 
@@ -39,7 +38,7 @@ while [ -n "$property" ]; do
 
 		default_kernel)
 
-			if value=$(: | dmenu -p "Enter default kernel:"); then
+			value=$(: | dmenu -p "Enter default kernel:") &&
 
 				answer=$(printf "No\nYes" |\
 					dmenu -i -p "Set default kernel to $value?")
@@ -47,8 +46,7 @@ while [ -n "$property" ]; do
 				if [ "$answer" != "Yes" ]; then
 
 					unset value
-				fi
-			fi;;
+				fi;;
 
 		default_netvm)
 
@@ -124,13 +122,12 @@ while [ -n "$property" ]; do
 
 			if [ -n "$value" ] && [ "$value" != "(None)" ]; then
 
-				if ! qvm-check -q --running "$value"; then
+				qvm-check -q --running "$value" ||
 
 					echo "Go back..." |\
 						dmenu -p "$value needs to be running!" > /dev/null 2>&1
 
 					unset value
-				fi
 			fi;;
 
 		*)
@@ -140,12 +137,11 @@ while [ -n "$property" ]; do
 
 		if [ "$value" = "(None)" ]; then value=''; fi
 
-		if ! qubes-prefs "$property" "$value"; then
+		qubes-prefs "$property" "$value" ||
 
 			echo "Go back..." |\
 				dmenu -p "Error: Could not set $property to '$value'!"\
 				> /dev/null 2>&1
-		fi
 
 		unset value
 	fi

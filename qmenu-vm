@@ -124,10 +124,9 @@ while [ -n "$chosefrom" ]; do
 
 			if [ "$answer" = "Yes" ]; then
 
-				if qvm-check -q --running "$qube"; then
+				qvm-check -q --running "$qube" &&
 
 					$(qvm-shutdown --wait "$qube" && qvm-start "$qube")&
-				fi
 			fi;;
 
 		Remove)
@@ -172,7 +171,7 @@ case $1 in
 	template) flags='|t.......$'
 esac
 
-list=$(qvm-ls --raw-data -O NAME,FLAGS | grep "$flags" | cut -d '|' -f1)
+list=$(qvm-ls --raw-data -O name,flags | grep "$flags" | cut -d '|' -f1)
 }
 
 

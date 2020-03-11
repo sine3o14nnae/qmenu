@@ -1,4 +1,4 @@
-if name=$(: | dmenu -p "Enter the name for the new qube:"); then
+name=$(: | dmenu -p "Enter the name for the new qube:") &&
 
 	label=$(printf "Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack" |\
 		dmenu -i -l 8 -p "Select label for $name:" | awk '{print tolower($0)}')
@@ -7,11 +7,10 @@ if name=$(: | dmenu -p "Enter the name for the new qube:"); then
 
 		QUBEARGS="-l $label"
 
-		if class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-			dmenu -i -l 4 -p "Choose a class for $name:"); then
+		class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+			dmenu -i -l 4 -p "Choose a class for $name:") &&
 
 			QUBEARGS="$QUBEARGS -C $class"
-		fi
 
 		get_list template
 
@@ -70,4 +69,3 @@ if name=$(: | dmenu -p "Enter the name for the new qube:"); then
 			fi
 		done
 	fi
-fi

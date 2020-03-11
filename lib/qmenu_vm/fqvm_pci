@@ -8,7 +8,7 @@ else
 
 	list_pci=$(qvm-pci)
 
-	if ! qvm-prefs "$qube" maxmem | grep -q ^0; then
+	qvm-prefs "$qube" maxmem | grep -q ^0 ||
 
 		answer=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
 			dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
@@ -18,9 +18,8 @@ else
 
 			qvm-prefs "$qube" maxmem 0
 		fi
-	fi
 
-	if qvm-prefs "$qube" virt_mode | grep -q pvh; then
+	qvm-prefs "$qube" virt_mode | grep -q pvh &&
 
 		answer=$(printf "Continue anyways\nSelect another virtualisation mode" |\
 			dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
@@ -28,13 +27,11 @@ else
 
 		if [ "$answer" = "Select" ]; then
 
-			if virtmode=$(printf "HVM\nPV" |\
-				dmenu -l 2 -i -p "Select virtualisation mode for $qube:"); then
+			virtmode=$(printf "HVM\nPV" |\
+				dmenu -l 2 -i -p "Select virtualisation mode for $qube:") &&
 
 				qvm-prefs "$qube" virt_mode "$virtmode"
-			fi
 		fi
-	fi
 
 	device=0
 
@@ -55,12 +52,11 @@ else
 
 				if [ "$answer" = "Yes" ]; then
 
-					if ! qvm-pci detach "$qube" "$device_src":"$device_bdf"; then
+					qvm-pci detach "$qube" "$device_src":"$device_bdf" ||
 
 						echo "Go back..." | dmenu\
 							-p "Error: Failed to detach \"$device_bdf\" from $qube!"\
 							> /dev/null 2>&1
-					fi
 
 					list_pci=$(qvm-pci)
 				fi
@@ -89,12 +85,11 @@ else
 						fi
 					fi
 
-					if ! qvm-pci attach --persistent $pci_option "$qube" "$device_src:$device_bdf"; then
+					qvm-pci attach --persistent $pci_option "$qube" "$device_src:$device_bdf" ||
 
 						echo "Go back..." | dmenu\
 							-p "Error: Failed to attach '$device_bdf' to $qube!"\
 							> /dev/null 2>&1
-					fi
 
 					list_pci=$(qvm-pci)
 				fi

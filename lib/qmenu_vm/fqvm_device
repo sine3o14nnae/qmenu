@@ -45,11 +45,10 @@ else
 
 					unset device
 
-					if ! qvm-$device_type attach -q "$qube" "$device_id"; then
+					qvm-$device_type attach -q "$qube" "$device_id" ||
 
 						echo "Go back..." | dmenu -p "Error: Could not attach device!"\
 							> /dev/null 2>&1
-					fi
 				fi
 
 			elif [ "$holds_qube" = "$qube" ]; then
@@ -61,11 +60,10 @@ else
 
 					unset device
 
-					if ! qvm-$device_type detach -q "$holds_qube" "$device_id"; then
+					qvm-$device_type detach -q "$holds_qube" "$device_id" ||
 
 						echo "Go back..." | dmenu -p "Error: Could not detach device!"\
 							> /dev/null 2>&1
-					fi
 				fi
 			else
 
@@ -76,14 +74,12 @@ else
 
 					unset device
 
-					if qvm-$device_type detach -q "$holds_qube" "$device_id"; then
+					qvm-$device_type detach -q "$holds_qube" "$device_id" &&
 
-						if ! qvm-$device_type attach -q "$qube" "$device_id"; then
+						qvm-$device_type attach -q "$qube" "$device_id" ||
 
 							echo "Go back..." | dmenu\
 								-p "Error: Could not attach device!" > /dev/null 2>&1
-						fi
-					fi
 				fi
 			fi
 		fi

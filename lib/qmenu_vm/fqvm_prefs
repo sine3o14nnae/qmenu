@@ -28,10 +28,9 @@ while [ -n "$property" ]; do
 					for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
 						grep '|a.....-.$' | cut -d '|' -f1); do
 
-						if qvm-prefs "$n" template_for_dispvms | grep -q True; then
+						qvm-prefs "$n" template_for_dispvms | grep -q True &&
 
 							LIST_DISPTEMP="$LIST_DISPTEMP\n$n"
-						fi
 					done
 				fi
 
@@ -59,8 +58,8 @@ while [ -n "$property" ]; do
 
 			kernel)
 
-				if value=$(echo "--default" |\
-					dmenu -p "Enter the kernel to be used by $qube:"); then
+				value=$(echo "--default" |\
+					dmenu -p "Enter the kernel to be used by $qube:") &&
 
 					answer=$(printf "No\nYes" |\
 						dmenu -i -p "Set kernel of $qube to $value?")
@@ -68,13 +67,12 @@ while [ -n "$property" ]; do
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			kernelopts)
 
-				if value=$(echo "--default" |\
-					dmenu -p "Enter the kernel options for $qube:"); then
+				value=$(echo "--default" |\
+					dmenu -p "Enter the kernel options for $qube:") &&
 
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set kernel options for $qube to \"$value\"?")
@@ -82,8 +80,7 @@ while [ -n "$property" ]; do
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			label)
 
@@ -101,8 +98,8 @@ while [ -n "$property" ]; do
 
 			mac)
 
-				if value=$(echo "--default" |\
-					dmenu -p "Enter the MAC address for $qube:"); then
+				value=$(echo "--default" |\
+					dmenu -p "Enter the MAC address for $qube:") &&
 
 					answer=$(printf "No\nYes" |\
 						dmenu -i -p "Set MAC address of $qube to $value?")
@@ -110,36 +107,33 @@ while [ -n "$property" ]; do
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			maxmem)
 
-				if value=$(echo "--default" |\
-					dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.")
+				value=$(echo "--default" |\
+					dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.") &&
 
-				then answer=$(printf "No\nYes" | dmenu -i\
+					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set maximum memory of $qube to $value MB?")
 
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			memory)
 
-				if value=$(echo "--default" | dmenu\
-					-p "Enter the amount of initial memory in MB to be allocated to $qube:")
+				value=$(echo "--default" | dmenu\
+					-p "Enter the amount of initial memory in MB to be allocated to $qube:") &&
 
-				then answer=$(printf "No\nYes" | dmenu -i\
+					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set initial memory of $qube to $value MB?")
 
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			netvm)
 
@@ -164,31 +158,29 @@ while [ -n "$property" ]; do
 
 			qrexec_timeout)
 
-				if value=$(echo "--default" | dmenu\
-					-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure for $qube:")
+				value=$(echo "--default" | dmenu\
+					-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure for $qube:") &&
 
-				then answer=$(printf "No\nYes" | dmenu -i\
+					answer=$(printf "No\nYes" | dmenu -i\
 					-p "Set qrexec timeout for $qube to $value seconds?")
 
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			shutdown_timeout)
 
-				if value=$(echo "--default" | dmenu\
-					-p "Enter the time in seconds to wait for shutdown, after which $qube may be forcefully powered off:")
+				value=$(echo "--default" | dmenu\
+					-p "Enter the time in seconds to wait for shutdown, after which $qube may be forcefully powered off:") &&
 
-				then answer=$(printf "No\nYes" | dmenu -i\
+					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set shutdown timeout for $qube to $value seconds?")
 
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			template)
 
@@ -217,17 +209,16 @@ while [ -n "$property" ]; do
 
 			vcpus)
 
-				if value=$(echo "--default" | dmenu\
-					-p "Enter the number of CPU cores that should be made available to $qube:")
+				value=$(echo "--default" | dmenu\
+					-p "Enter the number of CPU cores that should be made available to $qube:") &&
 
-				then answer=$(printf "No\nYes" | dmenu -i\
+					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set number of CPU cores available to $qube to $value?")
 
 					if [ "$answer" != "Yes" ]; then
 
 						unset value
-					fi
-				fi;;
+					fi;;
 
 			virt_mode)
 
@@ -239,12 +230,11 @@ while [ -n "$property" ]; do
 
 		if [ -n "$value" ]; then
 
-			if ! qvm-prefs "$qube" "$property" "$value"; then
+			qvm-prefs "$qube" "$property" "$value" ||
 
 				echo "Go back..." |\
 					dmenu -p "Error: Could not set $property to '$value'!"\
 					> /dev/null 2>&1
-			fi
 
 			unset value
 		fi

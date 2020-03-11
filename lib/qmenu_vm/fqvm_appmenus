@@ -19,13 +19,12 @@ while [ -n "$option" ]; do
 
 				# Check validity of input to prevent whitelisted-appmenus.list
  				# from being filled with garbage.
-				if qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
-					cut -f1 -d\  | grep -q "^$applications$"; then
+				qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
+					cut -f1 -d\  | grep -q "^$applications$" &&
 
 					printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
 
 					applications_modified=1
-				fi
 			fi
 		done
 

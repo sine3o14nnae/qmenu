@@ -19,10 +19,9 @@ if [ -n "$qubes" ]; then
 					for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
 						grep '|a.....-.$' | cut -d '|' -f1); do
 
-						if qvm-prefs "$n" template_for_dispvms | grep -q True; then
+						qvm-prefs "$n" template_for_dispvms | grep -q True &&
 
 							LIST_DISPTEMP="$LIST_DISPTEMP\n$n"
-						fi
 					done
 				fi
 
@@ -97,12 +96,11 @@ if [ -n "$qubes" ]; then
 							dmenu -p "Error: Unable to change $property of $qube because it is not shut down." > /dev/null 2>&1
 					else
 
-						if ! qvm-prefs "$qube" "$property" "$value"; then
+						qvm-prefs "$qube" "$property" "$value" ||
 
 							echo "Proceed..." |\
 								dmenu -p "Error: Could not set $property of $qube to '$value'!"\
 								> /dev/null 2>&1
-						fi
 					fi
 				done
 			fi

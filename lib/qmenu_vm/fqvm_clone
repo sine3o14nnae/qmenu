@@ -1,4 +1,4 @@
-if clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:"); then
+clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
 
 	option=0
 
@@ -18,19 +18,17 @@ if clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:"); then
 
 				if [ "$option_adv" = "Class" ]; then
 
-					if class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
-						dmenu -i -l 4 -p "Choose a class for $clone_name:"); then
+					class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+						dmenu -i -l 4 -p "Choose a class for $clone_name:") &&
 
-					class="-C $class"
-					fi
+						class="-C $class"
 
 				elif [ "$option_adv" = "Pool" ]; then
 
-					if pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
-						-p "Select a pool for $clone_name:" | cut -f1 -d\ ); then
+					pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
+						-p "Select a pool for $clone_name:" | cut -f1 -d\ ) &&
 
-					pool="-P $pool"
-					fi
+						pool="-P $pool"
 				fi
 			done
 
@@ -41,4 +39,3 @@ if clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:"); then
 			qvm-clone $class $pool "$qube" "$clone_name"&
 		fi
 	done
-fi
