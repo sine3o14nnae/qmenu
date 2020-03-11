@@ -11,7 +11,7 @@ get_qube_label() {
 qube_label=$(echo "$@" | tr ' ' '\n' |\
 	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
-if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
+[ -z "$qube_label" ] && qube_label=$theme_1
 }
 
 
@@ -42,7 +42,7 @@ case $1 in
 
 		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --block\n --mic\n --usb\n\n"
 
-		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
+		[ "$1" = "--help" ] && exit 0; exit 2
 esac
 
 qube_list=$(qvm-ls --no-spinner --running -O name,label |\
@@ -57,10 +57,7 @@ while [ -n "$device" ]; do
 
 	device=$(echo "$devices_list" | sort -r -k1,2 | dmenu -l 32)
 
-	if [ "$1" = "--all" ]; then
-
-		device_type=$(echo "$device" | cut -d\| -f2)
-	fi
+	[ "$1" = "--all" ] && device_type=$(echo "$device" | cut -d\| -f2)
 
 	if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 

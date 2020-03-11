@@ -14,10 +14,7 @@ else
 			dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
 			| cut -f1 -d\ )
 
-		if [ "$answer" = "Disable" ]; then
-
-			qvm-prefs "$qube" maxmem 0
-		fi
+		[ "$answer" = "Disable" ] && qvm-prefs "$qube" maxmem 0
 
 	qvm-prefs "$qube" virt_mode | grep -q pvh &&
 
@@ -74,15 +71,12 @@ else
 
 					if [ "$bdf_count" -gt 1 ]; then
 
-						if [ -n "$pci_option" ]; then unset pci_option; fi
+						[ -n "$pci_option" ] && unset pci_option
 
 							answer=$(printf "No, attach without this option\nYes" | dmenu -i\
 								-p "\"$device_bdf\" is most likely to be attached with the option 'no-strict-reset' enabled. Please be aware of the security implications! Do you want to attach \"$device_bdf\" with the option 'no-strict-reset' set to true?")
 
-						if [ "$answer" = "Yes" ]; then
-
-							pci_option="-o no-strict-reset=True"
-						fi
+						[ "$answer" = "Yes" ] && pci_option="-o no-strict-reset=True"
 					fi
 
 					qvm-pci attach --persistent $pci_option "$qube" "$device_src:$device_bdf" ||

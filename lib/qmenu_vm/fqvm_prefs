@@ -64,10 +64,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" |\
 						dmenu -i -p "Set kernel of $qube to $value?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			kernelopts)
 
@@ -77,10 +74,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set kernel options for $qube to \"$value\"?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			label)
 
@@ -104,10 +98,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" |\
 						dmenu -i -p "Set MAC address of $qube to $value?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			maxmem)
 
@@ -117,10 +108,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set maximum memory of $qube to $value MB?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			memory)
 
@@ -130,10 +118,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set initial memory of $qube to $value MB?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			netvm)
 
@@ -164,10 +149,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 					-p "Set qrexec timeout for $qube to $value seconds?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			shutdown_timeout)
 
@@ -177,10 +159,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set shutdown timeout for $qube to $value seconds?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			template)
 
@@ -196,10 +175,7 @@ while [ -n "$property" ]; do
 					value=$(printf "(Default)\n$list" |\
 						dmenu -l 50 -p "Select template for $qube:")
 
-					if [ "$value" = "(Default)" ]; then
-
-						value="--default"
-					fi
+					[ "$value" = "(Default)" ] && value="--default"
 				fi;;
 
 			template_for_dispvms)
@@ -215,10 +191,7 @@ while [ -n "$property" ]; do
 					answer=$(printf "No\nYes" | dmenu -i\
 						-p "Set number of CPU cores available to $qube to $value?")
 
-					if [ "$answer" != "Yes" ]; then
-
-						unset value
-					fi;;
+					[ "$answer" != "Yes" ] && unset value;;
 
 			virt_mode)
 

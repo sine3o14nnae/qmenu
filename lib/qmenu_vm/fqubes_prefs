@@ -43,10 +43,7 @@ while [ -n "$property" ]; do
 				answer=$(printf "No\nYes" |\
 					dmenu -i -p "Set default kernel to $value?")
 
-				if [ "$answer" != "Yes" ]; then
-
-					unset value
-				fi;;
+				[ "$answer" != "Yes" ] && unset value;;
 
 		default_netvm)
 
@@ -135,7 +132,7 @@ while [ -n "$property" ]; do
 
 	if [ -n "$value" ]; then
 
-		if [ "$value" = "(None)" ]; then value=''; fi
+		[ "$value" = "(None)" ] && value=''
 
 		qubes-prefs "$property" "$value" ||
 

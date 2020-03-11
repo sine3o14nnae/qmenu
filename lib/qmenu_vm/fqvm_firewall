@@ -23,14 +23,11 @@ while [ -n "$rulenumber" ]; do
 			answer=$(printf "No\nYes" |\
 				dmenu -i -p "Remove rule $rulenumber?")
 
-			if [ "$answer" = "Yes" ]; then
-
-				qvm-firewall "$qube" del --rule-no "$rulenumber"
-			fi
+			[ "$answer" = "Yes" ] && qvm-firewall "$qube" del --rule-no "$rulenumber"
 
 		elif [ "$option" = "Add" ]; then
 
-			if [ -n "$RULEARGS" ]; then unset RULEARGS; fi
+			[ -n "$RULEARGS" ] && unset RULEARGS
 
 			action=$(printf "Accept\nDrop" |\
 				dmenu -i -l 2 -p "Select action for the new firewall rule:" |\
@@ -78,7 +75,7 @@ while [ -n "$rulenumber" ]; do
 
 				if [ "$answer" = "Yes" ]; then
 
-					if [ -n "$beforerule" ]; then unset beforerule; fi
+					[ -n "$beforerule" ] && unset beforerule
 
 					if [ "$rulenumber" != "NO" ]; then
 

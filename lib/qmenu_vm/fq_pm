@@ -55,10 +55,7 @@ if [ -n "$qubes" ]; then
 				value=$(printf "(Default)\n$list" |\
 					dmenu -l 50 -p "Select template:")
 
-				if [ "$value" = "(Default)" ]; then
-
-					value="--default"
-				fi;;
+				[ "$value" = "(Default)" ] && value="--default";;
 
 			netvm)
 

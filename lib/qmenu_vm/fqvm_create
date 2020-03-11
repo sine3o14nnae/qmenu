@@ -29,7 +29,7 @@ name=$(: | dmenu -p "Enter the name for the new qube:") &&
 
 		if [ "$netvm" != "(Default)" ]; then
 
-			if [ "$netvm" = "(None)" ]; then unset netvm; fi
+			[ "$netvm" = "(None)" ] && unset netvm
 
 			QUBEARGS="$QUBEARGS --prop netvm=$netvm"
 		fi
@@ -58,7 +58,7 @@ name=$(: | dmenu -p "Enter the name for the new qube:") &&
 					pool=$(qvm-pool --list | sed '1d' |\
 						dmenu -i -l 10 -p "Select a pool for $name:" | cut -f1 -d\ )
 
-					if [ -n "$pool" ]; then pool="-P $pool"; fi
+					[ -n "$pool" ] && pool="-P $pool"
 				fi
 
 			elif [ "$option" = "Create" ]; then

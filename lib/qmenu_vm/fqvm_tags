@@ -14,10 +14,7 @@ while [ -n "$tags" ]; do
 				answer=$(printf "No\nYes" |\
 					dmenu -i -p "Remove tag '$tag' from $qube?")
 
-				if [ "$answer" = "Yes" ]; then
-
-					qvm-tags "$qube" del "$tag"
-				fi
+				[ "$answer" = "Yes" ] && qvm-tags "$qube" del "$tag"
 			else
 
 				qvm-tags "$qube" add "$tag"

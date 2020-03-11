@@ -16,21 +16,13 @@ while [ -n "$chosefrom" ]; do
 
 	case $chosefrom in
 
-		New)
+		New) . $qfd/fqvm_create;;
 
-			. $qfd/fqvm_create;;
+		Global) . $qfd/fqubes_prefs;;
 
-		Global)
+		Logs) . $qfd/fq_logs;;
 
-			. $qfd/fqubes_prefs;;
-
-		Logs)
-
-			. $qfd/fq_logs;;
-
-		Property)
-
-			. $qfd/fq_pm;;
+		Property) . $qfd/fq_pm;;
 
 		*)
 	esac
@@ -43,7 +35,7 @@ fmenu_domu() (
 qube_label=$(echo "$@" | tr ' ' '\n' |\
 	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
-if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
+[ -z "$qube_label" ] && qube_label=$theme_1
 
 chosefrom=0
 
@@ -54,106 +46,69 @@ while [ -n "$chosefrom" ]; do
 
 	case $chosefrom in
 
-		Applications)
+		Applications) . $qfd/fqvm_appmenus;;
 
-			. $qfd/fqvm_appmenus;;
+		Audio) . $qfd/fqvm_device;;
 
-		Audio)
+		Block) . $qfd/fqvm_device;;
 
-			. $qfd/fqvm_device;;
+		Boot) qvm-start --skip-if-running "$qube"&;;
 
-		Block)
+		Bootfrom) qubes-vm-boot-from-device "$qube";;
 
-			. $qfd/fqvm_device;;
+		Clone) . $qfd/fqvm_clone;;
 
-		Boot)
+		Command) . $qfd/fqvm_run;;
 
-			qvm-start --skip-if-running "$qube"&;;
+		Disk) . $qfd/fqvm_volume;;
 
-		Bootfrom)
+		Firewall) . $qfd/fqvm_firewall;;
 
-			qubes-vm-boot-from-device "$qube";;
-
-		Clone)
-
-			. $qfd/fqvm_clone;;
-
-		Command)
-
-			. $qfd/fqvm_run;;
-
-		Disk)
-
-			. $qfd/fqvm_volume;;
-
-		Firewall)
-
-			. $qfd/fqvm_firewall;;
-
-		Keyboard)
-
-			. $qfd/fq_keyboard;;
+		Keyboard) . $qfd/fq_keyboard;;
 
 		Kill)
 
 			answer=$(printf "No\nYes" | dmenu -i -p "Kill $qube?")
 
-			if [ "$answer" = "Yes" ]; then qvm-kill "$qube"& fi;;
+			[ "$answer" = "Yes" ] && qvm-kill "$qube"&;;
 
-		Logs)
-
-			. $qfd/fq_logs;;
+		Logs) . $qfd/fq_logs;;
 
 		Pause)
 
 			answer=$(printf "No\nYes" | dmenu -i -p "Pause $qube?")
 
-			if [ "$answer" = "Yes" ]; then qvm-pause "$qube"& fi;;
+			[ "$answer" = "Yes" ] && qvm-pause "$qube"&;;
 
-		PCI)
+		PCI) . $qfd/fqvm_pci;;
 
-			. $qfd/fqvm_pci;;
-
-		Preferences)
-
-			. $qfd/fqvm_prefs;;
+		Preferences) . $qfd/fqvm_prefs;;
 
 		Reboot)
 
 			answer=$(printf "No\nYes" | dmenu -i -p "Reboot $qube?")
 
-			if [ "$answer" = "Yes" ]; then
+			[ "$answer" = "Yes" ] &&
 
 				qvm-check -q --running "$qube" &&
 
-					$(qvm-shutdown --wait "$qube" && qvm-start "$qube")&
-			fi;;
+					$(qvm-shutdown --wait "$qube" && qvm-start "$qube")&;;
 
-		Remove)
+		Remove) . $qfd/fqvm_remove;;
 
-			. $qfd/fqvm_remove;;
-
-		Services)
-
-			. $qfd/fqvm_service;;
+		Services) . $qfd/fqvm_service;;
 
 		Shutdown)
 
 			answer=$(printf "No\nYes" | dmenu -i -p "Shutdown $qube?")
 
-			if [ "$answer" = "Yes" ]; then qvm-shutdown "$qube"& fi;;
+			[ "$answer" = "Yes" ] && qvm-shutdown "$qube"&;;
 
-		Tags)
+		Tags) . $qfd/fqvm_tags;;
 
-			. $qfd/fqvm_tags;;
+		Unpause) qvm-unpause "$qube"&;;
 
-		Unpause)
-
-			qvm-unpause "$qube"&;;
-
-		USB)
-
-			. $qfd/fqvm_device;;
+		USB) . $qfd/fqvm_device;;
 
 		*)
 	esac
@@ -211,15 +166,7 @@ case $1 in
 
 		qube=$(echo "$1" | cut -d= -f2)
 
-		if [ "$qube" = "dom0" ]; then
-
-			fmenu_dom0
-		else
-
-			fmenu_domu "$@"
-		fi
-
-		exit 1;;
+		if [ "$qube" = "dom0" ]; then fmenu_dom0; else fmenu_domu "$@"; fi; exit 1;;
 
 	--all|--halted|--paused|--running|--tags=*);;
 
@@ -227,7 +174,7 @@ case $1 in
 
 		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
 
-		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
+		[ "$1" = "--help" ] && exit 0; exit 2
 esac
 
 while :; do
@@ -245,17 +192,13 @@ while :; do
 
 		qubes=$(echo "$qube_list" | dmenu -l 50 | cut -f1 -d\ )
 
-		if [ -z "$qubes" ]; then exit 1; fi
+		[ -z "$qubes" ] && exit 1
 
 		for qube in $qubes; do
 
-			if [ "$qube" = "dom0" ]; then
+			if [ "$qube" = "dom0" ]; then fmenu_dom0
 
-				fmenu_dom0
-
-			elif [ "$qube" != "NAME" ]; then
-
-				fmenu_domu "$@"
+			elif [ "$qube" != "NAME" ]; then fmenu_domu "$@"
 			fi
 		done
 	done

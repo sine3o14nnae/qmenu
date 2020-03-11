@@ -38,10 +38,9 @@ while [ -n "$services" ]; do
 
 					echo "Go back..." | dmenu -p "Error: Could not unset '$service'!"\
 						> /dev/null 2>&1
-				fi
 			fi
 
-			if [ -n "$unset" ]; then unset unset; fi
+			[ -n "$unset" ] && unset unset
 		done
 	fi
 done

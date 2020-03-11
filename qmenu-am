@@ -18,20 +18,20 @@ case $1 in
 			"$HOME"/.local/share/applications/*.desktop\
 			/usr/share/applications/*.desktop)
 
-		chosen=$(printf = && echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
+		chosen=$(printf =; echo "$app_list" | grep ':Name=' | cut -d= -f2- |\
 			dmenu -f -nb "$theme_0" -nf "$theme_1" -sb "$theme_1" -sf "$theme_0") || exit 1;;
 
 	--focused)
 
 		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
 
-		if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then exit 2; fi
+		[ "$qube" = "_QUBES_VMNAME:  not found." ] && exit 2
 
 		# Change label colors according to user input.
 		qube_label=$(echo "$@" | tr ' ' '\n' |\
 			grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
 
-		if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
+		[ -z "$qube_label" ] && qube_label=$theme_1
 
 		app_list=$(grep '^Name=\|^Exec='\
 			"$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop)
@@ -43,7 +43,7 @@ case $1 in
 
 		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n"
 
-		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
+		[ "$1" = "--help" ] && exit 0; exit 2
 esac
 
 $(echo "$app_list" | grep "$(echo "$app_list" | grep "$chosen$" |\

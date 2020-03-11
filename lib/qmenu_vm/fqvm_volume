@@ -26,10 +26,7 @@ if [ -n "$volume" ]; then
 			answer=$(printf "No\nYes" | dmenu -i\
 				-p "Increase the maximum $volume storage size of $qube from $current_storage MiB to $mebibyte MiB?")
 
-			if [ "$answer" = "Yes" ]; then
-
-				qvm-volume extend "$qube:$volume" "$byte"&
-			fi
+			[ "$answer" = "Yes" ] && qvm-volume extend "$qube:$volume" "$byte"&
 		else
 
 			echo "Go back..." | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
