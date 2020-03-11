@@ -242,7 +242,7 @@ if [ -n "$qubes" ]; then
 			kernel)
 
 				value=$(echo "--default" |\
-					dmenu -p "Enter the kernel:");;
+					dmenu -p "Enter kernel:");;
 
 			label)
 
@@ -399,7 +399,7 @@ while [ -n "$property" ]; do
 		default_shutdown_timeout)
 
 			value=$(qubes-prefs default_shutdown_timeout | dmenu\
-				-p "Enter the default time in seconds for vm shutdowns to complete:");;
+				-p "Enter the default time in seconds for qube shutdowns to complete:");;
 
 		default_template)
 
@@ -418,7 +418,7 @@ while [ -n "$property" ]; do
 		stats_interval)
 
 			value=$(: |\
-				dmenu -p "Enter interval in seconds for VM stats reporting:");;
+				dmenu -p "Enter interval in seconds for qube stats reporting:");;
 
 		updatevm)
 
@@ -478,7 +478,8 @@ while [ -n "$option" ]; do
 
 			if [ -n "$applications" ]; then
 
-				# Check validity of input.
+				# Check validity of input to prevent whitelisted-appmenus.list
+ 				# from being filled with garbage.
 				if qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" |\
 					cut -f1 -d\  | grep -q "^$applications$"; then
 
@@ -580,7 +581,7 @@ fi
 
 fqvm_create() (
 
-if name=$(: | dmenu -p "Enter the name of the qube to create:"); then
+if name=$(: | dmenu -p "Enter the name for the new qube:"); then
 
 	label=$(printf "Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack" |\
 		dmenu -i -l 8 -p "Select label for $name:" | awk '{print tolower($0)}')
@@ -874,11 +875,11 @@ else
 
 	if ! qvm-prefs "$qube" maxmem | grep -q ^0; then
 
-		answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
+		answer=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
 			dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!"\
 			| cut -f1 -d\ )
 
-		if [ "$answer_memorybalancing" = "Disable" ]; then
+		if [ "$answer" = "Disable" ]; then
 
 			qvm-prefs "$qube" maxmem 0
 		fi
@@ -886,11 +887,11 @@ else
 
 	if qvm-prefs "$qube" virt_mode | grep -q pvh; then
 
-		answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
+		answer=$(printf "Continue anyways\nSelect another virtualisation mode" |\
 			dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
 			| cut -f1 -d\ )
 
-		if [ "$answer_virtmode" = "Select" ]; then
+		if [ "$answer" = "Select" ]; then
 
 			if virtmode=$(printf "HVM\nPV" |\
 				dmenu -l 2 -i -p "Select virtualisation mode for $qube:"); then
@@ -944,10 +945,10 @@ else
 
 						if [ -n "$pci_option" ]; then unset pci_option; fi
 
-							answer_nsrt=$(printf "No\nYes" | dmenu -i\
+							answer=$(printf "No, attach without this option\nYes" | dmenu -i\
 								-p "\"$device_bdf\" is most likely to be attached with the option 'no-strict-reset' enabled. Please be aware of the security implications! Do you want to attach \"$device_bdf\" with the option 'no-strict-reset' set to true?")
 
-						if [ "$answer_nsrt" = "Yes" ]; then
+						if [ "$answer" = "Yes" ]; then
 
 							pci_option="-o no-strict-reset=True"
 						fi
@@ -956,7 +957,7 @@ else
 					if ! qvm-pci attach --persistent $pci_option "$qube" "$device_src:$device_bdf"; then
 
 						echo "Go back..." | dmenu\
-							-p "Error: Failed to attach \"$device_bdf\" to $qube!"\
+							-p "Error: Failed to attach '$device_bdf' to $qube!"\
 							> /dev/null 2>&1
 					fi
 
@@ -1125,7 +1126,7 @@ while [ -n "$property" ]; do
 			qrexec_timeout)
 
 				if value=$(echo "--default" | dmenu\
-					-p "Enter the time in seconds, after which qrexec attempt is deemed a failure for $qube:")
+					-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure for $qube:")
 
 				then answer=$(printf "No\nYes" | dmenu -i\
 					-p "Set qrexec timeout for $qube to $value seconds?")
@@ -1500,7 +1501,7 @@ while :; do
 	# into $qube_list, whenever the user selects the 'qvm-ls' top row.
 	while [ "$qubes" != "NAME" ]; do
 
-		qubes=$(echo "$qube_list" | dmenu -l 69 | cut -f1 -d\ )
+		qubes=$(echo "$qube_list" | dmenu -l 50 | cut -f1 -d\ )
 
 		if [ -z "$qubes" ]; then exit 1; fi
 
