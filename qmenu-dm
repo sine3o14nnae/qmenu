@@ -15,7 +15,7 @@ if [ -z "$qube_label" ]; then qube_label=$theme_1; fi
 }
 
 
-if [ "$2"  = "--light-theme" ]; then
+if [ "$2" = "--light-theme" ]; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -29,29 +29,20 @@ case $1 in
 
 	--all)
 
-		device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
-			dmenu -i -l 3 | cut -f1 -d\ );;
+		devices_list=$(qvm-block ls | sed -e 's/^/|block| /' & qvm-device mic ls |\
+			sed -e 's/^/|mic| /' & qvm-usb ls | sed -e 's/^/|usb| /');;
 
-	--audio-input|--block|--usb)
+	--block|--mic|--usb)
 
-		device_type=$1;;
+		device_type=$(echo "$1" | cut -c 3-)
+
+		devices_list=$(qvm-device "$device_type" | sed -e "s/^/|$device_type| /");;
 
 	*)
 
-		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --audio-input\n --block\n --usb\n\n"
+		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --block\n --mic\n --usb\n\n"
 
-		if [ "$1" = "--help" ]; then exit 0; fi
-esac
-
-case $device_type in
-
-	--audio-input|Audio) device_type="device mic";;
-
-	--block|Block) device_type="block";;
-
-	--usb|USB) device_type="usb";;
-
-	*) exit 2
+		if [ "$1" = "--help" ]; then exit 0; fi; exit 2
 esac
 
 qube_list=$(qvm-ls --no-spinner --running -O name,label |\
@@ -60,26 +51,29 @@ qube_list=$(qvm-ls --no-spinner --running -O name,label |\
 	sort -k2,2 |\
 	sed 's/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
 
-devices_list=$(qvm-$device_type)
-
 device=0
 
 while [ -n "$device" ]; do
 
-	device=$(echo "$devices_list" | dmenu -l 16)
+	device=$(echo "$devices_list" | sort -r -k1,2 | dmenu -l 32)
+
+	if [ "$1" = "--all" ]; then
+
+		device_type=$(echo "$device" | cut -d\| -f2)
+	fi
 
 	if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
-		device_id=$(echo "$device" | cut -f1 -d\ )
+		device_id=$(echo "$device" | cut -f2 -d\ )
 
 		if [ "$device_type" = "block" ]; then
 
-			device_name=$(echo "$device" | awk '{print $2,$3}')
-			qube=$(echo "$device" | awk '{print $4}')
+			device_name=$(echo "$device" | awk '{print $3,$4}')
+			qube=$(echo "$device" | awk '{print $5}')
 		else
 
-			device_name=$(echo "$device" | awk '{print $2}')
-			qube=$(echo "$device" | awk '{print $3}')
+			device_name=$(echo "$device" | awk '{print $3}')
+			qube=$(echo "$device" | awk '{print $4}')
 		fi
 
 		if [ -z "$qube" ]; then
@@ -95,7 +89,7 @@ while [ -n "$device" ]; do
 
 				if [ "$prompt" = "Yes" ]; then
 
-					if qvm-$device_type attach -q "$qube" "$device_id"; then exit 0; fi
+					if qvm-device "$device_type" attach -q "$qube" "$device_id"; then exit 0; fi
 
 					echo "Quit..." |\
 						dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
@@ -112,7 +106,7 @@ while [ -n "$device" ]; do
 
 			if [ "$prompt" = "Yes" ]; then
 
-				if qvm-$device_type detach -q "$qube" "$device_id"; then exit 0; fi
+				if qvm-device "$device_type" detach -q "$qube" "$device_id"; then exit 0; fi
 
 				echo "Quit..." |\
 					dmenu -p "Error: Could not detach device!" > /dev/null 2>&1
