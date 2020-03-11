@@ -1,0 +1,107 @@
+rulenumber=0
+
+while [ -n "$rulenumber" ]; do
+
+	rulenumber=$(qvm-firewall $qube list |\
+		dmenu -l 50 -p "$qube:" | cut -f1 -d\ )
+
+	if [ "$(echo "$rulenumber" | wc -w)" -eq 1 ]; then
+
+		# This will equal "NO" if the user selects the top row,
+		# instead of any existing rule.
+		if [ "$rulenumber" != "NO" ]; then
+
+			option=$(printf "Add new rule above rule $rulenumber\nRemove rule $rulenumber" |\
+				dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
+		else
+
+			option="Add"
+		fi
+
+		if [ "$option" = "Remove" ]; then
+
+			answer=$(printf "No\nYes" |\
+				dmenu -i -p "Remove rule $rulenumber?")
+
+			if [ "$answer" = "Yes" ]; then
+
+				qvm-firewall "$qube" del --rule-no "$rulenumber"
+			fi
+
+		elif [ "$option" = "Add" ]; then
+
+			if [ -n "$RULEARGS" ]; then unset RULEARGS; fi
+
+			action=$(printf "Accept\nDrop" |\
+				dmenu -i -l 2 -p "Select action for the new firewall rule:" |\
+				awk '{print tolower($0)}')
+
+			if [ -n "$action" ]; then
+
+				RULEARGS="$action"
+
+				if specialtarget=$(: | dmenu -p "ACTION=$RULEARGS <specialtarget>"); then
+
+					RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
+				fi
+
+				if dsthost=$(: | dmenu -p "ACTION=$RULEARGS <dsthost>"); then
+
+					RULEARGS="$RULEARGS DSTHOST=$dsthost"
+				fi
+
+				if proto=$(: | dmenu -p "ACTION=$RULEARGS <proto>"); then
+
+					RULEARGS="$RULEARGS PROTO=$proto"
+				fi
+
+				if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
+
+					if dstports=$(: | dmenu -p "ACTION=$RULEARGS <dstports>"); then
+
+						RULEARGS="$RULEARGS DSTPORTS=$dstports"
+					fi
+
+				elif [ "$proto" = "icmp" ]; then
+
+					if icmptype=$(: | dmenu -p "ACTION=$RULEARGS <icmptype>"); then
+
+						RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
+					fi
+				fi
+
+				if expire=$(: | dmenu -p "ACTION=$RULEARGS <expire>"); then
+
+					RULEARGS="EXPIRE=$expire"
+				fi
+
+				if comment=$(: | dmenu -p "ACTION=$RULEARGS <comment>"); then
+
+					RULEARGS="$RULEARGS COMMENT=$comment"
+				fi
+
+				answer=$(printf "No\nYes" | dmenu -i\
+					-p "Add the following rule to $qube? {{ ACTION=$RULEARGS }}")
+
+				if [ "$answer" = "Yes" ]; then
+
+					if [ -n "$beforerule" ]; then unset beforerule; fi
+
+					if [ "$rulenumber" != "NO" ]; then
+
+						beforerule=$(echo --before "$rulenumber")
+					fi
+
+					RULEARGS=$(echo "$RULEARGS" | awk '{print tolower($0)}')
+
+					if ! qvm-firewall "$qube" add $beforerule $RULEARGS; then
+
+						echo "Go back..." | dmenu\
+							-p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
+							> /dev/null 2>&1
+					fi
+				fi
+			fi
+		fi
+	fi
+done

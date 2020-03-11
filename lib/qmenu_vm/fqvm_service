@@ -1,0 +1,50 @@
+services=0
+
+while [ -n "$services" ]; do
+
+	services=$(qvm-service "$qube" --list |\
+		dmenu -l 32 -p "$qube:" | cut -f1 -d\ )
+
+	if [ -n "$services" ]; then
+
+		for service in $services; do
+
+			# If the service has already been added to the list,
+			# give option to unset it.
+			if qvm-service "$qube" --list | grep -q "^$service "; then
+
+				 unset="\nUnset"
+			fi
+
+			value=$(printf "Disable\nEnable$unset" |\
+				dmenu -l 3 -i -p "Select value for '$service':")
+
+			if [ "$value" = "Disable" ]; then
+
+				if ! qvm-service "$qube" "$service" off; then
+
+					echo "Go back..." | dmenu -p "Error: Could not deactivate '$service'!"\
+						> /dev/null 2>&1
+				fi
+
+			elif [ "$value" = "Enable" ]; then
+
+				if ! qvm-service "$qube" "$service" on; then
+
+					echo "Go back..." | dmenu -p "Error: Could not activate '$service'!"\
+						> /dev/null 2>&1
+				fi
+
+			elif [ "$value" = "Unset" ]; then
+
+				if ! qvm-service "$qube" "$service" --unset; then
+
+					echo "Go back..." | dmenu -p "Error: Could not unset '$service'!"\
+						> /dev/null 2>&1
+				fi
+			fi
+
+			if [ -n "$unset" ]; then unset unset; fi
+		done
+	fi
+done

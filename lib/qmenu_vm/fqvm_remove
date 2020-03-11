@@ -1,0 +1,33 @@
+if qvm-check -q --running "$qube"; then
+
+	echo "Go back..." |\
+		dmenu -p "$qube needs to be powered off, in order to be removed."\
+		> /dev/null 2>&1
+else
+
+	confirmation=$(: |\
+		dmenu -p "Enter the name of the qube '$qube' in order to remove it:")
+
+	if [ "$qube" = "$confirmation" ]; then
+
+		confirmation_semifinal=$(printf "No\nYes" |\
+			dmenu -i -p "Are you sure you want to remove '$qube' permanently?")
+
+		if [ "$confirmation_semifinal" = "Yes" ]; then
+
+			confirmation_final=$(printf "No\nYes" | dmenu -i\
+				-p "Are you really sure you want to remove '$qube' permanently?")
+
+			if [ "$confirmation_final" = "Yes" ]; then
+
+				if ! qvm-remove -f "$qube"; then
+
+					notify-send -u normal "Error: Unable to remove "$qube"!"
+				fi
+
+			fi&
+
+			unset chosefrom
+		fi
+	fi
+fi
