@@ -153,5 +153,13 @@ Installation
 
     [user@dom0 ~]# chmod 755 /usr/local/bin/qmenu-XX
 
+For `qmenu-vm`, additionally:
+
+    [user@dom0 ~]$ mkdir /tmp/qmenu_vm
+
+    [user@dom0 ~]$ for file in fq_keyboard fq_logs fq_pm fqubes_prefs fqvm_appmenus fqvm_clone fqvm_create fqvm_device fqvm_firewall fqvm_pci fqvm_prefs fqvm_remove fqvm_run fqvm_service fqvm_tags fqvm_volume; do qvm-run --pass-io dispXXXX "cat /home/user/qmenu/lib/qmenu_vm/$file" > /tmp/qmenu_vm/$file; done
+
+    [user@dom0 ~]# cp -r /tmp/qmenu_vm/ /lib/
+
 See [here](https://github.com/Qubes-Community/Contents/blob/master/docs/configuration/qmenu.md)
 for detailed instructions.
