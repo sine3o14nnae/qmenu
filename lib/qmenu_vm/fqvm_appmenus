@@ -1,3 +1,5 @@
+fqvm_appmenus()
+(
 option=0
 
 while [ -n "$option" ]; do
@@ -67,3 +69,5 @@ while [ -n "$option" ]; do
 		unset applications_modified
 	fi
 done
+)
+fqvm_appmenus

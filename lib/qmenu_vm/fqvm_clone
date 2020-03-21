@@ -1,3 +1,5 @@
+fqvm_clone()
+(
 clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
 
 	option=0
@@ -39,3 +41,5 @@ clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
 			qvm-clone $class $pool "$qube" "$clone_name"&
 		fi
 	done
+)
+fqvm_clone

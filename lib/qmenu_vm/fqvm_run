@@ -1,3 +1,5 @@
+fqvm_run()
+(
 if user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:"); then
 
 	if [ "$user" = "Root" ]; then
@@ -19,3 +21,5 @@ if user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:"); th
  		fi
 	done
 fi
+)
+fqvm_run

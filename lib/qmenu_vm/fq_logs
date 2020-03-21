@@ -1,3 +1,4 @@
+fq_logs() (
 if [ "$qube" = "dom0" ]; then
 
 	logs="/var/log/xen/console/hypervisor.log"
@@ -10,11 +11,15 @@ entry=0
 
 while [ -n "$entry" ]; do
 
-	entry=$(printf "$logs" | dmenu -i -l 3 -p "$qube:") &&
+	if entry=$(printf "$logs" | dmenu -i -l 3 -p "$qube:"); then
 
-		log=$(dmenu -l 20 -p "$qube:" < "$entry") &&
+		if log=$(dmenu -l 20 -p "$qube:" < "$entry"); then
 
 			echo "$log" > /var/run/qubes/qubes-clipboard.bin
 
 			printf "dom0" > /var/run/qubes/qubes-clipboard.bin.source
+		fi
+	fi
 done
+)
+fq_logs

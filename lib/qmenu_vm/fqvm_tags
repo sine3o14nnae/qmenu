@@ -1,3 +1,5 @@
+fqvm_tags()
+(
 tags=0
 
 while [ -n "$tags" ]; do
@@ -19,3 +21,5 @@ while [ -n "$tags" ]; do
 		done
 	fi
 done
+)
+fqvm_tags

@@ -20,7 +20,7 @@ while [ -n "$chosefrom" ]; do
 
 		Global) . $qfd/fqubes_prefs;;
 
-		Logs) . $qfd/fq_logs;;
+		Logs) fq_logs 2>/dev/null|| . $qfd/fq_logs;;
 
 		Property) . $qfd/fq_pm;;
 
@@ -29,7 +29,7 @@ while [ -n "$chosefrom" ]; do
 done
 )
 
-fmenu_domu() (
+fmenu_domu() {
 
 # Change label colors according to user input.
 qube_label=$(echo "$@" | tr ' ' '\n' |\
@@ -46,35 +46,33 @@ while [ -n "$chosefrom" ]; do
 
 	case $chosefrom in
 
-		Applications) . $qfd/fqvm_appmenus;;
+		Applications) fqvm_appmenus 2>/dev/null|| . $qfd/fqvm_appmenus;;
 
-		Audio) . $qfd/fqvm_device;;
-
-		Block) . $qfd/fqvm_device;;
+		Audio|Block|USB) fqvm_device 2>/dev/null|| . $qfd/fqvm_device;;
 
 		Boot) qvm-start --skip-if-running "$qube"&;;
 
 		Bootfrom) qubes-vm-boot-from-device "$qube";;
 
-		Clone) . $qfd/fqvm_clone;;
+		Clone) fqvm_clone 2>/dev/null|| . $qfd/fqvm_clone;;
 
-		Command) . $qfd/fqvm_run;;
+		Command) fqvm_run 2>/dev/null|| . $qfd/fqvm_run;;
 
-		Disk) . $qfd/fqvm_volume;;
+		Disk) fqvm_disk 2>/dev/null|| . $qfd/fqvm_volume;;
 
-		Firewall) . $qfd/fqvm_firewall;;
+		Firewall) fqvm_firewall 2>/dev/null|| . $qfd/fqvm_firewall;;
 
-		Keyboard) . $qfd/fq_keyboard;;
+		Keyboard) fq_keyboard 2>/dev/null|| . $qfd/fq_keyboard;;
 
-		Kill) nyprompt "Kill $qube?" && qvm-kill "$qube"&;;
+		Kill) nyprompt "Kill $qube?" && (qvm-kill "$qube"&);;
 
-		Logs) . $qfd/fq_logs;;
+		Logs) fq_logs 2>/dev/null|| . $qfd/fq_logs;;
 
-		Pause) nyprompt "Pause $qube?" && qvm-pause "$qube"&;;
+		Pause) nyprompt "Pause $qube?" && (qvm-pause "$qube"&);;
 
-		PCI) . $qfd/fqvm_pci;;
+		PCI) fqvm_pci 2>/dev/null|| . $qfd/fqvm_pci;;
 
-		Preferences) . $qfd/fqvm_prefs;;
+		Preferences) fqvm_prefs 2>/dev/null|| . $qfd/fqvm_prefs;;
 
 		Reboot)
 
@@ -82,24 +80,22 @@ while [ -n "$chosefrom" ]; do
 
 				qvm-check -q --running "$qube" &&
 
-					$(qvm-shutdown --wait "$qube" && qvm-start "$qube")&;;
+					(qvm-shutdown --wait "$qube" && qvm-start "$qube"&);;
 
-		Remove) . $qfd/fqvm_remove;;
+		Remove) fqvm_remove 2>/dev/null|| . $qfd/fqvm_remove;;
 
-		Services) . $qfd/fqvm_service;;
+		Services) fqvm_service 2>/dev/null|| . $qfd/fqvm_service;;
 
-		Shutdown) nyprompt "Shutdown $qube?" && qvm-shutdown "$qube"&;;
+		Shutdown) nyprompt "Shutdown $qube?" && (qvm-shutdown "$qube"&);;
 
-		Tags) . $qfd/fqvm_tags;;
+		Tags) fqvm_tags 2>/dev/null|| . $qfd/fqvm_tags;;
 
 		Unpause) qvm-unpause "$qube"&;;
-
-		USB) . $qfd/fqvm_device;;
 
 		*)
 	esac
 done
-)
+}
 
 get_list() {
 
@@ -117,7 +113,7 @@ list=$(qvm-ls --raw-data -O name,flags | grep "$flags" | cut -d '|' -f1)
 
 nyprompt() (
 
-answer=$(printf "No\nYes" | dmenu -i -p "$1"); [ "$answer" = "Yes" ]
+[ "$(printf "No\nYes" | dmenu -i -p "$1")" = "Yes" ]
 )
 
 
@@ -189,7 +185,7 @@ while :; do
 
 			if [ "$qube" = "dom0" ]; then fmenu_dom0
 
-			elif [ "$qube" != "NAME" ]; then fmenu_domu "$@"
+			elif [ "$qube" != "NAME" ]; then fmenu_domu "$@"; qube_label=$theme_1
 			fi
 		done
 	done

@@ -2,6 +2,8 @@
 # so it is possible that the selected layout is missing inside the vm.
 # Getting the info from the vm itself, however, would have security
 # implications so we will not switch to use that method.
+fq_keyboard()
+(
 LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:") &&
 
 	if [ -d /usr/share/X11/xkb/symbols/"$LAYOUT" ]; then
@@ -10,5 +12,7 @@ LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:") &&
 			dmenu -l 50 -p "$qube:")
 	fi
 
-	$(qvm-run "$qube" "setxkbmap $LAYOUT" ||
+	$(qvm-run -q "$qube" "setxkbmap $LAYOUT" ||
 		notify-send -u normal "Error: Could not set keyboard layout to '$LAYOUT' in $qube! Please check the available layouts inside the qube itself.")&
+)
+fq_keyboard

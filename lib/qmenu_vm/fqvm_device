@@ -1,3 +1,5 @@
+fqvm_device()
+(
 if ! qvm-check -q --running "$qube"; then
 
 	echo "Go back..." |\
@@ -76,3 +78,5 @@ else
 		fi
 	done
 fi
+)
+fqvm_device

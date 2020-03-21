@@ -1,3 +1,5 @@
+fqvm_firewall()
+(
 rulenumber=0
 
 while [ -n "$rulenumber" ]; do
@@ -90,3 +92,5 @@ while [ -n "$rulenumber" ]; do
 		fi
 	fi
 done
+)
+fqvm_firewall

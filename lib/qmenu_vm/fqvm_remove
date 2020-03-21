@@ -1,3 +1,5 @@
+fqvm_remove()
+{
 if qvm-check -q --running "$qube"; then
 
 	echo "Go back..." |\
@@ -10,23 +12,17 @@ else
 
 	if [ "$qube" = "$confirmation" ]; then
 
-		confirmation_semifinal=$(printf "No\nYes" |\
-			dmenu -i -p "Are you sure you want to remove '$qube' permanently?")
+		if nyprompt "Are you sure you want to remove '$qube' permanently?"; then
 
-		if [ "$confirmation_semifinal" = "Yes" ]; then
+			if nyprompt "Are you really sure you want to remove '$qube' permanently?"; then
 
-			confirmation_final=$(printf "No\nYes" | dmenu -i\
-				-p "Are you really sure you want to remove '$qube' permanently?")
+				unset chosefrom
 
-			if [ "$confirmation_final" = "Yes" ]; then
+				$(qvm-remove -f "$qube" || notify-send -u normal "Error: Unable to remove "$qube"!")&
 
-				qvm-remove -f "$qube" ||
-
-					notify-send -u normal "Error: Unable to remove "$qube"!"
-
-			fi&
-
-			unset chosefrom
+			fi
 		fi
 	fi
 fi
+}
+fqvm_remove

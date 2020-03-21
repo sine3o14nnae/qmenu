@@ -1,4 +1,5 @@
-
+fqvm_prefs()
+(
 property=0
 
 while [ -n "$property" ]; do
@@ -167,12 +168,12 @@ while [ -n "$property" ]; do
 				value=$(echo "--default" | dmenu\
 					-p "Enter the number of CPU cores that should be made available to $qube:") &&
 
-					nyprompt "Set number of CPU cores available to $qube to $value?") || unset value;;
+					nyprompt "Set number of CPU cores available to $qube to $value?" || unset value;;
 
 			virt_mode)
 
 				value=$(printf "PVH\nHVM\nPV" |\
-					dmenu -i -l 3 -p "Select virtualisation mode for $qube:";;
+					dmenu -i -l 3 -p "Select virtualisation mode for $qube:");;
 
 			*)
 		esac
@@ -189,3 +190,5 @@ while [ -n "$property" ]; do
 		fi
 	fi
 done
+)
+fqvm_prefs

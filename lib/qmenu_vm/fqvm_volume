@@ -1,3 +1,5 @@
+fqvm_volume()
+(
 qube_class=$(qvm-ls --raw-data -O flags "$qube" | cut -c 1)
 
 # If $qube is template or standalone, give option to extend root storage.
@@ -32,3 +34,5 @@ if [ -n "$volume" ]; then
 				> /dev/null 2>&1
 		fi
 fi
+)
+fqvm_volume
