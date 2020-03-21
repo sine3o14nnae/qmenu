@@ -38,10 +38,7 @@ else
 
 			if [ -z "$holds_qube" ]; then
 
-				answer=$(printf "No\nYes" |\
-					dmenu -i -p "Attach '$device_name' to $qube?")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Attach '$device_name' to $qube?"; then
 
 					unset device
 
@@ -53,10 +50,7 @@ else
 
 			elif [ "$holds_qube" = "$qube" ]; then
 
-				answer=$(printf "No\nYes" |\
-					dmenu -i -p "Detach '$device_name' from $qube?")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Detach '$device_name' from $qube?"; then
 
 					unset device
 
@@ -67,10 +61,7 @@ else
 				fi
 			else
 
-				answer=$(printf "No\nYes" | dmenu -i\
-					-p "Detach '$device_name' from $holds_qube and attach it to $qube?")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Detach '$device_name' from $holds_qube and attach it to $qube?"; then
 
 					unset device
 

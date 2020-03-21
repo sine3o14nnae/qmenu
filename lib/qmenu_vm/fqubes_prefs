@@ -40,10 +40,7 @@ while [ -n "$property" ]; do
 
 			value=$(: | dmenu -p "Enter default kernel:") &&
 
-				answer=$(printf "No\nYes" |\
-					dmenu -i -p "Set default kernel to $value?")
-
-				[ "$answer" != "Yes" ] && unset value;;
+				nyprompt "Set default kernel to $value?" || unset value;;
 
 		default_netvm)
 

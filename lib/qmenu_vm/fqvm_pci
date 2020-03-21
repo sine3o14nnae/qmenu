@@ -44,10 +44,7 @@ else
 			if echo "$device" |\
 				grep -q " $qube$\\| $qube (no-strict-reset=True)$\\| $qube (permissive=True)$"; then
 
-				answer=$(printf "No\nYes" |\
-					dmenu -i -p "Detach \"$device_bdf\" from $qube?")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Detach \"$device_bdf\" from $qube?"; then
 
 					qvm-pci detach "$qube" "$device_src":"$device_bdf" ||
 
@@ -59,10 +56,7 @@ else
 				fi
 			else
 
-				answer=$(printf "No\nYes" |\
-					dmenu -i -p "Attach \"$device_bdf\" to $qube?")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Attach \"$device_bdf\" to $qube?"; then
 
 					# Check if there is more than one function
 					# that belongs to the same device.

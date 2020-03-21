@@ -20,10 +20,9 @@ while [ -n "$rulenumber" ]; do
 
 		if [ "$option" = "Remove" ]; then
 
-			answer=$(printf "No\nYes" |\
-				dmenu -i -p "Remove rule $rulenumber?")
+			nyprompt "Remove rule $rulenumber?" &&
 
-			[ "$answer" = "Yes" ] && qvm-firewall "$qube" del --rule-no "$rulenumber"
+				qvm-firewall "$qube" del --rule-no "$rulenumber"
 
 		elif [ "$option" = "Add" ]; then
 
@@ -70,10 +69,7 @@ while [ -n "$rulenumber" ]; do
 
 					RULEARGS="$RULEARGS COMMENT=$comment"
 
-				answer=$(printf "No\nYes" | dmenu -i\
-					-p "Add the following rule to $qube? {{ ACTION=$RULEARGS }}")
-
-				if [ "$answer" = "Yes" ]; then
+				if nyprompt "Add the following rule to $qube? {{ ACTION=$RULEARGS }}"; then
 
 					[ -n "$beforerule" ] && unset beforerule
 

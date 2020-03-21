@@ -78,10 +78,7 @@ if [ -n "$qubes" ]; then
 
 		if [ -n "$value" ]; then
 
-			answer=$(printf "No\nYes" | dmenu -i\
-				-p "Do you want to change the $property of all selected qubes to $value?")
-
-			if [ "$answer" = "Yes" ]; then
+			if nyprompt "Do you want to change the $property of all selected qubes to $value?"; then
 
 				for qube in $qubes; do
 

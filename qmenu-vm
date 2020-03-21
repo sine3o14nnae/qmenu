@@ -66,19 +66,11 @@ while [ -n "$chosefrom" ]; do
 
 		Keyboard) . $qfd/fq_keyboard;;
 
-		Kill)
-
-			answer=$(printf "No\nYes" | dmenu -i -p "Kill $qube?")
-
-			[ "$answer" = "Yes" ] && qvm-kill "$qube"&;;
+		Kill) nyprompt "Kill $qube?" && qvm-kill "$qube"&;;
 
 		Logs) . $qfd/fq_logs;;
 
-		Pause)
-
-			answer=$(printf "No\nYes" | dmenu -i -p "Pause $qube?")
-
-			[ "$answer" = "Yes" ] && qvm-pause "$qube"&;;
+		Pause) nyprompt "Pause $qube?" && qvm-pause "$qube"&;;
 
 		PCI) . $qfd/fqvm_pci;;
 
@@ -86,9 +78,7 @@ while [ -n "$chosefrom" ]; do
 
 		Reboot)
 
-			answer=$(printf "No\nYes" | dmenu -i -p "Reboot $qube?")
-
-			[ "$answer" = "Yes" ] &&
+			nyprompt "Reboot $qube?" &&
 
 				qvm-check -q --running "$qube" &&
 
@@ -98,11 +88,7 @@ while [ -n "$chosefrom" ]; do
 
 		Services) . $qfd/fqvm_service;;
 
-		Shutdown)
-
-			answer=$(printf "No\nYes" | dmenu -i -p "Shutdown $qube?")
-
-			[ "$answer" = "Yes" ] && qvm-shutdown "$qube"&;;
+		Shutdown) nyprompt "Shutdown $qube?" && qvm-shutdown "$qube"&;;
 
 		Tags) . $qfd/fqvm_tags;;
 
@@ -128,6 +114,11 @@ esac
 
 list=$(qvm-ls --raw-data -O name,flags | grep "$flags" | cut -d '|' -f1)
 }
+
+nyprompt() (
+
+answer=$(printf "No\nYes" | dmenu -i -p "$1"); [ "$answer" = "Yes" ]
+)
 
 
 if [ "$2" = "--light-theme" ]; then

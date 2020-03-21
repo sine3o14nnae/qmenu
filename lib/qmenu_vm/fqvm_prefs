@@ -61,20 +61,14 @@ while [ -n "$property" ]; do
 				value=$(echo "--default" |\
 					dmenu -p "Enter the kernel to be used by $qube:") &&
 
-					answer=$(printf "No\nYes" |\
-						dmenu -i -p "Set kernel of $qube to $value?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set kernel of $qube to $value?" || unset value;;
 
 			kernelopts)
 
 				value=$(echo "--default" |\
 					dmenu -p "Enter the kernel options for $qube:") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-						-p "Set kernel options for $qube to \"$value\"?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set kernel options for $qube to \"$value\"?" || unset value;;
 
 			label)
 
@@ -95,30 +89,21 @@ while [ -n "$property" ]; do
 				value=$(echo "--default" |\
 					dmenu -p "Enter the MAC address for $qube:") &&
 
-					answer=$(printf "No\nYes" |\
-						dmenu -i -p "Set MAC address of $qube to $value?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set MAC address of $qube to $value?" || unset value;;
 
 			maxmem)
 
 				value=$(echo "--default" |\
 					dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-						-p "Set maximum memory of $qube to $value MB?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set maximum memory of $qube to $value MB?" || unset value;;
 
 			memory)
 
 				value=$(echo "--default" | dmenu\
 					-p "Enter the amount of initial memory in MB to be allocated to $qube:") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-						-p "Set initial memory of $qube to $value MB?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set initial memory of $qube to $value MB?" || unset value;;
 
 			netvm)
 
@@ -146,20 +131,14 @@ while [ -n "$property" ]; do
 				value=$(echo "--default" | dmenu\
 					-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure for $qube:") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-					-p "Set qrexec timeout for $qube to $value seconds?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set qrexec timeout for $qube to $value seconds?" || unset value;;
 
 			shutdown_timeout)
 
 				value=$(echo "--default" | dmenu\
 					-p "Enter the time in seconds to wait for shutdown, after which $qube may be forcefully powered off:") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-						-p "Set shutdown timeout for $qube to $value seconds?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set shutdown timeout for $qube to $value seconds?" || unset value;;
 
 			template)
 
@@ -188,15 +167,12 @@ while [ -n "$property" ]; do
 				value=$(echo "--default" | dmenu\
 					-p "Enter the number of CPU cores that should be made available to $qube:") &&
 
-					answer=$(printf "No\nYes" | dmenu -i\
-						-p "Set number of CPU cores available to $qube to $value?")
-
-					[ "$answer" != "Yes" ] && unset value;;
+					nyprompt "Set number of CPU cores available to $qube to $value?") || unset value;;
 
 			virt_mode)
 
 				value=$(printf "PVH\nHVM\nPV" |\
-					dmenu -i -l 3 -p "Select virtualisation mode for $qube:");;
+					dmenu -i -l 3 -p "Select virtualisation mode for $qube:";;
 
 			*)
 		esac
