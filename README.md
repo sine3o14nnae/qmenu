@@ -2,22 +2,13 @@ qmenu
 =====
 
 Collection of tools that utilize
-[dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
-drop down menu for [QubesOS](https://qubes-os.org/) R4.0+,
-from which they can quickly administer their qube
-preferences, firewall rules, applications, per-qube keyboard layouts, devices,
-etc. with only the keyboard.
+[dmenu](https://tools.suckless.org/dmenu/), a dynamic menu for X,
+to provide the user with a drop down menu for [Qubes](https://qubes-os.org) specific tasks.
 
-The colors that correspond to a qube label can be adjusted by appending
-` --{LABEL}=#{HEX TRIPLET}` for any label.
+When configured to execute these tools via hotkeys, the user is able to list, start and stop their qubes, attach and detach connected devices,
+adjust qube preferences, firewall rules, per-qube keyboard layouts, launch applications and more, very quickly with only the keyboard.
 
-Try the following example for visually appealing colors:
-
-~~~
- --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
-~~~
-
-### qmenu-am ###
+### qmenu-am
 
 Launch domU and dom0 applications.
 
@@ -26,7 +17,7 @@ Launch domU and dom0 applications.
      --all
      --focused
 
-### qmenu-dm ###
+### qmenu-dm
 
 List and manage your connected devices.
 
@@ -37,7 +28,7 @@ List and manage your connected devices.
      --mic
      --usb
 
-### qmenu-vm ###
+### qmenu-vm
 
 List, manage and configure your qubes.
 
@@ -50,6 +41,36 @@ List, manage and configure your qubes.
      --running
      --qube=[QUBE]
      --tags=[TAG]
+
+Configuration
+-------------
+
+### Label color
+
+The colors that correspond to a qube label can be adjusted by appending
+` --{LABEL}=#{HEX TRIPLET}` for any label.
+
+Try the following example for visually appealing colors:
+
+~~~
+ --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
+~~~
+
+Further customization can be achieved by modifying or replacing dmenu.
+
+### Qube Settings
+
+By default, executing the 'Qube Settings' application will launch the Qube Manager
+qube settings. This can be changed to launch qmenu-vm instead,
+which makes it possible to use qmenu-am to quickly launch into the qmenu-vm
+settings for a particular qube, without first listing a set of qubes or using
+the `--focused` option.
+
+Simply replace the contents of `/usr/bin/qubes-vm-settings` in dom0 with this:
+
+~~~
+qmenu-vm --qube="$1" (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
+~~~
 
 Dependencies
 ------------

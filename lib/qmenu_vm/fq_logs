@@ -1,17 +1,17 @@
 fq_logs() (
 if [ "$qube" = "dom0" ]; then
 
-	logs="/var/log/xen/console/hypervisor.log"
+	logs='/var/log/xen/console/hypervisor.log'
 else
 
-	logs="/var/log/xen/console/guest-$qube.log\n/var/log/qubes/guid.$qube.log\n/var/log/qubes/qrexec.$qube.log"
+	logs="/var/log/xen/console/guest-$qube.log\n/var/log/xen/console/guest-$qube-dm.log\n/var/log/qubes/guid.$qube.log\n/var/log/qubes/qrexec.$qube.log"
 fi
 
 entry=0
 
 while [ -n "$entry" ]; do
 
-	if entry=$(printf "$logs" | dmenu -i -l 3 -p "$qube:"); then
+	if entry=$(printf "$logs" | dmenu -i -l 4 -p "$qube:"); then
 
 		if log=$(dmenu -l 20 -p "$qube:" < "$entry"); then
 
