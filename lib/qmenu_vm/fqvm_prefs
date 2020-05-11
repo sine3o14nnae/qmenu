@@ -141,7 +141,8 @@ while [ -n "$property" ]; do
 					get_list template
 
 					value=$(printf "(Default)\n$list" |\
-						dmenu -l 50 -p "Select template for $qube:")
+						dmenu -l 50 -p "Select template for $qube:") &&
+							(sleep 2 && qvm-appmenus -q --update "$qube"&)
 
 					[ "$value" = '(Default)' ] && value=--default
 				fi;;

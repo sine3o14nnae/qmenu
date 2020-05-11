@@ -126,6 +126,7 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
    * ls
    * _notify-send_
    * sed
+   * sleep
    * sort
    * tr
    * wc
