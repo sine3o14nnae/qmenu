@@ -6,26 +6,26 @@ clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
 
 	while [ -n "$option" ]; do
 
-		option=$(printf "Create the clone\nAdvanced options" |\
+		option=$(printf 'Create the clone\nAdvanced options' |\
 			dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
 
-		if [ "$option" = "Advanced" ]; then
+		if [ "$option" = Advanced ]; then
 
 			option_adv=0
 
 			while [ -n "$option_adv" ]; do
 
-				option_adv=$(printf "Class\nPool" |\
+				option_adv=$(printf 'Class\nPool' |\
 					dmenu -i -l 2 -p "$clone_name($qube):")
 
-				if [ "$option_adv" = "Class" ]; then
+				if [ "$option_adv" = Class ]; then
 
-					class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+					class=$(printf 'AppVM\nDispVM\nStandaloneVM\nTemplateVM' |\
 						dmenu -i -l 4 -p "Choose a class for $clone_name:") &&
 
 						class="-C $class"
 
-				elif [ "$option_adv" = "Pool" ]; then
+				elif [ "$option_adv" = Pool ]; then
 
 					pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10\
 						-p "Select a pool for $clone_name:" | cut -f1 -d\ ) &&
@@ -34,7 +34,7 @@ clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
 				fi
 			done
 
-		elif [ "$option" = "Create" ]; then
+		elif [ "$option" = Create ]; then
 
 			unset option
 

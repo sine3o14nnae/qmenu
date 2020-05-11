@@ -1,15 +1,8 @@
 fqvm_run()
 (
-if user=$(printf "Default user\nRoot" | dmenu -i -l 2 -p "Run commands as:"); then
+if user=$(printf 'Default user\nRoot' | dmenu -i -l 2 -p "Run commands as:"); then
 
-	if [ "$user" = "Root" ]; then
-
-		as_root="-u root"
-		user='#'
-	else
-
-		user='$'
-	fi
+	[ "$user" = Root ] && as_root='-u root' && user=# || user=$
 
 	commandtr=0
 

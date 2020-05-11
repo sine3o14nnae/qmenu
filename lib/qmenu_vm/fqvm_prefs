@@ -4,8 +4,7 @@ property=0
 
 while [ -n "$property" ]; do
 
-	property=$(qvm-prefs "$qube" |\
-		dmenu -l 45 -p "$qube:" | cut -f1 -d\ )
+	property=$(qvm-prefs "$qube" | dmenu -l 45 -p "$qube:" | cut -f1 -d\ )
 
 	if [ -n "$property" ]; then
 
@@ -13,12 +12,12 @@ while [ -n "$property" ]; do
 
 			autostart)
 
-				value=$(printf "False\nTrue" |\
+				value=$(printf 'False\nTrue' |\
 					dmenu -i -p "Set autostart of $qube to:");;
 
 			debug)
 
-				value=$(printf "False\nTrue" |\
+				value=$(printf 'False\nTrue' |\
 					dmenu -i -p "Set debug mode of $qube to:");;
 
 			default_dispvm)
@@ -38,35 +37,29 @@ while [ -n "$property" ]; do
 				value=$(printf "(Default)\n(None)$LIST_DISPTEMP" |\
 					dmenu -l 50 -p "Select default dispvm for $qube:")
 
-				if [ "$value" = "(None)" ]; then
+				if [ "$value" = '(None)' ]; then value=None
 
-					value="None"
-
-				elif [ "$value" = "(Default)" ]; then
-
-					value="--default"
-				fi;;
+				elif [ "$value" = '(Default)' ]; then value=--default; fi;;
 
 			default_user)
 
-				value=$(echo "--default" |\
+				value=$(echo --default |\
 					dmenu -p "Enter the name of the default user for $qube:");;
 
 			include_in_backups)
 
-				value=$(printf "False\nTrue" |\
-					dmenu -i -p "Include $qube in backups?");;
+				value=$(printf 'False\nTrue' | dmenu -i -p "Include $qube in backups?");;
 
 			kernel)
 
-				value=$(echo "--default" |\
+				value=$(echo --default |\
 					dmenu -p "Enter the kernel to be used by $qube:") &&
 
 					nyprompt "Set kernel of $qube to $value?" || unset value;;
 
 			kernelopts)
 
-				value=$(echo "--default" |\
+				value=$(echo --default |\
 					dmenu -p "Enter the kernel options for $qube:") &&
 
 					nyprompt "Set kernel options for $qube to \"$value\"?" || unset value;;
@@ -75,33 +68,33 @@ while [ -n "$property" ]; do
 
 				if qvm-check -q --running "$qube"; then
 
-					echo "Go back..." | dmenu\
+					echo Go back... | dmenu\
 						-p "$qube needs to be powered off, in order to change its label."\
 						> /dev/null 2>&1
 				else
 
-					value=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
+					value=$(printf 'Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack' |\
 						dmenu -i -l 8 -p "Select label for $qube:" |\
 						awk '{print tolower($0)}')
 				fi;;
 
 			mac)
 
-				value=$(echo "--default" |\
+				value=$(echo --default |\
 					dmenu -p "Enter the MAC address for $qube:") &&
 
 					nyprompt "Set MAC address of $qube to $value?" || unset value;;
 
 			maxmem)
 
-				value=$(echo "--default" |\
+				value=$(echo --default |\
 					dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.") &&
 
 					nyprompt "Set maximum memory of $qube to $value MB?" || unset value;;
 
 			memory)
 
-				value=$(echo "--default" | dmenu\
+				value=$(echo --default | dmenu\
 					-p "Enter the amount of initial memory in MB to be allocated to $qube:") &&
 
 					nyprompt "Set initial memory of $qube to $value MB?" || unset value;;
@@ -113,30 +106,25 @@ while [ -n "$property" ]; do
 				value=$(printf "(Default)\n(None)\n$list" |\
 					dmenu -l 50 -p "Select netvm for $qube:")
 
-				if [ "$value" = "(None)" ]; then
+				if [ "$value" = '(None)' ]; then value=None
 
-					value="None"
-
-				elif [ "$value" = "(Default)" ]; then
-
-					value="--default"
-				fi;;
+				elif [ "$value" = '(Default)' ]; then value=--default; fi;;
 
 			provides_network)
 
-				value=$(printf "False\nTrue" | dmenu -i\
+				value=$(printf 'False\nTrue' | dmenu -i\
 					-p "Should $qube provide networking to other qubes?");;
 
 			qrexec_timeout)
 
-				value=$(echo "--default" | dmenu\
+				value=$(echo --default | dmenu\
 					-p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure for $qube:") &&
 
 					nyprompt "Set qrexec timeout for $qube to $value seconds?" || unset value;;
 
 			shutdown_timeout)
 
-				value=$(echo "--default" | dmenu\
+				value=$(echo --default | dmenu\
 					-p "Enter the time in seconds to wait for shutdown, after which $qube may be forcefully powered off:") &&
 
 					nyprompt "Set shutdown timeout for $qube to $value seconds?" || unset value;;
@@ -145,7 +133,7 @@ while [ -n "$property" ]; do
 
 				if qvm-check -q --running "$qube"; then
 
-					echo "Go back..." | dmenu\
+					echo Go back... | dmenu\
 						-p "$qube needs to be powered off, in order to change its template."\
 						> /dev/null 2>&1
 				else
@@ -155,24 +143,24 @@ while [ -n "$property" ]; do
 					value=$(printf "(Default)\n$list" |\
 						dmenu -l 50 -p "Select template for $qube:")
 
-					[ "$value" = "(Default)" ] && value="--default"
+					[ "$value" = '(Default)' ] && value=--default
 				fi;;
 
 			template_for_dispvms)
 
-				value=$(printf "False\nTrue" | dmenu -i\
+				value=$(printf 'False\nTrue' | dmenu -i\
 					-p "Should $qube be used as a template for disposable qubes?");;
 
 			vcpus)
 
-				value=$(echo "--default" | dmenu\
+				value=$(echo --default | dmenu\
 					-p "Enter the number of CPU cores that should be made available to $qube:") &&
 
 					nyprompt "Set number of CPU cores available to $qube to $value?" || unset value;;
 
 			virt_mode)
 
-				value=$(printf "PVH\nHVM\nPV" |\
+				value=$(printf 'PVH\nHVM\nPV' |\
 					dmenu -i -l 3 -p "Select virtualisation mode for $qube:");;
 
 			*)
@@ -182,7 +170,7 @@ while [ -n "$property" ]; do
 
 			qvm-prefs "$qube" "$property" "$value" ||
 
-				echo "Go back..." |\
+				echo Go back... |\
 					dmenu -p "Error: Could not set $property to '$value'!"\
 					> /dev/null 2>&1
 

@@ -4,9 +4,9 @@ option=0
 
 while [ -n "$option" ]; do
 
-	option=$(printf "Available\nSelected" | dmenu -i -l 2 -p "$qube:")
+	option=$(printf 'Available\nSelected' | dmenu -i -l 2 -p "$qube:")
 
-	if [ "$option" = "Available" ]; then
+	if [ "$option" = Available ]; then
 
 		applications=0
 
@@ -30,7 +30,7 @@ while [ -n "$option" ]; do
 			fi
 		done
 
-	elif [ "$option" = "Selected" ]; then
+	elif [ "$option" = Selected ]; then
 
 		applications=0
 

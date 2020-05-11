@@ -2,18 +2,18 @@ fqvm_device()
 (
 if ! qvm-check -q --running "$qube"; then
 
-	echo "Go back..." |\
+	echo Go back... |\
 		dmenu -p "$qube needs to be running, in order to attach $(echo "$chosefrom" | awk '{print tolower($0)}') devices to it."\
 		> /dev/null 2>&1
 else
 
 	case $chosefrom in
 
-		Audio) device_type="device mic";;
+		Audio) device_type='device mic';;
 
-		Block) device_type="block";;
+		Block) device_type=block;;
 
-		USB) device_type="usb"
+		USB) device_type=usb
 	esac
 
 	devices_list=$(qvm-$device_type)
@@ -28,7 +28,7 @@ else
 
 			device_id=$(echo "$device" | cut -f1 -d\ )
 
-			if [ "$device_type" = "block" ]; then
+			if [ "$device_type" = block ]; then
 
 				device_name=$(echo "$device" | awk '{print $2,$3}')
 				holds_qube=$(echo "$device" | awk '{print $4}')
@@ -46,7 +46,7 @@ else
 
 					qvm-$device_type attach -q "$qube" "$device_id" ||
 
-						echo "Go back..." | dmenu -p "Error: Could not attach device!"\
+						echo Go back... | dmenu -p "Error: Could not attach device!"\
 							> /dev/null 2>&1
 				fi
 
@@ -58,7 +58,7 @@ else
 
 					qvm-$device_type detach -q "$holds_qube" "$device_id" ||
 
-						echo "Go back..." | dmenu -p "Error: Could not detach device!"\
+						echo Go back... | dmenu -p "Error: Could not detach device!"\
 							> /dev/null 2>&1
 				fi
 			else
@@ -71,7 +71,7 @@ else
 
 						qvm-$device_type attach -q "$qube" "$device_id" ||
 
-							echo "Go back..." | dmenu\
+							echo Go back... | dmenu\
 								-p "Error: Could not attach device!" > /dev/null 2>&1
 				fi
 			fi

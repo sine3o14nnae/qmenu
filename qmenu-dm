@@ -15,7 +15,7 @@ qube_label=$(echo "$@" | tr ' ' '\n' |\
 }
 
 
-if [ "$2" = "--light-theme" ]; then
+if [ "$2" = --light-theme ]; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -42,7 +42,7 @@ case $1 in
 
 		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --block\n --mic\n --usb\n\n"
 
-		[ "$1" = "--help" ] && exit 0; exit 2
+		[ "$1" = --help ] && exit 0; exit 2
 esac
 
 qube_list=$(qvm-ls --no-spinner --running -O name,label |\
@@ -57,13 +57,13 @@ while [ -n "$device" ]; do
 
 	device=$(echo "$devices_list" | sort -r -k1,2 | dmenu -l 32)
 
-	[ "$1" = "--all" ] && device_type=$(echo "$device" | cut -d\| -f2)
+	[ "$1" = --all ] && device_type=$(echo "$device" | cut -d\| -f2)
 
 	if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
 
 		device_id=$(echo "$device" | cut -f2 -d\ )
 
-		if [ "$device_type" = "block" ]; then
+		if [ "$device_type" = block ]; then
 
 			device_name=$(echo "$device" | awk '{print $3,$4}')
 			qube=$(echo "$device" | awk '{print $5}')
@@ -81,14 +81,14 @@ while [ -n "$device" ]; do
 
 				get_qube_label "$@"
 
-				prompt=$(printf "No\nYes" | dmenu -sb "$qube_label" -i\
+				prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
 					-p "Attach '$device_name' to $qube?")
 
-				if [ "$prompt" = "Yes" ]; then
+				if [ "$prompt" = Yes ]; then
 
 					qvm-device "$device_type" attach -q "$qube" "$device_id" && exit 0
 
-					echo "Quit..." |\
+					echo Quit... |\
 						dmenu -p "Error: Could not attach device!" > /dev/null 2>&1
 
 					exit 2
@@ -98,14 +98,14 @@ while [ -n "$device" ]; do
 
 			get_qube_label "$@"
 
-			prompt=$(printf "No\nYes" | dmenu -sb "$qube_label" -i\
+			prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
 				-p "Detach '$device_name' from $qube?")
 
-			if [ "$prompt" = "Yes" ]; then
+			if [ "$prompt" = Yes ]; then
 
 				qvm-device "$device_type" detach -q "$qube" "$device_id" && exit 0
 
-				echo "Quit..." |\
+				echo Quit... |\
 					dmenu -p "Error: Could not detach device!" > /dev/null 2>&1
 
 				exit 2

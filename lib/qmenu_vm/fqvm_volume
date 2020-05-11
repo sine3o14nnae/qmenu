@@ -3,15 +3,15 @@ fqvm_volume()
 qube_class=$(qvm-ls --raw-data -O flags "$qube" | cut -c 1)
 
 # If $qube is template or standalone, give option to extend root storage.
-if [ "$qube_class" = "t" ] ||\
-	 [ "$qube_class" = "s" ] ||\
-	 [ "$qube_class" = "S" ]; then
+if [ "$qube_class" = t ] ||\
+	 [ "$qube_class" = s ] ||\
+	 [ "$qube_class" = S ]; then
 
-	volume=$(printf "Root\nPrivate" |\
+	volume=$(printf 'Root\nPrivate' |\
 		dmenu -l 2 -i -p "$qube:" | awk '{print tolower($0)}')
 else
 
-	volume="private"
+	volume=private
 fi
 
 if [ -n "$volume" ]; then
@@ -30,7 +30,7 @@ if [ -n "$volume" ]; then
 				qvm-volume extend "$qube:$volume" "$byte"&
 		else
 
-			echo "Go back..." | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
+			echo Go back... | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
 				> /dev/null 2>&1
 		fi
 fi

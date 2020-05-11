@@ -4,8 +4,7 @@ tags=0
 
 while [ -n "$tags" ]; do
 
-	tags=$(qvm-tags "$qube" list |\
-		dmenu -l 15 -p "$qube:" | cut -f1 -d\ )
+	tags=$(qvm-tags "$qube" list | dmenu -l 15 -p "$qube:" | cut -f1 -d\ )
 
 	if [ -n "$tags" ]; then
 

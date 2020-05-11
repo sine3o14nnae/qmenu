@@ -2,7 +2,7 @@ fqvm_remove()
 {
 if qvm-check -q --running "$qube"; then
 
-	echo "Go back..." |\
+	echo Go back... |\
 		dmenu -p "$qube needs to be powered off, in order to be removed."\
 		> /dev/null 2>&1
 else

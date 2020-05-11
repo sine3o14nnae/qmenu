@@ -3,7 +3,7 @@ qubes=$(qvm-ls --no-spinner --all --exclude=dom0 -O name,label,template,netvm,de
 
 if [ -n "$qubes" ]; then
 
-	property=$(printf "Default_DispVM\nKernel\nLabel\nTemplate\nNetVM" |\
+	property=$(printf 'Default_DispVM\nKernel\nLabel\nTemplate\nNetVM' |\
 		dmenu -i -l 5 -p "Select the property you wish to change:" |\
 		awk '{print tolower($0)}')
 
@@ -28,34 +28,26 @@ if [ -n "$qubes" ]; then
 				value=$(printf "(Default)\n(None)$LIST_DISPTEMP" |\
 					dmenu -l 50 -p "Select default dispvm:")
 
-				if [ "$value" = "(None)" ]; then
+				if [ "$value" = '(None)' ]; then value=None
 
-					value="None"
-
-				elif [ "$value" = "(Default)" ]; then
-
-					value="--default"
-				fi;;
+				elif [ "$value" = '(Default)' ]; then value=--default; fi;;
 
 			kernel)
 
-				value=$(echo "--default" |\
-					dmenu -p "Enter kernel:");;
+				value=$(echo --default | dmenu -p "Enter kernel:");;
 
 			label)
 
-				value=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
-					dmenu -i -l 8 -p "Select label:" |\
-					awk '{print tolower($0)}');;
+				value=$(printf 'Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack' |\
+					dmenu -i -l 8 -p "Select label:" | awk '{print tolower($0)}');;
 
 			template)
 
 				get_list template
 
-				value=$(printf "(Default)\n$list" |\
-					dmenu -l 50 -p "Select template:")
+				value=$(printf "(Default)\n$list" | dmenu -l 50 -p "Select template:")
 
-				[ "$value" = "(Default)" ] && value="--default";;
+				[ "$value" = '(Default)' ] && value=--default;;
 
 			netvm)
 
@@ -64,14 +56,9 @@ if [ -n "$qubes" ]; then
 				value=$(printf "(Default)\n(None)\n$list" |\
 					dmenu -l 50 -p "Select netvm:")
 
-				if [ "$value" = "(None)" ]; then
+				if [ "$value" = '(None)' ]; then value=None
 
-					value="None"
-
-				elif [ "$value" = "(Default)" ]; then
-
-					value="--default"
-				fi;;
+				elif [ "$value" = '(Default)' ]; then value=--default; fi;;
 
 			*)
 		esac
@@ -83,16 +70,16 @@ if [ -n "$qubes" ]; then
 				for qube in $qubes; do
 
 					# Label and template should not be changed while a qube is running
-					if [ "$property" = "label" ] || [ "$property" = "template" ]\
+					if [ "$property" = label ] || [ "$property" = template ]\
 						&& qvm-check -q --running "$qube"; then
 
-						echo "Proceed..." |\
+						echo Proceed... |\
 							dmenu -p "Error: Unable to change $property of $qube because it is not shut down." > /dev/null 2>&1
 					else
 
 						qvm-prefs "$qube" "$property" "$value" ||
 
-							echo "Proceed..." |\
+							echo Proceed... |\
 								dmenu -p "Error: Could not set $property of $qube to '$value'!"\
 								> /dev/null 2>&1
 					fi

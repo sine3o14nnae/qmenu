@@ -2,14 +2,13 @@ property=0
 
 while [ -n "$property" ]; do
 
-	property=$(qubes-prefs |\
-		dmenu -l 16 -p "Global preferences:" | cut -f1 -d\ )
+	property=$(qubes-prefs | dmenu -l 16 -p "Global preferences:" | cut -f1 -d\ )
 
 	case $property in
 
 		check_updates_vm)
 
-			value=$(printf "False\nTrue" |\
+			value=$(printf 'False\nTrue' |\
 				dmenu -i -p "Should the system periodically check for domU updates?");;
 
 		clockvm)
@@ -26,8 +25,7 @@ while [ -n "$property" ]; do
 				done
 			fi
 
-			value=$(printf "(None)\n$list" |\
-				dmenu -l 50 -p "Select ClockVM:");;
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select ClockVM:");;
 
 		default_dispvm)
 
@@ -44,7 +42,7 @@ while [ -n "$property" ]; do
 
 		default_netvm)
 
-				get_list netvm
+			get_list netvm
 
 			value=$(printf "(None)\n$list" |\
 				dmenu -l 50 -p "Select default netvm:");;
@@ -111,14 +109,13 @@ while [ -n "$property" ]; do
 
 			get_list netvm
 
-			value=$(printf "(None)\n$list" |\
-				dmenu -l 50 -p "Select UpdateVM:")
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select UpdateVM:")
 
-			if [ -n "$value" ] && [ "$value" != "(None)" ]; then
+			if [ -n "$value" ] && [ "$value" != '(None)' ]; then
 
 				qvm-check -q --running "$value" ||
 
-					echo "Go back..." |\
+					echo Go back... |\
 						dmenu -p "$value needs to be running!" > /dev/null 2>&1
 
 					unset value
@@ -129,11 +126,11 @@ while [ -n "$property" ]; do
 
 	if [ -n "$value" ]; then
 
-		[ "$value" = "(None)" ] && value=''
+		[ "$value" = '(None)' ] && value=''
 
 		qubes-prefs "$property" "$value" ||
 
-			echo "Go back..." |\
+			echo Go back... |\
 				dmenu -p "Error: Could not set $property to '$value'!"\
 				> /dev/null 2>&1
 

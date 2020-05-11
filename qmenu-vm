@@ -11,7 +11,7 @@ chosefrom=0
 
 while [ -n "$chosefrom" ]; do
 
-	chosefrom=$(printf "New qube\nGlobal preferences\nLogs\nProperty Manager" |\
+	chosefrom=$(printf 'New qube\nGlobal preferences\nLogs\nProperty Manager' |\
 		dmenu -l 4 -i -p "dom0:" | cut -f1 -d\ )
 
 	case $chosefrom in
@@ -41,7 +41,7 @@ chosefrom=0
 
 while [ -n "$chosefrom" ]; do
 
-	chosefrom=$(printf "Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nTags\nUnpause\nUSB devices" |\
+	chosefrom=$(printf 'Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nTags\nUnpause\nUSB devices' |\
 		dmenu -l 22 -i -p "$qube:" | cut -f1 -d\ )
 
 	case $chosefrom in
@@ -113,11 +113,11 @@ list=$(qvm-ls --raw-data -O name,flags | grep "$flags" | cut -d '|' -f1)
 
 nyprompt() (
 
-[ "$(printf "No\nYes" | dmenu -i -p "$1")" = "Yes" ]
+[ "$(printf 'No\nYes' | dmenu -i -p "$1")" = Yes ]
 )
 
 
-if [ "$2" = "--light-theme" ]; then
+if [ "$2" = --light-theme ]; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -128,7 +128,7 @@ else
 fi
 
 qube_label=$theme_1
-qd='/lib/qmenu_vm'
+qd=/lib/qmenu_vm
 
 case $1 in
 
@@ -144,8 +144,8 @@ case $1 in
 				sed 's/ 0\@ / LABEL/g; s/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
 
 			# Get out of the while loop and refresh 'qvm-ls' by loading it again
-			# into $qube_list, whenever the user selects the 'qvm-ls' top row.
-			while [ "$qubes" != "NAME" ]; do
+			# into $qube_list, whenever the user selects the 'qvm-ls' top row (NAME).
+			while [ "$qubes" != NAME ]; do
 
 				qubes=$(echo "$qube_list" | dmenu -l 50 | cut -f1 -d\ )
 
@@ -153,9 +153,9 @@ case $1 in
 
 				for qube in $qubes; do
 
-					if [ "$qube" = "dom0" ]; then fmenu_dom0
+					if [ "$qube" = dom0 ]; then fmenu_dom0
 
-					elif [ "$qube" != "NAME" ]; then fmenu_domu "$@"; qube_label=$theme_1
+					elif [ "$qube" != NAME ]; then fmenu_domu "$@"; qube_label=$theme_1
 					fi
 				done
 			done
@@ -167,7 +167,7 @@ case $1 in
 
 		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -d\" -f2)
 
-		if [ "$qube" = "_QUBES_VMNAME:  not found." ]; then
+		if [ "$qube" = '_QUBES_VMNAME:  not found.' ]; then
 
 			qube=dom0
 
@@ -181,13 +181,13 @@ case $1 in
 
 		qube=$(echo "$1" | cut -d= -f2)
 
-		if [ "$qube" = "dom0" ]; then fmenu_dom0; else fmenu_domu "$@"; fi;;
+		if [ "$qube" = dom0 ]; then fmenu_dom0; else fmenu_domu "$@"; fi;;
 
 	*)
 
 		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
 
-		[ "$1" = "--help" ] && exit 0; exit 2
+		[ "$1" = --help ] && exit 0; exit 2
 esac
 
 exit 1
