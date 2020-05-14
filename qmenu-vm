@@ -31,9 +31,8 @@ done
 
 fmenu_domu() {
 
-# Change label colors according to user input.
-qube_label=$(echo "$@" | tr ' ' '\n' |\
-	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
+# Change label colors according to qmenu.conf.
+qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
 
 [ -z "$qube_label" ] && qube_label=$theme_1
 
@@ -117,7 +116,7 @@ nyprompt() (
 )
 
 
-if [ "$2" = --light-theme ]; then
+if grep -qs ^light-theme "$HOME"/.config/qmenu.conf; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -155,7 +154,7 @@ case $1 in
 
 					if [ "$qube" = dom0 ]; then fmenu_dom0
 
-					elif [ "$qube" != NAME ]; then fmenu_domu "$@"; qube_label=$theme_1
+					elif [ "$qube" != NAME ]; then fmenu_domu; qube_label=$theme_1
 					fi
 				done
 			done
@@ -174,18 +173,18 @@ case $1 in
 			fmenu_dom0
 		else
 
-			fmenu_domu "$@"
+			fmenu_domu
 		fi;;
 
 	--qube=*)
 
 		qube=$(echo "$1" | cut -d= -f2)
 
-		if [ "$qube" = dom0 ]; then fmenu_dom0; else fmenu_domu "$@"; fi;;
+		if [ "$qube" = dom0 ]; then fmenu_dom0; else fmenu_domu; fi;;
 
 	*)
 
-		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
+		printf "Usage: $0 [OPTION]\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
 
 		[ "$1" = --help ] && exit 0; exit 2
 esac

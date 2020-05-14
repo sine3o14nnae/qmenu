@@ -7,15 +7,14 @@ command dmenu -f -nb "$theme_0" -nf "$theme_1" -sb "$theme_1" -sf "$theme_0" "$@
 
 get_qube_label() {
 
-# Change label colors according to user input.
-qube_label=$(echo "$@" | tr ' ' '\n' |\
-	grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
+# Change label colors according to qmenu.conf.
+qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
 
 [ -z "$qube_label" ] && qube_label=$theme_1
 }
 
 
-if [ "$2" = --light-theme ]; then
+if grep -qs ^light-theme "$HOME"/.config/qmenu.conf; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -40,7 +39,7 @@ case $1 in
 
 	*)
 
-		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nList and manage your connected devices via dmenu.\n\n --all\n --block\n --mic\n --usb\n\n"
+		printf "Usage: $0 [OPTION]\nList and manage your connected devices via dmenu.\n\n --all\n --block\n --mic\n --usb\n\n"
 
 		[ "$1" = --help ] && exit 0; exit 2
 esac
@@ -79,7 +78,7 @@ while [ -n "$device" ]; do
 
 			if [ -n "$qube" ]; then
 
-				get_qube_label "$@"
+				get_qube_label
 
 				prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
 					-p "Attach '$device_name' to $qube?")
@@ -96,7 +95,7 @@ while [ -n "$device" ]; do
 			fi
 		else
 
-			get_qube_label "$@"
+			get_qube_label
 
 			prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
 				-p "Detach '$device_name' from $qube?")

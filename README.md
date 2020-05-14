@@ -5,14 +5,14 @@ Collection of tools that utilize
 [dmenu](https://tools.suckless.org/dmenu/), a dynamic menu for X,
 to provide the user with a drop down menu for [Qubes](https://qubes-os.org) specific tasks.
 
-When configured to execute these tools via hotkeys, the user is able to list, start and stop their qubes, attach and detach connected devices,
+With these tools bound to hotkeys, the user is able to list, start and stop their qubes, attach and detach connected devices,
 adjust qube preferences, firewall rules, per-qube keyboard layouts, launch applications and more, very quickly with only the keyboard.
 
 ### qmenu-am
 
 Launch domU and dom0 applications.
 
-    Usage: qmenu-am [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
+    Usage: qmenu-am [OPTION]
 
      --all
      --focused
@@ -21,7 +21,7 @@ Launch domU and dom0 applications.
 
 List and manage your connected devices.
 
-    Usage: qmenu-dm [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
+    Usage: qmenu-dm [OPTION]
 
      --all
      --block
@@ -32,7 +32,7 @@ List and manage your connected devices.
 
 List, manage and configure your qubes.
 
-    Usage: qmenu-vm [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
+    Usage: qmenu-vm [OPTION]
 
      --all
      --focused
@@ -47,30 +47,50 @@ Configuration
 
 ### Label color
 
-The colors that correspond to a qube label can be adjusted by appending
-` --{LABEL}=#{HEX TRIPLET}` for any label.
-
-Try the following example for visually appealing colors:
+By default, everything will be displayed in black and white.
+The colors that correspond to a qube label can be adjusted by creating a text
+file called `qmenu.conf` in `/home/user/.config/` with the following contents:
 
 ~~~
- --purple=#a020f0 --blue=#4363d8 --gray=#bebebe --green=#3cb44b --yellow=#ffe119 --orange=#f58231 --red=#e6194b --black=#414141
+[LABEL 1]=#[HEX TRIPLET]
+[LABEL 2]=#[HEX TRIPLET]
+...
+[LABEL 8]=#[HEX TRIPLET]
 ~~~
+
+<details>
+ <summary>Try this example for visually appealing colors:</summary>
+
+~~~
+purple=#a020f0
+blue=#4363d8
+gray=#bebebe
+green=#3cb44b
+yellow=#ffe119
+orange=#f58231
+red=#e6194b
+black=#373737
+~~~
+
+</details>
 
 Further customization can be achieved by modifying or replacing dmenu.
 
+### Light theme
+
+To switch black and white around, add `light-theme` to the beginning of a line
+in `/home/user/.config/qmenu.conf`.
+
 ### Qube Settings
 
-By default, executing the 'Qube Settings' application will launch the Qube Manager
+By default, executing the Qube Settings application will launch the Qube Manager
 qube settings. This can be changed to launch qmenu-vm instead,
 which makes it possible to use qmenu-am to quickly launch into the qmenu-vm
 settings for a particular qube, without first listing a set of qubes or using
 the `--focused` option.
 
-Simply replace the contents of `/usr/bin/qubes-vm-settings` in dom0 with this:
-
-~~~
-qmenu-vm --qube="$1" (--light-theme) (--{LABEL}=#{HEX TRIPLET})...
-~~~
+Simply replace the contents of `/usr/bin/qubes-vm-settings` in
+dom0 with `qmenu-vm --qube="$1"`
 
 Dependencies
 ------------
@@ -78,13 +98,11 @@ Dependencies
 All qmenu tools are written in POSIX-compliant shell script and only
 depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 
-
 <details>
  <summary>qmenu-am</summary>
 
 * cut
 * grep
-* _tr_ (For '--focused' option)
 * _xdotool_ (For '--focused' option)
 * _xprop_ (For '--focused' option)
 * <details>
@@ -104,7 +122,6 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
 * grep
 * sed
 * sort
-* tr
 * wc
 * <details>
    <summary>Qubes tools</summary>
@@ -128,7 +145,6 @@ depend on the POSIX-compliant variants of the (nonqubes)utilities they use.
    * sed
    * sleep
    * sort
-   * tr
    * wc
    * _xdotool_ (For '--focused' option)
    * _xprop_ (For '--focused' option)
@@ -175,7 +191,7 @@ Installation
 
     [user@dom0 ~]# chmod 755 /usr/local/bin/qmenu-XX
 
-For `qmenu-vm`, additionally:
+For qmenu-vm, additionally:
 
     [user@dom0 ~]$ mkdir /tmp/qmenu_vm
 

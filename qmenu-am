@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$2" = --light-theme ]; then
+if grep -qs ^light-theme "$HOME"/.config/qmenu.conf; then
 
 	theme_0='#ffffff'
 	theme_1='#000000'
@@ -27,9 +27,8 @@ case $1 in
 
 		[ "$qube" = '_QUBES_VMNAME:  not found.' ] && exit 2
 
-		# Change label colors according to user input.
-		qube_label=$(echo "$@" | tr ' ' '\n' |\
-			grep "\--$(qvm-prefs "$qube" label)" | cut -d= -f2)
+		# Change label colors according to qmenu.conf.
+		qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
 
 		[ -z "$qube_label" ] && qube_label=$theme_1
 
@@ -41,7 +40,7 @@ case $1 in
 
 	*)
 
-		printf "Usage: $0 [OPTION] (--light-theme) (--{LABEL}=#{HEX TRIPLET})...\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n"
+		printf "Usage: $0 [OPTION]\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n"
 
 		[ "$1" = --help ] && exit 0; exit 2
 esac
