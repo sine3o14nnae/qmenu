@@ -27,7 +27,7 @@ if [ -n "$volume" ]; then
 
 			nyprompt "Increase the maximum $volume storage size of $qube from $current_storage MiB to $mebibyte MiB?" &&
 
-				qvm-volume extend "$qube:$volume" "$byte"&
+				(qvm-volume extend "$qube:$volume" "$byte"&)
 		else
 
 			echo Go back... | dmenu -p "Error: Can not decrease the maximum $volume storage!"\
